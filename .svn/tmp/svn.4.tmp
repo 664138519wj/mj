@@ -1,0 +1,148 @@
+package com.migu.online.model;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+import org.apache.ibatis.type.Alias;
+
+import lombok.Data;
+
+/*驾校*/
+@Alias("driving_school")
+@Data
+public class DrivingSchool {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
+	private String nameS; // 缩略名
+	private String nameL; // 全名
+	private Integer areaId; // 地区id
+	private String address;
+	private float profitRatio;//分润比例
+	private String tel;
+	private String imagePath; // 头像
+	private String shufflingImage; // 图片轮播 逗号分隔
+	private Integer isDelete;
+	private BigDecimal price;
+	private String licence; // 驾照类型 逗号分隔
+	private Date createTime;
+	private Date updateTime;
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getNameS() {
+		return nameS;
+	}
+
+	public void setNameS(String nameS) {
+		this.nameS = nameS;
+	}
+
+	public String getNameL() {
+		return nameL;
+	}
+
+	public void setNameL(String nameL) {
+		this.nameL = nameL;
+	}
+
+	public Integer getAreaId() {
+		return areaId;
+	}
+
+	public void setAreaId(Integer areaId) {
+		this.areaId = areaId;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getTel() {
+		return tel;
+	}
+
+	public void setTel(String tel) {
+		this.tel = tel;
+	}
+
+	public String getImagePath() {
+		return imagePath;
+	}
+
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
+	}
+
+	public String getShufflingImage() {
+		return shufflingImage;
+	}
+
+	public void setShufflingImage(String shufflingImage) {
+		this.shufflingImage = shufflingImage;
+	}
+
+	public Integer getIsDelete() {
+		return isDelete;
+	}
+
+	public void setIsDelete(Integer isDelete) {
+		this.isDelete = isDelete;
+	}
+
+	public BigDecimal getPrice() {
+		return price;
+	}
+
+	public void setPrice(BigDecimal price) {
+		this.price = price;
+	}
+
+	public String getLicence() {
+		return licence;
+	}
+
+	public void setLicence(String licence) {
+		this.licence = licence;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+
+	public Date getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
+	}
+
+	public float getProfitRatio() {
+		return profitRatio;
+	}
+
+	public void setProfitRatio(float profitRatio) {
+		this.profitRatio = profitRatio;
+	}
+
+	
+}

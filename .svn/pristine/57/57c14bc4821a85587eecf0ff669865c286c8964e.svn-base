@@ -1,0 +1,343 @@
+package com.migu.online.service;
+
+import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.beanutils.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.alibaba.druid.util.StringUtils;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.util.StringUtil;
+import com.migu.online.mapper.AppointmentManageMapper;
+import com.migu.online.model.AppointmentManage;
+import com.migu.online.model.ExamPlace;
+import com.migu.online.model.UserAppointment;
+import com.migu.online.ops.vo.AppointmentOpsVo;
+import com.migu.online.utils.DateUtil;
+import com.migu.online.vo.AppointmentManageVo;
+import com.migu.online.vo.ExamAppVo;
+
+import tk.mybatis.mapper.entity.Example;
+import tk.mybatis.mapper.entity.Example.Criteria;
+
+@Service
+public class AppointmentManageService {
+
+    @Autowired
+    private AppointmentManageMapper appointmentManageMapper;
+    @Autowired
+    private ExamPlaceService examPlaceService;
+    @Autowired
+    private UserAppointmentService userAppointmentService;
+      
+   
+    /**
+     * 查询可预约考场和价格
+     * @param pageIndex
+     * @param pageSize
+     * @return
+     * @throws Exception
+     */
+    public AppointmentManageVo selectByCondition(Integer kemu, String licenceType, Long userId) throws Exception{
+    	AppointmentManageVo result = new AppointmentManageVo();
+    	List<ExamAppVo> list = new ArrayList<ExamAppVo>();
+         //单表自定义查询
+        Example example = new Example(AppointmentManage.class);
+        Criteria criteria = example.createCriteria();
+        criteria.andCondition("is_delete = 0");
+        if (null != kemu) {
+        	criteria.andCondition("kemu=", kemu);
+        }
+        if (StringUtil.isNotEmpty(licenceType)) {
+        	criteria.andCondition("licence_type=", licenceType);
+        }
+        criteria.andGreaterThan("startTime", new Date());
+        List<AppointmentManage> pageList = appointmentManageMapper.selectByExample(example);
+        if (null == pageList || pageList.size() <= 0) {
+        	return null;
+        }
+        BigDecimal price = new BigDecimal(0);
+		Map<Integer, ExamPlace> epMap = examPlaceService.selectAllMap();
+        for (AppointmentManage data : pageList) {     	
+			if (null != data) {
+				ExamAppVo vo = new ExamAppVo();
+				vo.setStartTimeStr(DateUtil.dateToDateString(data.getStartTime(), DateUtil.DATATIMEF_STR));				
+				// 获取考场信息
+				vo.setExamPlace(epMap.get(data.getExamPlaceId()));
+				vo.setLimitCount(data.getLimitCount());
+				vo.setLeftCount(data.getLeftCount());
+				vo.setAppointmentId(data.getId());
+				vo.setUserAppointStatus(0);
+				// 判断用户预约状态 预约状态 0:未预约 1：预约中 2：预约成功 
+				if (null != userId && userId > 0L) {
+					UserAppointment ua = userAppointmentService.selectByAppointId(data.getId(), userId);
+					if (null != ua) {
+						// 预约状态 0:预约中 1：预约成功 2：预约失败
+						// 付费方式 0:在线支付 1：线下支付
+						if (ua.getStatus() == 0) {
+							vo.setUserAppointStatus(1);
+						} else if (ua.getStatus() == 1) {
+							vo.setUserAppointStatus(2);
+						} 
+					}
+				}
+				price = data.getPrice();
+				list.add(vo);
+			}
+		}
+        result.setKemu(kemu);
+        result.setLicenceType(licenceType);
+        result.setPrice(price);
+        result.setExamPlaceList(list);
+        return result;
+    }
+    
+    /**
+     * 查询可预约考场和价格
+     * @param pageIndex
+     * @param pageSize
+     * @return
+     * @throws Exception
+     */
+    public AppointmentManageVo selectByCondition2(Map<String, Object> filters, Long userId) throws Exception{
+    	AppointmentManageVo result = new AppointmentManageVo();
+    	List<ExamAppVo> list = new ArrayList<ExamAppVo>();
+         //单表自定义查询
+        Example example = new Example(AppointmentManage.class);
+        Criteria criteria = example.createCriteria();
+        criteria.andCondition("is_delete = 0");
+        Integer kemu = (Integer)filters.get("kemu");
+        if (null != kemu) {
+        	criteria.andCondition("kemu=", kemu);
+        }
+        String licence = (String)filters.get("licence");
+        if (StringUtil.isNotEmpty(licence)) {
+        	criteria.andCondition("licence_type=", licence);
+        }        
+        // 考场名字
+        Long examPlaceId = (Long)filters.get("examPlaceId");
+        if (examPlaceId != null) {
+        	criteria.andCondition("exam_place_id=", examPlaceId);
+        }
+        // 区域 地址
+        Long areaId = (Long)filters.get("areaId");
+        String address = (String)filters.get("address");
+        if (areaId != null || StringUtil.isNotEmpty(address)) {
+        	List<Integer> ids = examPlaceService.selectByAddressOrAreaId(areaId, address);
+        	if (null != ids && ids.size() > 0) {
+            	criteria.andIn("examPlaceId", ids);
+        	} else {
+        		return null;
+        	}
+        }
+        // 地址
+        criteria.andGreaterThan("startTime", new Date());
+        List<AppointmentManage> pageList = appointmentManageMapper.selectByExample(example);
+        if (null == pageList || pageList.size() <= 0) {
+        	return null;
+        }
+        BigDecimal price = new BigDecimal(0);
+		Map<Integer, ExamPlace> epMap = examPlaceService.selectAllMap();
+        for (AppointmentManage data : pageList) {     	
+			if (null != data) {
+				ExamAppVo vo = new ExamAppVo();
+				vo.setStartTimeStr(DateUtil.dateToDateString(data.getStartTime(), DateUtil.DATATIMEF_STR));				
+				// 获取考场信息
+				vo.setExamPlace(epMap.get(data.getExamPlaceId()));
+				vo.setLimitCount(data.getLimitCount());
+				vo.setLeftCount(data.getLeftCount());
+				vo.setAppointmentId(data.getId());
+				vo.setUserAppointStatus(0);
+				// 判断用户预约状态 预约状态 0:未预约 1：预约中 2：预约成功 
+				if (null != userId && userId > 0L) {
+					UserAppointment ua = userAppointmentService.selectByAppointId(data.getId(), userId);
+					if (null != ua) {
+						// 预约状态 0:预约中 1：预约成功 2：预约失败
+						// 付费方式 0:在线支付 1：线下支付
+						if (ua.getStatus() == 0) {
+							vo.setUserAppointStatus(1);
+						} else if (ua.getStatus() == 1) {
+							vo.setUserAppointStatus(2);
+						} 
+					}
+				}
+				price = data.getPrice();
+				list.add(vo);
+			}
+		}
+        result.setKemu(kemu);
+        result.setLicenceType(licence);
+        result.setPrice(price);
+        result.setExamPlaceList(list);
+        return result;
+    }
+    
+	
+    /**
+     * 根据科目+驾照类型+考试时间 获取价格
+     * @param model
+     * @return
+     */
+    public AppointmentManage selectOneByCondition(Integer kemu, String licenceType, String startTime) {
+    	 //单表自定义查询
+        Example example = new Example(AppointmentManage.class);
+        Criteria criteria = example.createCriteria();
+        criteria.andCondition("is_delete = 0");
+        criteria.andCondition("kemu=", kemu).andCondition("licence_type=", licenceType);
+        if (StringUtil.isNotEmpty(startTime)) {
+            criteria.andCondition("start_time=", startTime);
+        }
+        List<AppointmentManage> pageList = appointmentManageMapper.selectByExample(example);
+        if (null != pageList && pageList.size() > 0) {
+        	return pageList.get(0);
+        }
+        return null;
+    }
+   
+    /**
+     * 删除
+     * @param id
+     * @return
+     */
+    public int deleteById(Long id) {
+    	AppointmentManage record = appointmentManageMapper.selectByPrimaryKey(id);
+    	if (null != record) {
+        	record.setIsDelete(1);
+        	return appointmentManageMapper.updateByPrimaryKey(record);
+    	}
+    	return 0;
+    }
+    
+    /**
+     * 查
+     * @param id
+     * @return
+     */
+    public AppointmentManage selectById(Long id) {
+    	return appointmentManageMapper.selectByPrimaryKey(id);
+    }
+    
+    /**
+     * ops
+     * @param id
+     * @return
+     */
+    public AppointmentOpsVo selectOpsById(Long id) {
+    	AppointmentManage data = appointmentManageMapper.selectByPrimaryKey(id);
+    	if (null != data) {
+    		AppointmentOpsVo vo = new AppointmentOpsVo();
+    		try {
+				BeanUtils.copyProperties(vo, data);
+				ExamPlace epData = examPlaceService.selectById(data.getExamPlaceId());
+				if (null != epData) {
+					vo.setExamPlaceAddress(epData.getAddress());
+					vo.setExamPlaceName(epData.getName());
+				}
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    		
+    		return vo;
+    	}
+    	
+    	return null;
+    }
+    
+    /**
+     * 改&插
+     * @param model
+     * @return
+     */
+    public int createOrUpdate(AppointmentManage model) {
+    	if (null != model.getId() && model.getId() > 0) {
+    		// update
+    		return appointmentManageMapper.updateByPrimaryKey(model);
+    	} else {
+    		// add
+    		return appointmentManageMapper.insert(model);
+    	}
+    }
+    
+    /**
+     * 扣减预约库存
+     * @param model
+     * @return
+     */
+    public int decreaseExamPlaceCount(AppointmentManage model) {
+    	if (null == model) {
+    		return 0;
+    	}
+    	model.setLeftCount(model.getLeftCount() - 1);
+    	model.setUpdateTime(new Date());
+    	return appointmentManageMapper.updateByPrimaryKey(model);   	
+    }
+    
+    /**
+     * 回补预约库存
+     * @param model
+     * @return
+     */
+    public int increaseExamPlaceCount(AppointmentManage model) {
+    	if (null == model) {
+    		return 0;
+    	}
+    	model.setLeftCount(model.getLeftCount() + 1);
+    	model.setUpdateTime(new Date());
+    	return appointmentManageMapper.updateByPrimaryKey(model);   	
+    }
+    
+    /**
+     * 分页查询 
+     * @param pageIndex
+     * @param pageSize
+     * @param platId
+     * @return
+     * @throws Exception
+     */
+    public Page<AppointmentManage> selectConditionByPage(Integer pageIndex, Integer pageSize, String licenceType, Integer kemu) {
+        // 单表分页
+        PageHelper.startPage(pageIndex,pageSize,true);
+
+        //单表自定义查询
+        Example example = new Example(AppointmentManage.class);
+        Criteria criteria = example.createCriteria();
+        criteria.andCondition("is_delete = 0");
+        if (!StringUtils.isEmpty(licenceType)) {
+            criteria.andCondition("licence_type=", licenceType);
+        }
+        if (null != kemu && kemu > 0) {
+            criteria.andCondition("kemu=", kemu);
+        }
+        example.setOrderByClause("update_time desc");
+        return (Page<AppointmentManage>)appointmentManageMapper.selectByExample(example);
+    }
+    
+    /**
+     * 分页查询 用户已预约考试成绩查询
+     * @param pageIndex
+     * @param pageSize
+     * @return
+     * @throws Exception
+     */
+    public List<AppointmentManage> selectScoreByPage(Integer pageIndex,Integer pageSize, Long userId) throws Exception{
+        // 单表分页
+        PageHelper.startPage(pageIndex,pageSize,false);
+
+        //单表自定义查询
+        Example example = new Example(AppointmentManage.class);
+        example.createCriteria().andCondition("is_delete = 0").andCondition("user_id = ", userId).andCondition("status = 3");
+        example.setOrderByClause("update_time desc");
+        return appointmentManageMapper.selectByExample(example);
+    }
+}

@@ -1,0 +1,194 @@
+package com.migu.online.controller.ops;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.github.pagehelper.Page;
+import com.migu.online.controller.BaseController;
+import com.migu.online.controller.response.ResponsePageData;
+import com.migu.online.model.DrivingSchoolLesson;
+import com.migu.online.model.system.SysUser;
+import com.migu.online.ops.vo.SchoolLessonVo;
+import com.migu.online.service.DrivingSchoolService;
+import com.migu.online.utils.DateUtil;
+
+@Controller
+@RequestMapping("/ops/schoolLesson/")
+public class SchoolLessionController extends BaseController{
+	
+    @Autowired
+    private DrivingSchoolService drivingSchoolService;
+    
+    
+    /**
+     *  ------页面跳转 start-----
+     */
+    @GetMapping("index")
+    public String index(ModelMap modelMap){
+        return "ops/school/school_lession";
+    }
+    
+    /**
+     *  ------页面跳转 start-----
+     */
+    @GetMapping("all_school_lesson")
+    public String allSchoolLesson(ModelMap modelMap){
+        return "ops/school/all_school_lesson";
+    }
+
+    /**
+     * 编辑，新增，查看 方法，。
+     * @param modelMap
+     * @param id
+     * @param editFlag edit = 1, new = 0 , show = 2
+     * @return
+     * @throws Exception 
+     */
+    @GetMapping("edit")
+    public String edit(ModelMap modelMap,@RequestParam(value = "id",required = false) Integer id,
+    		@RequestParam(value = "flag",defaultValue = "1") Integer editFlag){
+    		DrivingSchoolLesson model = new DrivingSchoolLesson();
+		    if(editFlag > 0) {
+		    	model = drivingSchoolService.selectLessonById(Long.valueOf(id));
+		    }
+		    modelMap.put("model",model);
+		    modelMap.put("edit",editFlag != 2);
+		    return "ops/school/school_lesson_edit";
+    }
+    /**
+     * 数据处理
+     * @throws Exception 
+     */
+    @SuppressWarnings("rawtypes")
+	@GetMapping("data")
+    @ResponseBody
+    public ResponsePageData data(@RequestParam(value = "page",defaultValue = "0") Integer pageIndex,
+                                    @RequestParam(value = "limit",defaultValue = "10") Integer limit,
+                                 @RequestParam(value = "licence",required = false) String licence,
+                                 @RequestParam(value = "classNo",required = false) String classNo,
+                                 @RequestParam(value = "className",required = false) String className,
+                                 @RequestParam(value = "startTime",required = false) String startTime) throws Exception{
+    	SysUser currentUser = getCurrentUser();
+    	Long schoolId = null;
+    	if (currentUser.getRelateId() != null) {
+    		//SysUserOpsVo sysUserOpsVo =sysUserService.selectOpsById(currentUser.getId());
+    		 schoolId = currentUser.getRelateId();
+    	}
+    	Map<String,String> params = new HashMap<String, String>();
+    	params.put("pageIndex", pageIndex+"");
+    	params.put("pageSize", limit+"");
+    	params.put("schoolId", schoolId+"");
+    	params.put("licence", licence);
+    	params.put("classNo", classNo);
+    	params.put("className", className);
+    	params.put("startTime", startTime);
+    	
+    	Page<SchoolLessonVo> result = drivingSchoolService.selectSchoolLessionByPage(params);
+		for (SchoolLessonVo schoolLessonVo : result) {
+			schoolLessonVo.setUserCourseNumLabel(
+					"<a style='color:blue;' lay-event='sudentDetail'>" + schoolLessonVo.getUserCourseNum() + "</a>");
+		}
+    	
+    	return new ResponsePageData<SchoolLessonVo>(result.getTotal(), result);
+    }
+    
+    /**
+     * 数据处理
+     * @throws Exception 
+     */
+    @SuppressWarnings("rawtypes")
+	@GetMapping("allData")
+    @ResponseBody
+    public ResponsePageData allData(@RequestParam(value = "page",defaultValue = "0") Integer pageIndex,
+                                    @RequestParam(value = "limit",defaultValue = "10") Integer limit,
+                                 @RequestParam(value = "schoolName",required = false) String schoolName,
+                                 @RequestParam(value = "licence",required = false) String licence,
+                                 @RequestParam(value = "classNo",required = false) String classNo,
+                                 @RequestParam(value = "className",required = false) String className,
+                                 @RequestParam(value = "startTime",required = false) String startTime) throws Exception{
+    	Map<String,Object> params = new HashMap<String, Object>();
+    	params.put("startIndex", (pageIndex-1)*10);
+		params.put("endIndex", pageIndex*limit);
+    	params.put("schoolName", schoolName);
+    	params.put("licence", licence);
+    	params.put("classNo", classNo);
+    	params.put("className", className);
+    	params.put("startTime", startTime);
+		
+    	int cnt = drivingSchoolService.selectAllSchoolLessionCnt(params);
+    	List<SchoolLessonVo> result = drivingSchoolService.selectAllSchoolLessionByPage(params);
+    	
+    	return new ResponsePageData<SchoolLessonVo>(cnt, result);
+    }
+
+    @PostMapping("save")
+    @ResponseBody
+    public String save(DrivingSchoolLesson model, String startTimeStr){
+    	if (null == model) {
+    		return "error";
+    	}
+
+		if (StringUtils.isNotEmpty(startTimeStr)) {
+			model.setStartTime(DateUtil.getDate(startTimeStr, DateUtil.DATAFORMAT_STR));
+		}
+		//log.error(model.getId()+"");
+		//log.error(getCurrentUser().getRelateId().intValue()+"");
+		
+    	DrivingSchoolLesson record = null;
+    	if (model.getId() != null && model.getId() > 0) {
+    		// 更新
+    		 record = drivingSchoolService.selectLessonById(model.getId());
+    		if (null == record) {
+    		  return "error";	
+    		}
+    		record.setStartTime(model.getStartTime());
+    		record.setLicence(model.getLicence());
+    		record.setLimitNum(model.getLimitNum());
+    		int leftNum = model.getLimitNum() - record.getLimitNum() + record.getLeftNum();
+    		record.setLeftNum(leftNum <= 0 ? 0 : leftNum);
+    		record.setClassNo(model.getClassNo());
+    		record.setClassName(model.getClassName());
+    		record.setName(model.getName());
+    		record.setPrice(model.getPrice());
+    		record.setUpdateTime(new Date());
+            return drivingSchoolService.createOrUpdateSchoolLesson(record) >= 1 ? "success" : "error";
+    	} else {
+    		record = new DrivingSchoolLesson();
+    		
+    		SysUser currentUser = getCurrentUser();
+    		record.setSchoolId(currentUser.getRelateId().intValue());
+			record.setStartTime(model.getStartTime());
+			record.setLicence(model.getLicence());
+			record.setLimitNum(model.getLimitNum());
+			record.setLeftNum(model.getLimitNum());
+			record.setClassNo(model.getClassNo());
+    		record.setClassName(model.getClassName());
+			record.setName(model.getName());
+			record.setPrice(model.getPrice());
+			record.setUpdateTime(new Date());
+			record.setCreateTime(new Date());
+			record.setUpdateTime(new Date());
+			record.setIsDelete(0);
+    	}   	
+        return drivingSchoolService.createOrUpdateSchoolLesson(record) >= 1 ? "success" : "error";
+    }
+
+    @DeleteMapping("del")
+    @ResponseBody
+    public int del(@RequestParam("id") Long id){
+        return drivingSchoolService.deleteSchoolLessonById(id);
+    }
+}

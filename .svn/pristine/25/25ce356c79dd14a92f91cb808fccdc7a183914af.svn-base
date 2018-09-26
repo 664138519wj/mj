@@ -1,0 +1,121 @@
+package com.migu.online.controller.ops;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.Date;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.github.pagehelper.Page;
+import com.migu.online.controller.response.ResponsePageData;
+import com.migu.online.model.PlatformNetwork;
+import com.migu.online.ops.vo.PlatformNetworkOpsVo;
+import com.migu.online.service.DrivingSchoolService;
+import com.migu.online.service.PlatformNetworkService;
+
+/**
+ * 平台服务网点
+ */
+@Controller
+@RequestMapping("/ops/platformnetwork/")
+public class PlatformServiceNetworkOpsController {
+
+    @Autowired
+    private PlatformNetworkService platformnetworkService;
+    @Autowired
+    private DrivingSchoolService drivingSchoolService;
+
+    /**
+     *  ------页面跳转 start-----
+     */
+
+
+    @GetMapping("index")
+    public String index(ModelMap modelMap){
+        return "ops/platformnetwork/index";
+    }
+
+    /**
+     * 编辑，新增，查看 方法，。
+     * @param modelMap
+     * @param id
+     * @param editFlag edit = 1, new = 0 , show = 2
+     * @return
+     * @throws Exception 
+     */
+    @GetMapping("edit")
+    public String edit(ModelMap modelMap,@RequestParam(value = "id",required = false) Long id,
+                       @RequestParam(value = "flag",defaultValue = "1") Integer editFlag) throws Exception{
+    	if (null != id && editFlag == 2) {
+    		// 详情
+            modelMap.put("platformNetwork", platformnetworkService.selectOpsOne(id));
+    	} else if (null != id && editFlag == 1) {    		
+            modelMap.put("platformNetwork", platformnetworkService.selectById(id));
+    	} else {
+        	PlatformNetwork model = new PlatformNetwork();
+        	model.setSchoolId(0);
+            modelMap.put("platformNetwork", model);
+    	} 
+		modelMap.put("areaList", drivingSchoolService.selectAreaList());
+        modelMap.put("schoolMap",drivingSchoolService.selectSchoolMap());
+        modelMap.put("edit",editFlag != 2);
+        return "ops/platformnetwork/edit";
+    }
+
+   /**
+     * 数据处理
+ * @throws InvocationTargetException 
+ * @throws IllegalAccessException 
+     */
+    @SuppressWarnings("rawtypes")
+	@GetMapping("data")
+    @ResponseBody
+    public ResponsePageData data(@RequestParam(value = "page",defaultValue = "0") Integer offset,
+                                    @RequestParam(value = "limit",defaultValue = "10") Integer limit,
+                                 @RequestParam(value = "filter",required = false) String filter) throws IllegalAccessException, InvocationTargetException{
+        Page<PlatformNetworkOpsVo> page = (Page<PlatformNetworkOpsVo>)platformnetworkService.selectConditonByPage2(filter,offset,limit);
+        return new ResponsePageData<PlatformNetworkOpsVo>(page.getTotal(),page);
+    }
+
+    @PostMapping("save")
+	@ResponseBody
+	public String save(PlatformNetwork model) {
+		if (null == model) {
+			return "error";
+		}
+
+		if (model.getId() != null && model.getId() > 0) {
+			// 更新
+			PlatformNetwork record = platformnetworkService.selectById(model.getId());
+			if (null == record) {
+				return "error";
+			}
+			record.setName(model.getName());
+			record.setImagePath(model.getImagePath());
+			record.setAddress(model.getAddress());
+			record.setTel(model.getTel());
+			record.setSchoolId(model.getSchoolId());
+			record.setAreaId(model.getAreaId());
+			record.setUpdateTime(new Date());
+			record.setShufflingImage(model.getShufflingImage());
+			return platformnetworkService.createOrUpdate(record) >= 1 ? "success" : "error";
+		} else {
+			model.setUpdateTime(new Date());
+			model.setIsDelete(0);			
+		}
+		return platformnetworkService.createOrUpdate(model) >= 1 ? "success" : "error";
+	}
+
+    @DeleteMapping("del")
+    @ResponseBody
+    public int del(@RequestParam("id") Long id){
+        return platformnetworkService.deleteById(id);
+    }
+}

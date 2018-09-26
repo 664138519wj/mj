@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="head_center">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+	content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>个人中心</title>
+</head>
+<body>
+
+	<!--驾校详情-->
+	<div class="tab" th:fragment="content">
+		<div class="plat-title">
+             <h2>驾校报名</h2>
+        </div>
+		<div class="sign-box">
+			<div class="sign-up clear">
+				<div class="order-pic fl">
+					<img th:src="@{${imageUrl} + ${schoolDetail.imagePath}}" alt="">
+				</div>
+				<div class="order-name fr">
+					<p>
+						<b th:text="${schoolDetail.name}"></b>
+					</p>
+					<p th:text="@{'驾校地址：'+${schoolDetail.address}}"></p>
+					<p th:text="@{'可培训驾照类型：'+${schoolDetail.licence}}"></p>
+					<p>联系电话：<b th:text="${schoolDetail.tel}" style="color:#fd9938;font-size:20px;"></b></p>
+				</div>
+			</div>
+			<div class="sign-up">
+				<div class="plat-title">
+					<h2>驾校培训课程</h2>
+				</div>
+				<ul class="course">
+					<li th:each="course:${schoolDetail.lessonList}">
+						<div class="type fl">
+							<p>
+								<span th:text="${course.licence}"></span><span th:text="@{'￥' + ${course.price}}"></span>
+							</p>
+							<p th:text="@{'开班时间：'+${course.beginTime}}"></p>
+						</div>
+						<div th:if="${signed == '0'}">
+						  <a th:href="@{${ctx} + 'person_center/person_sign_up_3?courseId=' + ${course.id}}">
+						  <button class="fr">我要报名</button>
+						  </a>
+						</div>
+						<div th:unless="${signed == '0'}">
+						  <button class="fr" th:if="${course.status == 0}">报名中</button>
+						  <button class="fr" th:if="${course.status == 1}">报名成功</button>
+						</div>
+					   
+<!-- 						<button class="fr" th:if="${course.status == 0}">报名中</button> -->
+<!-- 						<button class="fr" th:if="${course.status == 1}">报名成功</button>  -->
+						
+<!-- 						<div th:if="${course.status > 1 || course.status < 0}"> -->
+<!-- 							<a th:href="@{${ctx} + 'person_center/person_sign_up_3?courseId=' + ${course.id}}" th:if="${course.isPay == 0 && signed == '0'}"> -->
+<!-- 							<button class="fr">我要报名</button> -->
+<!-- 							</a> -->
+<!-- 							<a th:if="${course.isPay ==1}"> -->
+<!-- 							<button class="fr">报名中</button></a> -->
+<!-- 						</div>						 -->
+						
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</html>

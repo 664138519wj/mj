@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html xmlns:th="http://www.thymeleaf.org" lang="en" class="no-js ie6"> <![endif]-->
+<!--[if IE 7 ]><html xmlns:th="http://www.thymeleaf.org" lang="en" class="no-js ie7"> <![endif]-->
+<!--[if IE 8 ]><html xmlns:th="http://www.thymeleaf.org" lang="en" class="no-js ie8"> <![endif]-->
+<!--[if IE 9 ]><html xmlns:th="http://www.thymeleaf.org" lang="en" class="no-js ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--><html xmlns:th="http://www.thymeleaf.org" lang="en" class="no-js" > <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>系统管理</title>
+    <link rel="stylesheet" th:href="@{/lib/lui/css/layui.css}">
+    <style rel="stylesheet" type="text/css">
+        .layui-tab-title li:first-child > i {
+            display: none;
+        }
+        .layui-this {
+            background-color: #f2f2f2;
+        }
+        .layui-tab-content {
+            padding:1px;
+        }
+
+    </style>
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo" id="animation-left-nav" style="cursor: pointer;">迈尖设计研究室
+        </div>
+
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    <span th:unless="${user}">用户名</span>
+                    <span th:if="${user}" th:text="${user.userName}"></span>
+                </a>
+                <dl class="layui-nav-child">
+<!--                     <dd><a href="">基本资料</a></dd> -->
+<!--                     <dd><a href="">安全设置</a></dd> -->
+                </dl>
+            </li>
+            <li class="layui-nav-item"><a href="auth/logout">退出</a></li>
+        </ul>
+    </div>
+    <!--左侧菜单-->
+    <div class="layui-side layui-bg-black" th:include="admin/left"></div>
+    <!--内容页面-->
+    <div class="layui-body" style="bottom:0;">
+        <div class="layui-tab" lay-allowClose="true" lay-filter="tab-switch" style="margin-top:0;margin-bottom:0;">
+            <ul class="layui-tab-title">
+                <li class="layui-this" >首页</li>
+            </ul>
+            <div class="layui-tab-content" style="padding:0;">
+                <div class="layui-tab-item layui-show">
+                    <img src="img/welcome.png" style="width:100%;height:100%;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script th:src="@{/lib/jquery/jquery.js}"></script>
+<script th:src="@{/lib/lui/layui.all.js}"></script>
+<script th:src="@{/js/admin.js}"></script>
+<script>
+$(function(){
+	// 左侧菜单初始化调整
+	// admin
+	$("#left_menu_1").addClass('layui-nav-itemed');
+	// school
+	$("#left_menu_47").addClass('layui-nav-itemed');
+	// teacher
+	$("#left_menu_41").addClass('layui-nav-itemed');
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+<link rel="stylesheet" th:href="@{/lib/lui/css/layui.css}">
+<!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+</head>
+<body>
+	<div class="layui-container">
+		<div th:html="${model.id}"></div>
+		<div th:if="${edit}"></div>
+		<form id="modelForm" class="layui-form" action="edit" method="post">
+			<input type="hidden" name="id" th:value="${model.id}" />
+			<input type="hidden" name="carModel" th:value="${model.carModel}" />
+
+			<div class="layui-form-item">
+				<label class="layui-form-label">驾照</label>
+				 <select name="carModelCode">
+				 	<option value="A1">A1-大型客车</option>
+                    <option value="A2">A2-牵引车</option>
+                    <option value="A3">A3-城市公共汽车</option>
+                    <option value="B1">B1-中型客车</option>
+                    <option value="B2">B2-大型货车</option>
+                    <option value="C1">C1-小型汽车</option>
+                    <option value="C2">C2-小型自动档汽车</option>
+                    <option value="C3">C3-低速载货汽车</option>
+                    <option value="C4">C4-三轮汽车</option>
+                    <option value="C5">C5-残疾人专用小型自动挡载客汽车</option>
+                    <option value="D">D-三轮摩托车</option>
+                    <option value="E">E-二轮摩托车</option>
+                    <option value="F">F-轻便摩托车</option>
+                    <option value="M">M-轮式自行机械车</option>
+                    <option value="N">N-无轨电车</option>
+                    <option value="P">P-有轨电车</option>
+				 </select>
+			</div>
+			
+			<div class="layui-form-item">
+				<label class="layui-form-label">价格</label>
+				<div th:if="${edit}" class="layui-input-block">
+					<input type="number" name="price" lay-verify="required"
+						placeholder="请输入" th:value="${model.price}"
+						autocomplete="off" class="layui-input">
+				</div>
+				<div class="layui-form-mid" th:unless="${edit}"
+					th:text="${model.price}"></div>
+			</div>
+			<div class="layui-form-item">
+				<div class="layui-inline">
+					<label class="layui-form-label">开始时间</label>
+					<div th:if="${edit}" class="layui-input-inline">
+						<input type="text" name="startTime" id="date" lay-verify="date"
+							th:value="${#dates.format(model.startTime, 'yyyy-MM-dd')}"
+							placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input">
+					</div>
+					<div class="layui-form-mid" th:unless="${edit}"
+						th:text="${#dates.format(model.startTime, 'yyyy-MM-dd')}">
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<script th:src="@{/lib/jquery/jquery.js}"></script>
+	<script th:src="@{/lib/jquery/jquery.forms.js}"></script>
+	<script th:src="@{/lib/lui/layui.all.js}"></script>
+	<script type="text/javascript">
+		$.fn.serializeObject = function() {
+			var o = {};
+			var a = this.serializeArray();
+			$.each(a, function() {
+				if (o[this.name] !== undefined) {
+					if (!o[this.name].push) {
+						o[this.name] = [ o[this.name] ];
+					}
+					o[this.name].push(this.value || '');
+				} else {
+					o[this.name] = this.value || '';
+				}
+			});
+			return o;
+		};
+	</script>
+	<script type="text/javascript">
+		layui.laydate.render({
+			elem : '#date'
+		});
+		//layui.layedit.build('LAY_demo_editor');
+
+		function doSave(fn) {
+
+			var data = $("#modelForm").serializeObject();
+
+			$.ajax("edit", {
+				method : "post",
+				contentType : "application/json; charset=utf-8",
+				data : JSON.stringify(data),
+				success : function(data) {
+					if (data) {
+						parent.tips(1, "保存成功！");
+						fn.call();
+					} else {
+						parent.tips(0, "保存信息失败！");
+					}
+				},
+				error : function(e) {
+					parent.tips(0, e);
+				}
+			});
+
+		}
+	</script>
+	<script>
+		$(function() {
+			 
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="head_center">
+<head>
+<title>个人中心</title>
+<style type="text/css">
+	.fail-reason{width:400px;height:auto;background:#fff;border-radius:5px;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);-webkit-transform:translate(-50%,-50%);-moz-transform:translate(-50%,-50%);-ms-transform:translate(-50%,-50%);}
+	.fail-reason p{padding:20px;line-height:30px;}
+	.fail-reason .fork{position:absolute;top:10px;right:10px;}
+	.fail-reason h2{text-align:center;padding:16px 0;background:#eee;border-radius:5px;}
+</style>
+</head>
+<body th:fragment="content">
+
+	<!--已报名驾校-->
+	<div class="tab">
+		<div class="plat-title">
+			<h2>已报名驾校</h2>
+		</div>
+		<div class="already-order clear" th:each="school:${schoolList}">
+			<div class="order-pic fl">
+				<img th:src="@{${imageUrl} + ${school.imagePath}}" alt="">
+			</div>
+			<div class="order-name fr">
+				<p>
+					<b th:text="${school.schoolName}"></b>
+					<span th:if="${school.status==1}">报名成功</span>
+					<span th:if="${school.status==0}">报名中</span>
+					<button th:if="${school.status==2}" th:value="${school.id}" onclick="showFade(this.value)" style="float:right;color:#fd9938;font-size:18px;">报名失败</button>
+					<script>
+							function showFade(id) {
+								$('#fade_' + id).show();
+							}
+							function Fork(){
+								$('.fade').hide();
+							}
+					</script>
+				</p>
+				
+				<p th:text="@{'驾校地址：'+${school.address}}"></p>
+				<p th:text="@{'驾照类型：'+${school.licence}}"></p>
+				<p th:text="@{'开班时间：'+${school.startTime}}"></p>
+				<p>
+					<span th:text="@{'报名价格：￥' + ${school.price}}" style="float:none;color:#333;"></span>
+					<!-- 报名中 未付款，付款按钮 -->
+	                 <a th:if="${school.payStatus == 0 && school.payType==0 && school.status!=2}" 
+	                 th:href="@{${ctx} + 'person_center/person_sign_up_pay?courseId=' + ${school.id}}"><span style="float:none;margin-left:20px;">（线上未付款）</span></a>
+	                 <span th:if="${school.payStatus == 0 && school.payType==1 && school.status!=2}" style="float:none;"><span style="float:none;margin-left:20px;">（线下未付款）</span></span>
+		             <span th:if="${school.refundStatus == 1}" style="float:none;margin-left:20px;">已申请退款</span>	
+					 <span th:if="${school.refundStatus == 2}" style="float:none;margin-left:20px;">退款成功</span>
+				</p>
+				
+				
+				<!-- 已付款 未退款状态-->
+<!-- 				<a th:href="@{${ctx} + 'person_center/person_refund?courseId=' + ${school.id}}"  -->
+<!-- 				th:if="${school.payStatus==2 && school.status==1 && school.refundStatus < 1}" class="refund">申请退款</a> -->
+				<button class="refund" th:if="${school.payStatus==2 && school.status==1 && school.refundStatus < 1}" th:value="${school.id}" th:id="@{refund_text_ + ${school.id}}" onclick="applyRefund(this.value)" >申请退款</button>
+				<div class="fade" th:id="@{fade_ + ${school.id}}"  style="display: none">
+					<div class="fail-reason">
+						<img class="fork" onclick="Fork()" th:src="@{/img/app-pic1.png}" alt="">
+						<h2>失败原因</h2>
+						<p th:if="${school.reason}" th:text="${school.reason}"></p>
+					</div>
+				</div>
+				<script>
+					function applyRefund(id){
+						if(confirm("请确定要退款")) {
+							// 发送验证码
+					        jQuery.ajax({
+					           type:"post",
+					           url: '[[${baseUrl}]]user/applyRefund2',
+					           data: {courseId:id},
+					           success:function(msg){
+					               if(msg.status=="1"){
+					            	   $("#refund_text_" + id).text("已申请退款");
+					            	   $("#refund_text_" + id).removeAttr("onclick");
+					               } else {
+					            	   alert(msg.msg);
+					               }
+					           }
+					        }); 
+						}
+					 }
+				</script>
+				
+			</div>
+		</div>
+	</div>
+	
+	  
+</html>

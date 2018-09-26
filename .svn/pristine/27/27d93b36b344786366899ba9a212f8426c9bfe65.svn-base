@@ -1,0 +1,379 @@
+package com.migu.online.service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.beanutils.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.alibaba.druid.util.StringUtils;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.migu.online.common.UserCourseTypeEnum;
+import com.migu.online.mapper.CourseOfflineMapper;
+import com.migu.online.mapper.PlatformNetworkMapper;
+import com.migu.online.mapper.UserCourseMapper;
+import com.migu.online.model.CourseOffline;
+import com.migu.online.model.PlatformNetwork;
+import com.migu.online.model.UserCourse;
+import com.migu.online.ops.vo.CourseOfflineOpsVo;
+import com.migu.online.utils.DateUtil;
+import com.migu.online.vo.CourseOfflineDetailVo;
+import com.migu.online.vo.CourseOfflineVo;
+import com.migu.online.vo.TeacherDetailVo;
+
+import tk.mybatis.mapper.entity.Example;
+import tk.mybatis.mapper.entity.Example.Criteria;
+
+@Service
+public class CourseOfflineService {
+
+	@Autowired
+	private CourseOfflineMapper courseOfflineMapper;
+	@Autowired
+	private TeacherService teacherService;
+	@Autowired
+	private PlatformNetworkMapper platformNetworkMapper;
+	@Autowired
+	private UserCourseService userCourseService;
+    @Autowired
+    private UserCourseMapper userCourseMapper;
+
+	
+	/**
+	 * 首页线下课程查询
+	 * @return
+	 * @throws Exception
+	 */
+	public List<CourseOfflineVo> selectHomePageAll() throws Exception {
+		List<CourseOfflineVo> result = new ArrayList<CourseOfflineVo>();
+		// 单表自定义查询
+		Example example = new Example(CourseOffline.class);
+		example.createCriteria().andCondition("is_delete = 0").andCondition("recommand = 1");
+		example.setOrderByClause("sort desc, create_time desc");
+		List<CourseOffline> list = courseOfflineMapper.selectByExample(example);
+		for (CourseOffline data : list) {
+			CourseOfflineVo vo = new CourseOfflineVo();
+			BeanUtils.copyProperties(vo, data);
+			result.add(vo);
+		}
+		return result;
+	}
+	
+	/**
+     * 分页查询 
+     * @param pageIndex
+     * @param pageSize
+     * @param platId
+     * @return
+     * @throws Exception
+     */
+    public List<CourseOfflineVo> selectByPage(Integer pageIndex, Integer pageSize) throws Exception{
+    	List<CourseOfflineVo> result = new ArrayList<CourseOfflineVo>();
+        // 单表分页
+        PageHelper.startPage(pageIndex,pageSize,false);
+
+        //单表自定义查询
+        Example example = new Example(CourseOffline.class);
+        example.createCriteria().andCondition("is_delete = 0");
+        List<CourseOffline> pageList = courseOfflineMapper.selectByExample(example);
+        for (CourseOffline data : pageList) {
+        	CourseOfflineVo vo = new CourseOfflineVo();
+			BeanUtils.copyProperties(vo, data);			
+			result.add(vo);
+		}
+        return result;
+    }
+    
+    /**
+     * 分页查询 
+     * @param pageIndex
+     * @param pageSize
+     * @param platId
+     * @return
+     * @throws Exception
+     */
+    public Page<CourseOfflineVo> selectWebByPage(Integer pageIndex, Integer pageSize) throws Exception{
+    	Page<CourseOfflineVo> result = new Page<CourseOfflineVo>();
+        // 单表分页
+        PageHelper.startPage(pageIndex,pageSize,true);
+
+        //单表自定义查询
+        Example example = new Example(CourseOffline.class);
+        example.createCriteria().andCondition("is_delete = 0");
+        Page<CourseOffline> pageList = (Page<CourseOffline>)courseOfflineMapper.selectByExample(example);
+        for (CourseOffline data : pageList) {
+        	CourseOfflineVo vo = new CourseOfflineVo();
+			BeanUtils.copyProperties(vo, data);			
+			result.add(vo);
+		}
+        result.setTotal(pageList.getTotal());
+        return result;
+    }
+	
+	/**
+     * 分页查询 平台线下课程
+     * @param pageIndex
+     * @param pageSize
+     * @param platId
+     * @return
+     * @throws Exception
+     */
+    public List<CourseOfflineVo> selectPlatCourseByPage(Integer pageIndex, Integer pageSize, Long platId) throws Exception{
+    	List<CourseOfflineVo> result = new ArrayList<CourseOfflineVo>();
+        // 单表分页
+        PageHelper.startPage(pageIndex,pageSize,false);
+
+        //单表自定义查询
+        Example example = new Example(CourseOffline.class);
+        example.createCriteria().andCondition("is_delete = 0").andCondition("plat_id =", platId);
+        List<CourseOffline> pageList = courseOfflineMapper.selectByExample(example);
+        for (CourseOffline data : pageList) {
+        	CourseOfflineVo vo = new CourseOfflineVo();
+			BeanUtils.copyProperties(vo, data);		
+        	vo.setStartTime(DateUtil.dateToDateString(data.getStartTime(), DateUtil.DATAFORMAT_STR));
+			result.add(vo);
+		}
+        return result;
+    }
+    
+    /**
+     * 详情
+     * @param id
+     * @return
+     */
+    public CourseOfflineDetailVo selectOne(Long id) throws Exception {
+    	CourseOfflineDetailVo vo = new CourseOfflineDetailVo();
+    	CourseOffline model = new CourseOffline();
+    	model.setId(id);
+    	model.setIsDelete(0);
+    	CourseOffline data = courseOfflineMapper.selectOne(model);
+		if (null != data) {
+			List<TeacherDetailVo> teacherList = new ArrayList<>();
+			BeanUtils.copyProperties(vo, data);
+            String teacherIds = data.getTeachers();
+            if (!StringUtils.isEmpty(teacherIds)) {
+            	String args[] = teacherIds.split(",");
+            	for (int i = 0 ; i < args.length; i++) {
+                	TeacherDetailVo detailVo = teacherService.selectOne(Long.parseLong(args[i]));
+                	teacherList.add(detailVo);
+            	}
+            }
+            vo.setTeacherList(teacherList);
+    		vo.setStartTime(DateUtil.dateToDateString(data.getStartTime(), DateUtil.DATAFORMAT_STR));
+		}
+        return vo;
+    }
+    
+    /**
+     * 详情
+     * 登录用户需判断是否已经购买
+     * @param id
+     * @return
+     */
+    public CourseOfflineDetailVo selectOneByUser(Long id, Long userId) throws Exception {
+    	CourseOfflineDetailVo vo = new CourseOfflineDetailVo();
+    	CourseOffline model = new CourseOffline();
+    	model.setId(id);
+    	model.setIsDelete(0);
+    	CourseOffline data = courseOfflineMapper.selectOne(model);
+		if (null != data) {
+			List<TeacherDetailVo> teacherList = new ArrayList<>();
+			BeanUtils.copyProperties(vo, data);
+            String teacherIds = data.getTeachers();
+            if (!StringUtils.isEmpty(teacherIds)) {
+            	String args[] = teacherIds.split(",");
+            	for (int i = 0 ; i < args.length; i++) {
+                	TeacherDetailVo detailVo = teacherService.selectOne(Long.parseLong(args[i]));
+                	teacherList.add(detailVo);
+            	}
+            }
+            vo.setStartTime(DateUtil.dateToDateString(data.getStartTime(), DateUtil.DATAFORMAT_STR));
+            vo.setTeacherList(teacherList);
+		}
+		// 登录用户处理
+		if (userId > 0) {	        
+			// 判断user是否已付费
+			vo.setIsPay(0);		
+			// 用户课程购买记录
+			UserCourse course = userCourseService.selectPayCourseByUser(id, userId, UserCourseTypeEnum.offline.code);
+			if (null != course) {
+				vo.setIsPay(1);
+			} else {
+				vo.setIsPay(2);
+			}	
+		} else {
+			vo.setIsPay(0);
+		}    	
+        return vo;
+    }
+    
+
+    /**
+     * 删除
+     * @param id
+     * @return
+     */
+    public int deleteById(Long id) {
+    	CourseOffline record = courseOfflineMapper.selectByPrimaryKey(id);
+    	if (null != record) {
+        	record.setIsDelete(1);
+        	return courseOfflineMapper.updateByPrimaryKey(record);
+    	}
+    	return 0;
+    }
+    
+    public CourseOffline selectById(Long id) {
+    	return courseOfflineMapper.selectByPrimaryKey(id);
+    }
+    
+    public int createOrUpdate(CourseOffline model) {
+    	if (null != model.getId() && model.getId() > 0) {
+    		// update
+    		return courseOfflineMapper.updateByPrimaryKey(model);
+    	} else {
+    		// add
+    		return courseOfflineMapper.insert(model);
+    	}
+    }
+    
+    /**
+     * 分页查询 
+     * @param pageIndex
+     * @param pageSize
+     * @param platId
+     * @return
+     * @throws Exception
+     */
+    @SuppressWarnings("rawtypes")
+	public Page<CourseOfflineOpsVo> selectByFilter(Map<String, String> filters) throws Exception{
+		boolean byPage = true;
+		int pageIndex = 0;
+		int pageSize = 0;
+
+        Example example = new Example(CourseOffline.class);
+        Criteria criteria = example.createCriteria();
+        criteria.andCondition("is_delete = 0");
+		for (String key : filters.keySet()) {
+			switch (key){
+				case "teacher_id":
+					criteria.andCondition("find_in_set(" + filters.get(key) + ",teachers) > 0");
+					break;
+				case "page":
+					if (filters.get(key).equals("false")) {
+						byPage = false;
+					}
+					break;
+				case "page_index":
+					pageIndex = Integer.parseInt(filters.get(key));
+					break;
+				case "page_size":
+					pageSize = Integer.parseInt(filters.get(key));
+					break;
+			}
+		}
+		example.setOrderByClause("update_time desc");
+		Page<CourseOfflineOpsVo> result = new Page<CourseOfflineOpsVo>();
+		if (byPage) {
+			PageHelper.startPage(pageIndex, pageSize, true);
+		}
+		List<CourseOffline> pageList = courseOfflineMapper.selectByExample(example);
+        for (CourseOffline data : pageList) {
+        	CourseOfflineOpsVo vo = new CourseOfflineOpsVo();
+        	if (null != data) {
+        		BeanUtils.copyProperties(vo, data);	
+        		// 查询平台
+        		PlatformNetwork record = new PlatformNetwork();
+        		record.setId(data.getPlatId());
+        		record = platformNetworkMapper.selectOne(record);
+  		        vo.setPlatName(record.getName());
+				// 查询老师
+				String teacherName = "";
+                String[] teacherIds = data.getTeachers().split(",");
+                for (String teacherId : teacherIds) {
+                    try{
+                        teacherName += teacherService.selectById(Long.parseLong(teacherId)).getName() + " ";
+                    }catch (Exception e){
+                        continue;
+                    }
+                }
+                vo.setTeacherNames(teacherName);
+                // 报名人数
+                vo.setBuyCount(userCourseMapper.queryCourseByCourseIdAndType(data.getId(), 2).size());
+    			result.add(vo);
+        	}			
+		}
+		if (byPage) {
+			result.setTotal(((Page) pageList).getTotal());
+		}
+        return result;
+    }
+
+
+	public Page<CourseOfflineOpsVo> selectConditionByPage(Integer pageIndex, Integer pageSize, String filters) throws Exception{
+		Page<CourseOfflineOpsVo> result = new Page<CourseOfflineOpsVo>();
+		// 单表分页
+		PageHelper.startPage(pageIndex,pageSize,true);
+
+		//单表自定义查询
+		Example example = new Example(CourseOffline.class);
+		Criteria criteria = example.createCriteria();
+		criteria.andCondition("is_delete = 0");
+		if (!StringUtils.isEmpty(filters)) {
+			criteria.andLike("title", "%" + filters + "%");
+		}
+		Page<CourseOffline> pageList = (Page<CourseOffline>)courseOfflineMapper.selectByExample(example);
+		for (CourseOffline data : pageList) {
+			CourseOfflineOpsVo vo = new CourseOfflineOpsVo();
+			if (null != data) {
+				BeanUtils.copyProperties(vo, data);
+				// 查询平台
+				PlatformNetwork record = new PlatformNetwork();
+				record.setId(data.getPlatId());
+				record = platformNetworkMapper.selectOne(record);
+				vo.setPlatName(record.getName());
+				result.add(vo);
+			}
+		}
+		result.setTotal(pageList.getTotal());
+		return result;
+	}
+    
+    /**
+     * 后台显示详情
+     * @param id
+     * @return
+     */
+    public CourseOfflineOpsVo selectOpsOne(Long id) throws Exception {
+    	CourseOfflineOpsVo vo = new CourseOfflineOpsVo();
+    	CourseOffline model = new CourseOffline();
+    	model.setId(id);
+    	model.setIsDelete(0);
+    	CourseOffline data = courseOfflineMapper.selectOne(model);
+		if (null != data) {
+			String teacherNames = "";
+			BeanUtils.copyProperties(vo, data);
+            String teacherIds = data.getTeachers();
+            if (!StringUtils.isEmpty(teacherIds)) {
+            	String args[] = teacherIds.split(",");
+            	for (int i = 0 ; i < args.length; i++) {
+                	TeacherDetailVo detailVo = teacherService.selectOne(Long.parseLong(args[i]));
+                	teacherNames += detailVo.getName() + ",";
+            	}
+            	if (teacherNames.contains(",")) {
+                    vo.setTeacherNames(teacherNames.substring(0, teacherNames.length() - 1));
+            	}
+            }
+            // 查询平台
+    		PlatformNetwork record = new PlatformNetwork();
+    		record.setId(data.getPlatId());
+    		record = platformNetworkMapper.selectOne(record);
+		    vo.setPlatName(record.getName());         
+		}
+        return vo;
+    }
+
+	
+}

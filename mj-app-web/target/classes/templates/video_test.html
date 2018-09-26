@@ -1,0 +1,69 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>免费视频详情</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="container">
+        
+        <!--content-->
+        <div class="content video-content">
+            <div class="com-width videos">
+                <div class="video-banner" >
+                    <video width="1120" height="560" id="video" poster="http://localhost:8080/app/img/1.png" controls="controls">
+                        <source th:src="@{'http://localhost:8080/app/api/video/test'}" type="video/mp4">
+                    </video>
+                    <button id="play">播放</button>
+<button id="pause">暂停</button>
+<button id="go10">快进10秒</button>
+<button id="back10">快退10秒</button>
+<button id="rate1">播放速度+</button>
+<button id="rate0">播放速度-</button>
+<button id="volume1">声音+</button>
+<button id="volume0">声音-</button>
+<button id="muted1">静音</button>
+<button id="muted0">解除静音</button>
+<button id="full">全屏</button> 
+                </div>
+            </div>           
+        </div>
+    </div>
+    <!--app-download-->
+    <div id="fade" style="display: none;">
+        <div class="app-download">
+            <p class="clear"><span>APP下载</span><img class="out" th:src="@{/img/app-pic1.png}" alt=""></p>
+            <div class="code-box">
+                <img th:src="@{/img/code.png}" alt="">
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" th:src="@{/js/jquery-1.11.2.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/style.js}"></script>
+<script type="text/javascript">
+$(document).ready(function(){   
+    var video = $('#video');
+
+    $("#play").click(function(){  video[0].play();  }); 
+    $("#pause").click(function(){ video[0].pause(); });
+    $("#go10").click(function(){  video[0].currentTime+=10;  });
+    $("#back10").click(function(){  video[0].currentTime-=10;  });
+    $("#rate1").click(function(){  video[0].playbackRate+=2;  });
+    $("#rate0").click(function(){  video[0].playbackRate-=2;  });
+    $("#volume1").click(function(){  video[0].volume+=0.1;  });
+    $("#volume0").click(function(){  video[0].volume-=0.1;  });
+    $("#muted1").click(function(){  video[0].muted=true;  });
+    $("#muted0").click(function(){  video[0].muted=false;  });
+    $("#full").click(function(){  
+      video[0].webkitEnterFullscreen(); // webkit类型的浏览器
+      video[0].mozRequestFullScreen();  // FireFox浏览器
+    });
+});
+</script>
+</html>

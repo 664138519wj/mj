@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.migu.online.mapper.DrvTempMidMapper">
+
+   <resultMap id="result" type="com.migu.online.model.DrvTempMid">
+	</resultMap>
+	 <resultMap id="resultOfInteger" type="java.lang.Integer">
+		<id column="cnt" property="cnt" />
+	</resultMap>
+
+    <select id="selectBySchoolCode" parameterType="java.util.Map" resultMap="result">
+       SELECT
+		*
+		FROM
+			drv_temp_mid
+		WHERE	1=1
+	 <if test="name!=null and name!=''">
+	 	and xm=#{name}
+	 </if>
+	  <if test="idNo!=null and idNo!=''">
+	 	and sfzmhm=#{idNo}
+	 </if>
+	 <if test="mobile!=null and mobile!=''">
+	 	and sjhm=#{mobile}
+	 </if>
+	 <if test="schoolCode!=null and schoolCode!=''">
+	 	and jxmc=#{schoolCode}
+	 </if>
+	limit #{startIndex},#{endIndex}
+    </select>
+    
+    
+    
+    <select id="selectCountBySchoolCode" parameterType="java.util.Map" resultMap="resultOfInteger">
+       SELECT
+		count(1) as cnt
+		FROM
+			drv_temp_mid
+		WHERE 1=1
+	 <if test="name!=null and name!=''">
+	 	and xm=#{name}
+	 </if>
+	  <if test="idNo!=null and idNo!=''">
+	 	and sfzmhm=#{idNo}
+	 </if>
+	 <if test="mobile!=null and mobile!=''">
+	 	and sjhm=#{mobile}
+	 </if>
+	 <if test="schoolCode!=null and schoolCode!=''">
+	 	and jxmc=#{schoolCode}
+	 </if>
+    </select>
+    
+   
+
+</mapper>

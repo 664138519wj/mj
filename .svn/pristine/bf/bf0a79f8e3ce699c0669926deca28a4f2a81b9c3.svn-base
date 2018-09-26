@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="head_center">
+<head>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+	content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>个人中心</title>
+</head>
+<body>
+	<div class="tab" th:fragment="content">
+	  <div class="plat-title">
+			<h2>我的私教/陪练课程</h2>
+		</div>
+		<div class="course-box">
+			<ul class="xc-person-tutor">
+				<li class="clear" th:each="data:${privateTutorList}">
+					<a th:href="@{${ctx} + 'private_tutor_detail?id=' + ${data.id}}">
+						<div class="course-right fl">
+							<img th:src="${imageUrl} + ${data.imagePath}" alt="">
+						</div>
+						<div class="course-left fr">
+							<h2>
+								<span th:text="${data.title}"></span>
+							</h2>
+							<div class="figcaption">
+								<p th:text="${data.content}"></p>
+							</div>
+							<p>
+								教学地址：<span th:text="${data.address}"></span>
+							</p>
+							
+							<div class="price clear">
+                               <p style="float:left;width:auto;">授课时间：<span th:text="${#dates.format(data.beginTime, 'yyyy-MM-dd HH:mm:ss')}"></span></p>
+                               <p style="float:right;width:auto;">
+	                              <span>价格:</span><b>¥<b th:text="${data.price}"></b></b>
+                               </p>
+                             </div>
+						</div>
+					</a>
+				</li>
+			</ul>
+		</div>
+		<a th:href="${ctx} + 'private_tutor'"><button class="see-more fr" >查看更多</button></a>
+	  
+	</div>
+</html>

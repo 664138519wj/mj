@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" th:href="@{/lib/lui/css/layui.css}">
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+</head>
+<body>
+<div class="layui-container">
+<div th:html="${model.id}"></div>
+<div th:if="${edit}">
+</div>
+<form id="modelForm" class="layui-form" action="edit" method="post">
+    <input type="hidden" name="id" th:value="${model.id}"/>
+    <div class="layui-form-item">
+        <label class="layui-form-label">驾照</label>
+        <div th:if="${edit}" class="layui-input-block">
+		  <select th:if="${edit}" name="licence" id="licence">
+				 	<option value="A1" th:selected="${model.licence == A1}">A1(大型客车)</option>
+                    <option value="A2" th:selected="${model.licence == A2}">A2(牵引车)</option>
+                    <option value="A3" th:selected="${model.licence == A3}">A3(城市公共汽车)</option>
+                    <option value="B1" th:selected="${model.licence == B1}">B1(中型客车)</option>
+                    <option value="B2" th:selected="${model.licence == B2}">B2(大型货车)</option>
+                    <option value="C1" th:selected="${model.licence == C1}">C1(小型汽车)</option>
+                    <option value="C2" th:selected="${model.licence == C2}">C2(小型自动档汽车)</option>
+                    <option value="C3" th:selected="${model.licence == C3}">C3(低速载货汽车)</option>
+                    <option value="C4" th:selected="${model.licence == C4}">C4(三轮汽车)</option>
+                    <option value="C5" th:selected="${model.licence == C5}">C5(残疾人专用小型自动挡载客汽车)</option>
+                    <option value="D" th:selected="${model.licence == D}">D(三轮摩托车)</option>
+                    <option value="E" th:selected="${model.licence == E}">E(二轮摩托车)</option>
+                    <option value="F" th:selected="${model.licence == F}">F(轻便摩托车)</option>
+                    <option value="M" th:selected="${model.licence == M}">M(轮式自行机械车)</option>
+                    <option value="N" th:selected="${model.licence == N}">N(无轨电车)</option>
+                    <option value="P" th:selected="${model.licence == P}">P(有轨电车)</option>
+				 </select>
+		</div> 
+		<div class="layui-form-mid" th:unless="${edit}" th:text="${model.licence}"></div>
+    </div>
+     <div class="layui-form-item">
+        <label class="layui-form-label">班级编号</label>
+        <div th:if="${edit}" class="layui-input-block">
+          <input name="classNo" type="number" id="classNo" lay-verify="required"
+						placeholder="请输入" th:value="${model.classNo}"
+						autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-form-mid" th:unless="${edit}"
+					th:text="${model.classNo}"></div>
+    </div>
+     <div class="layui-form-item">
+        <label class="layui-form-label">班级名称</label>
+        <div th:if="${edit}" class="layui-input-block">
+          <input name="className" id="className" lay-verify="required"
+						placeholder="请输入" th:value="${model.className}"
+						autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-form-mid" th:unless="${edit}"
+					th:text="${model.className}"></div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">价格</label>
+        <div th:if="${edit}" class="layui-input-block">
+          <input type="number" name="price" id="price" lay-verify="required"
+						placeholder="请输入" th:value="${model.price}"
+						autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-form-mid" th:unless="${edit}"
+					th:text="${model.price}"></div>
+    </div>
+    
+     <div class="layui-form-item">
+        <label class="layui-form-label">开始时间</label>
+       <div th:if="${edit}" class="layui-input-block">
+						<input type="text" name="startTimeStr" id="startTimeStr" lay-verify="date"
+							th:value="${#dates.format(model.startTime, 'yyyy-MM-dd')}"
+							placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input">
+					</div>
+		 <div class="layui-form-mid" th:unless="${edit}" th:text="${#dates.format(model.startTime, 'yyyy-MM-dd')}"></div>
+    </div>
+    
+       
+    <div class="layui-form-item layui-form-text">
+       <label class="layui-form-label">可接受报名人数</label>
+					<div th:if="${edit}" class="layui-input-block">
+						<input type="text" name="limitNum"  id="limitNum" lonkeyup="value=value.replace(/[^\d]/g,'')"
+						th:value="${model.limitNum}" class="layui-input">
+					</div>
+					<div class="layui-form-mid" th:unless="${edit}" th:text="${model.limitNum}"></div>
+    </div>
+
+</form>
+</div>
+<script th:src="@{/lib/jquery/jquery.js}"></script>
+<script th:src="@{/lib/jquery/jquery.forms.js}"></script>
+<script th:src="@{/lib/lui/layui.all.js}"></script>
+<script type="text/javascript">
+    $.fn.serializeObject = function()
+    {
+        var o = {};
+        var a = this.serializeArray();
+        $.each(a, function() {
+        alert(this.name);
+            if (o[this.name] !== undefined) {
+                if (!o[this.name].push) {
+                    o[this.name] = [o[this.name]];
+                }
+                o[this.name].push(this.value || '');
+            } else {
+                o[this.name] = this.value || '';
+            }
+        });
+        return o;
+    };
+</script>
+<script type="text/javascript">
+   layui.laydate.render({
+        elem: '#startTimeStr'
+        ,type: 'date'
+    });
+    
+function checkForm(arr){
+	  for(var i=0;i<arr.length;i++){
+	  if($("#"+arr[i][0]).val()==''){
+	    alert(arr[i][1]);
+	    $("#"+arr[i][0]).focus();
+	    return false;
+	  }
+	  }
+	  return true;
+	};
+	//调用方式
+	var arr=new Array(
+	  new Array('carModelCode','驾照类型不可为空!'),
+	  new Array('classNo','班级编号不可为空!'),
+	  new Array('className','班级名称不可为空!'),
+	  new Array('price','价格不可为空!'),
+	  new Array('startTime','开始时间不能为空!'),
+	  new Array('limitNum','可接受报名人数!'),
+	);
+  function doSave(fn){
+  	if(!checkForm(arr)){
+  		  return false;
+      } 
+      var dataParam = $("#modelForm").serialize();
+      var name = $("#licence option:selected").text();
+      dataParam=dataParam+'&name='+name;
+      jQuery.ajax({
+          type:"post",
+          url: '[[${baseUrl}]]ops/schoolLesson/save.html',
+          data: dataParam,
+          success:function(data){
+       	    if(data) {
+                  parent.tips(1, "保存成功！");
+                  fn.call();
+              }else{
+                  parent.tips(0, "保存信息失败！");
+              }  
+          },
+          error:function(e){
+              parent.tips(0,e);
+          }	    
+       })  
+
+  }
+
+</script>
+<script>
+layui.use('upload', function(){
+  var $ = layui.jquery
+  ,upload = layui.upload;
+  
+  //普通图片上传
+  var uploadInst = upload.render({
+    elem: '#test1'
+    ,url: '[[${baseUrl}]]upload/doUploadImg'
+    ,before: function(obj){
+      //预读本地文件示例，不支持ie8
+      obj.preview(function(index, file, result){
+        $('#demo1').attr('src', result); //图片链接（base64）
+      });
+    }
+    ,done: function(res){
+      //如果上传失败
+      if(res.code > 0){
+        return layer.msg('上传失败');
+      }
+      // success
+      $("#imagePath").val(res.path);
+    }
+    ,error: function(){
+      //演示失败状态，并实现重传
+      var demoText = $('#demoText');
+      demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+      demoText.find('.demo-reload').on('click', function(){
+        uploadInst.upload();
+      });
+    }
+  });
+});
+</script>
+<script type="text/javascript" th:src="@{/js/wangEditor.js}"></script>
+<script type="text/javascript">
+       var E = window.wangEditor
+       var editor = new E('#div1')
+       var $text1 = $('#content')
+       editor.customConfig.onchange = function (html) {
+           // 监控变化，同步更新到 textarea
+           $text1.val(html)
+       }
+       editor.customConfig.uploadImgServer = '[[${baseUrl}]]upload/doUploadImg'
+       	editor.customConfig.uploadImgHooks = {
+                customInsert: function (insertImg, result, editor) {
+                    console.log(JSON.stringify(result))
+                    insertImg('[[${imageUrl}]]' + result.path)
+               },
+
+               customInsert: function (insertImg, result, editor) {
+                    console.log('[[${imageUrl}]]' + result.path)
+                    insertImg('[[${imageUrl}]]' + result.path)
+               }
+           }
+       editor.customConfig.uploadImgParamsWithUrl = true
+       editor.create();
+       // 初始化 textarea 的值
+       editor.txt.html($text1.val());
+       
+       var editor2 = new E('#div')
+       var $text2 = $('#summary')
+       editor2.customConfig.onchange = function (html) {
+           // 监控变化，同步更新到 textarea
+           $text2.val(html)
+       }
+       editor2.create();
+       // 初始化 textarea 的值
+       editor2.txt.html($text2.val());
+</script>
+
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+<head>
+    <title>平台公告</title>
+</head>
+<body th:fragment="content">
+        <!--content-->
+        <div class="content notice-content">
+            <div class="plat-title">
+                <h2>平台公告</h2>
+                <p>—</p>
+            </div>
+            <ul class="notice-box com-width">
+                <li th:each="platform:${platformNoticeList}">
+                    <a th:href="@{${ctx} + 'platform_notice_detail?id=' + ${platform.id}}">
+                        <div class="left-time fl">
+                            <p th:text="${#dates.format(platform.updateTime, 'yyyy-MM-dd')}"></p>
+                            <p th:text="${#dates.format(platform.updateTime, 'HH:mm:ss')}"></p>                           
+                        </div>
+                        <div class="center-desc fl">
+                            <p><b th:text="${platform.title}"></b></p>
+                            <div class="figcaption">
+                                <p th:text="${platform.summary}">                                    
+                                </p>
+                            </div>
+                        </div>
+                        <div class="right-pic fr">
+                            <img th:src="${imageUrl} + ${platform.imagePath}" alt="">
+                        </div>
+                    </a>
+                </li>                
+            </ul>
+            <div class="box clear">
+                <div id="pagination_notice" class="page"></div>
+            </div>
+        </div>
+<script> 
+        
+$("#pagination_notice").pagination({
+    currentPage: [[${pageIndex}]],
+    totalPage: [[${totalPage}]],
+    isShow: false,
+    count: [[${total}]],
+    prevPageText: "<",
+    nextPageText: ">",
+    callback: function(current) {
+        this.location.href ="[[${ctx}]]platform_notice?pageIndex=" + current;
+    }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+<head>
+    <title>vip服务</title>
+    <style type="text/css">
+    	#beginTimeStr{position:static;color:#fd9938;height:40px;font-size:20px;}
+        .calendar-modal,#dd{display: block!important;position: static;border:1px solid #ccc;}
+        .xc-price-list li{line-height:50px;}
+        .xc-price-list li span:last-child{color:#fd9938;padding-left:50px;}        
+        .xc-choose-time{position:relative;}
+        .xc-choose-time p{line-height: 30px;}
+        .xc-kemu{padding-top:30px;}
+        .xc-kemu>p{padding:10px 0;}
+        .xc-true-btn,.xc-true-btn input{float:right;width: 200px;height: 56px;background:#fd9938;color:#fff;font-size: 18px;}
+        .xc-true-btn{margin: 6px auto;}
+        #basicExample input{width: 200px;height: 30px;border:1px solid #ccc;font-size: 20px;}
+        .ui-timepicker-wrapper{width: 200px;top: 780px!important;}
+        .xc-choose-course .pay-box{width: 270px;margin-top: 20px;}
+        .xc-choose-course .pay-box p{line-height: 30px;padding-bottom:20px;}
+        .xc-choose-course .pay-fade .pay-box ul li input{margin-right: 0;}
+        .xc-choose-course .pay-box .xc-true-btn{margin-top: 136px;}
+    </style>
+</head>
+<body th:fragment="content">
+        <!--content-->
+        <div class="content xc-content">
+         	<form method="post" id="vip_course_submit"  th:action="${baseUrl+'home/vipCoureOrder'}">       
+	            <div class="com-width">
+	                <div class="xc-choose-course">
+		                <div class="plat-title">
+				            <h3>预约VIP服务</h3>
+				        </div>
+				        <div class="xc-kemu clear">
+				            <p><b>您选择的科目：</b></p>
+				            <!-- 选择组合套餐的话这里只会出现组合套餐和组合套餐的价格 -->
+				            <ul class="xc-price-list">
+				                <li th:each="data:${vpParam.cList}"><span th:text="${data.title}"/><span th:text="@{'￥'+ ${data.price}}"/></li>
+				            </ul>
+				            <div class="xc-total clear">
+				                <p class="fr">共<span th:text="${vpParam.number}"></span>个服务，商品总价：<b style="color:#fd9938;" th:text="${vpParam.tPrice}"></b>&nbsp;元</p>
+				                <input type="hidden" name="kemus" id="kemus" th:value="${vpParam.kemus}"/>
+				                <input type="hidden" name="vpParamStr" th:value="${vpParamStr}"/>
+				            </div>
+		                </div> 
+	                     
+	                    <div class="pay-fade clear">
+	                        <div class="fl">
+	                            <div class="xc-choose-time">
+	                                <p style="display: inline;">请您选择希望开始练习的日期&nbsp;&nbsp;</p>
+	                                <input type="input" name="beginTimeStr" id="beginTimeStr" th:value="${vpParam.beginTimeStr}">
+	                                <div id="dd"></div>
+	                            </div>
+	                        </div>
+	                        <div class="pay-box fr">
+	                            <!-- 异常报错内容，@才华，优化下位置和式样-->
+	                        	<!-- <span th:if="${error}" th:text="${error.msg}" style="color:red"></span> -->
+	                            <div class="xc-true-btn">
+	                                <input type="button" value="立即支付" >
+	                            </div>	                            
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
+            </form>
+        </div>
+        <!-- 已购买 -->
+	     <div class="buy-card-box pay" th:if="${error}">
+		     <div class="purchased">
+		     	<img class="fork" th:src="@{/img/app-pic1.png}" alt="">
+		     	<img th:src="@{/img/success-2.png}" alt="" style="width:150px;height:150px;margin-top:20px;">
+		     	<p style="line-height:1.5;" th:text="${error.msg}"></p>
+		     </div>
+	     </div>
+	     <script type="text/javascript">
+			$('.fork').click(function(){
+				$('.buy-card-box').hide();
+			})
+		</script>
+        
+	    <script type="text/javascript">
+		    $('#dd').calendar({
+		        trigger: '#beginTimeStr',
+		        zIndex: 999,
+		        format: 'yyyy-mm-dd',
+		        onSelected: function (view, date, data) {
+		            console.log('event: onSelected')
+		        },
+		        onClose: function (view, date, data) {
+		            console.log('event: onClose');
+		            console.log('view:' + view);
+		            console.log('date:' + date);
+		            console.log('data:' + (data || 'None'));
+		        }
+		    });
+		    $('#basicExample .time').timepicker({
+		        'showDuration': true,
+		        'timeFormat': 'g:ia'
+		    });
+		    $(function(){
+		        $('.xc-true-btn').click(function(){
+		        	
+		        	// check
+		        	var beginTime = $('#beginTimeStr').val();
+		        	if (beginTime == '') {
+		        		alert("请选择您希望开始练习时间！");
+		        		return;
+		        	}
+		        	var kemus = $('#kemus').val();
+		        	if (kemus == '') {
+		        		alert("您未选择VIP课程！");
+		        		return;
+		        	}
+		        	$("#vip_course_submit").submit();
+		        })
+		    })
+		</script>
+   </body>
+   
+</html>

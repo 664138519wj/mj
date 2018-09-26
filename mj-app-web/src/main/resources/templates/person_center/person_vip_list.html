@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="head_center">
+<head>
+<title>个人中心</title>
+</head>
+<body>
+	<div class="tab clear" th:fragment="content">
+
+		<div class="plat-title" th:fragment="content">
+	         <h2>我的VIP服务</h2>
+	    </div>
+	    <span th:if="${dataList.size() <= 0}" th:text="@{'您还未购买'}"></span>
+	    <div class="xc-vip-list">
+	         <ul class="xc-list-block clear">
+	            <li th:each="data:${dataList}">
+	               <div class="xc-top-bg">
+	                  <span class="fl"><b th:text="${data.kemuTitle}"></b></span>
+	                  <span class="fr" th:text="${#dates.format(data.beginTime, 'yyyy-MM-dd')}"></span>
+	               </div>
+	               <div class="xc-bt-desc">
+	                  <h3>VIP服务详情：</h3>
+	                  <p th:text="${data.kemuContent}"></p>
+	               </div>
+	            </li>
+	           </ul>
+	    </div>
+    </div>
+</body>	
+</html>

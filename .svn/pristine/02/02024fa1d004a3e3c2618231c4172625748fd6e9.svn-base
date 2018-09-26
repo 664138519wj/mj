@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.migu.online.mapper.ExamTkHaMapper">
+
+   <resultMap id="examCn" type="java.lang.String">
+		<id column="STXH" property="STXH" />
+	</resultMap>
+	
+    <select id="queryFreeExamIds" resultMap="examCn">
+        select STXH from exam_tk_ha 
+        where 1=1
+        <if test="quType!=null and quType!=''">
+			<if test="quType != '1'.toString()">
+				and STTX != '1'
+			</if>
+			<if test="quType == '1'.toString()">
+				and STTX = '1'
+			</if>
+        </if>  
+        <if test="examType!=null and examType!=''">     
+        and STFL = #{examType}
+        </if>
+        and TKLX = #{kemu}
+        <if test="licType == 1" >  
+           and sycx like '%A%'
+        </if>
+        <if test="licType == 2" >  
+           and sycx like '%C%'
+        </if>
+        <if test="licType == 3" >  
+            and sycx = 'DEF'
+        </if>
+    </select>
+    
+</mapper>

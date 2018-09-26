@@ -1,0 +1,59 @@
+package com.migu.online.controller.ops;
+
+import java.util.HashMap;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.github.pagehelper.Page;
+import com.google.common.collect.Maps;
+import com.migu.online.controller.response.ResponsePageData;
+import com.migu.online.model.SchoolWithdraw;
+import com.migu.online.service.SchoolWithdrawService;
+import com.migu.online.vo.SchoolWithdrawVo;
+
+
+@Controller
+@RequestMapping("/ops/schoolwithdraw")
+public class SchoolWithdrawOpsController {
+
+    @Autowired
+    private SchoolWithdrawService schoolWithdrawService;
+
+
+    @GetMapping("index")
+    public String index(ModelMap modelMap) {
+        return "ops/schoolwithdraw/index";
+    }
+
+    @SuppressWarnings("rawtypes")
+    @GetMapping("data")
+    @ResponseBody
+    public ResponsePageData data(@RequestParam(value = "page", defaultValue = "0") Integer offset,
+                                 @RequestParam(value = "limit", defaultValue = "10") Integer limit) {
+        HashMap<String, String> filters = Maps.newHashMap();
+        filters.put("page_index", offset.toString());
+        filters.put("page_size", limit.toString());
+        Page<SchoolWithdrawVo> page = (Page<SchoolWithdrawVo>) schoolWithdrawService.selectByFilter(filters);
+        return new ResponsePageData<SchoolWithdrawVo>(page.getTotal(), page);
+    }
+
+
+    @PostMapping("update")
+    @ResponseBody
+    public String update(@RequestParam(value = "id") Long id,
+                         @RequestParam(value = "status") Integer status) throws Exception {
+    	SchoolWithdraw schoolWithdraw = schoolWithdrawService.selectById(id);
+    	schoolWithdraw.setStatus(status);
+    	schoolWithdrawService.createOrUpdate(schoolWithdraw);
+        return "success";
+    }
+
+
+}

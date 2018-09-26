@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" th:href="@{/lib/lui/css/layui.css}">
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+    <style type="text/css">
+        .layui-table-box {
+            min-height: 450px;
+        }
+    </style>
+</head>
+<body>
+
+<table id="couseOfflineTable" class="layui-table"
+       lay-data="{cellMinWidth: 80, page: true, limit:10, url:'data'}"
+       lay-filter="courseTable">
+    <thead>
+    <tr>
+        <th lay-data="{field:'id',type:'checkbox'}">ID</th>
+        <th lay-data="{field:'platName', width:70, sort: true}">所属平台</th>
+        <th lay-data="{field:'teacherNames', minWidth:100, sort: true}">发布老师</th>
+        <th lay-data="{field:'title', minWidth:100, sort: true}">标题</th>
+        <th lay-data="{field:'price', minWidth:100, sort: true}">价格</th>
+        <th lay-data="{field:'address', minWidth:100, sort: true}">授课地址</th>
+        <th lay-data="{field:'startTime', minWidth:100, sort: true, templet:'#start_time'}">开始时间</th>
+        <th lay-data="{field:'hours', minWidth:100, sort: true}">课长</th>
+        <th lay-data="{field:'buyCount', minWidth:100, sort: true}">报名人数</th>
+    </tr>
+    </thead>
+</table>
+
+
+<script id="start_time" type="text/html">
+    {{# var date = layui.util.toDateString(d.startTime, 'yyyy-MM-dd') }}
+    <span>{{date}}</span>
+</script>
+
+
+<script id="TlisRecommended" type="text/html">
+    {{#
+    if(d.isRecommended){ }}
+    <span>是</span>
+    {{#   }
+    else { }}
+    <span>否</span>
+    {{#   }
+    }}
+</script>
+
+
+<script th:src="@{/lib/jquery/jquery.js}"></script>
+<script th:src="@{/lib/lui/layui.all.js}"></script>
+
+<script type="text/javascript">
+    var table = layui.table;
+    var layer = layui.layer;
+    var laydate = layui.laydate;
+
+    var iframeWin = null;
+
+    laydate.render({
+        elem: '#date_range'
+        , range: true
+    });
+
+    function openWin(title, isShow, id) {
+        var url = 'tch/video/edit';
+        if (!!id) {
+            url += "?id=" + id;
+            if (isShow) {
+                url += "&flag=2";
+            } else {
+                url += "&flag=1";
+            }
+        } else {
+            url += "?flag=0";
+        }
+        var option = {
+            type: 2,
+            title: [title, "color:green"],
+            success: function (layero, index) {
+                iframeWin = parent.window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+            },
+            content: url,
+            area: ['800px', '600px']
+        };
+        var btn = ['保存', '关闭'];
+        var okFun = function () {
+            parent.layer.close(index);
+        };
+        if (isShow) {
+            btn = ['关闭']
+        }
+        if (btn.length > 1) {
+            okFun = function () {
+                if (iframeWin != null) {
+                    iframeWin.doSave(function () {
+                        parent.layer.close(index);
+                        // 刷新table数据
+                        table.reload("couseOnlineTable");
+                    });
+                }
+            };
+            option['btn2'] = function () {
+                parent.layer.close(index);
+            }
+        }
+        option['btn'] = btn;
+        option['yes'] = okFun;
+        var index = parent.layer.open(option);
+    }
+
+    function add() {
+        openWin("新增", false);
+    }
+    //table点击事件
+    table.on("tool(courseTable)", function (obj) {
+        var data = obj.data;
+        if (obj.event === 'detail') {
+            openWin("详细", true, data.id);
+        } else if (obj.event === 'del') {
+            parent.layer.confirm('确定删除？', function (index) {
+                parent.layer.close(index);
+                $.ajax("del?id=" + data.id, {
+                    method: "delete",
+                    contentType: "application/json;charset=utf-8",
+                    success: function (data) {
+                        if (data) {
+                            parent.tips(1, "删除成功！");
+                            table.reload("couseOnlineTable");
+
+                        } else {
+                            parent.tips(0, "删除失败！");
+                        }
+                    },
+                    error: function (e) {
+                        parent.tips(0, "删除失败！");
+                    }
+                });
+
+            });
+        }
+    });
+
+
+    function filter() {
+        var title = $("#title").val();
+        var date_range = $("#date_range").val();
+        var charge = $("#charge").val();
+        var filters = {};
+        if (title !== "") {
+            filters.title = title;
+        }
+        if (charge !== "") {
+            filters.charge = charge;
+        }
+        if (date_range !== "") {
+            filters.release_time = date_range;
+        }
+        table.reload("couseOnlineTable", {
+            where: {
+                filters: JSON.stringify(filters)
+            }
+        })
+
+    }
+</script>
+
+</body>
+</html>

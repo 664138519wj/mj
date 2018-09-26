@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="head_center"><head>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+	content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>个人中心</title>
+</head>
+<body>
+		<!--已购买视频-->
+		<div class="tab clear" th:fragment="content">
+			<div class="plat-title">
+				<h2>已购买视频</h2>
+			</div>
+			<div class="video-box clear">
+				<div class="video fl" th:each="onlineCourse:${onlineCourseList}">
+					<a th:href="@{${ctx} + 'platform_video_detail?id=' + ${onlineCourse.id}}">
+						<div class="video-img">
+							<img th:src="${imageUrl} + ${onlineCourse.imagePath}" alt="">
+						</div>
+						<div class="video-name">
+							<h3><span th:text="${onlineCourse.title}"></span></h3>
+							<p class="clear">
+								<span th:text="@{'上传时间：'+${onlineCourse.updateTime}}"></span>
+                                    <img class="video-pic1" th:src="@{/img/index-pic9.png}" alt="">
+                                    <img class="video-pic2" th:src="@{/img/index-pic9.1.png}" alt="">
+							</p>
+						</div>
+					</a>
+				</div>
+			</div>
+		</div>
+</html>

@@ -1,0 +1,63 @@
+<!doctype html>
+
+<!--[if lt IE 7 ]><html xmlns:th="http://www.thymeleaf.org" lang="en" class="no-js ie6"> <![endif]-->
+<!--[if IE 7 ]><html xmlns:th="http://www.thymeleaf.org" lang="en" class="no-js ie7"> <![endif]-->
+<!--[if IE 8 ]><html xmlns:th="http://www.thymeleaf.org" lang="en" class="no-js ie8"> <![endif]-->
+<!--[if IE 9 ]><html xmlns:th="http://www.thymeleaf.org" lang="en" class="no-js ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!-->
+<html xmlns:th="http://www.thymeleaf.org" lang="en" class="no-js">
+<!--<![endif]-->
+<head>
+<meta charset="utf-8" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>学员信息</title>
+<link rel="stylesheet" href="css/common.css" th:href="@{css/common.css}">
+<link rel="stylesheet" href="css/style.css" th:href="@{css/style.css}">
+<base th:href="@{#request.get}">
+<style>
+</style>
+</head>
+
+<body>
+	<div class="main-content" style="width: 200px; float: left">
+		<p th:replace="menu"></p>
+	</div>
+	<div class="content right-content"
+		style="margin-left: 200px; min-width: 1300px;">
+		<p th:replace="header"></p>
+		<div class="main-content">
+			<p>
+				<img src="img/now-location.png" alt=""> <span>预录入</span> <img
+					src="img/arrow.png" alt=""> <span>查询学员信息</span>
+			</p>
+		</div>
+
+		<div style="background-color:#fff;margin-left:20px;">
+			<table width="100%" style="text-align:center">
+				<tr>
+					<th>姓名</th>
+					<th style="width:40px;">性别</th>
+					<th>住址</th>
+				</tr>
+				<tr th:each="student : ${students}">
+					<td th:text="${student.name}"></td>
+					<td th:text="${student.sex}==1?'男':'女'"></td>
+					<td th:text="${student.certificateType}"></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</body>
+<script src="js/jquery-1.11.0.min.js"
+	th:src="@{js/jquery-1.11.0.min.js}"></script>
+<script>
+	/*<![CDATA[*/
+
+	/*]]>*/
+	$(function() {
+
+	})
+</script>
+</html>

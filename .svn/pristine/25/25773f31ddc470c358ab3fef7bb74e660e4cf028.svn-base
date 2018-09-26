@@ -1,0 +1,580 @@
+package com.migu.online.service;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.util.StringUtil;
+import com.migu.online.common.UserCourseTypeEnum;
+import com.migu.online.mapper.AreaMapper;
+import com.migu.online.mapper.DrivingSchoolLessonMapper;
+import com.migu.online.mapper.DrivingSchoolMapper;
+import com.migu.online.mapper.ExamPlaceMapper;
+import com.migu.online.mapper.LicenceMapper;
+import com.migu.online.mapper.UserCourseMapper;
+import com.migu.online.model.Area;
+import com.migu.online.model.DrivingSchool;
+import com.migu.online.model.DrivingSchoolLesson;
+import com.migu.online.model.ExamPlace;
+import com.migu.online.model.Licence;
+import com.migu.online.model.UserCourse;
+import com.migu.online.model.UserCourseInfo;
+import com.migu.online.ops.vo.DrivingSchoolOpsVo;
+import com.migu.online.ops.vo.SchoolLessonVo;
+import com.migu.online.utils.DateUtil;
+import com.migu.online.vo.AppointSchoolVo;
+import com.migu.online.vo.DrivingSchoolLessonVo;
+import com.migu.online.vo.DrivingSchoolVo;
+import com.migu.online.vo.LicenceVo;
+
+import tk.mybatis.mapper.entity.Example;
+import tk.mybatis.mapper.entity.Example.Criteria;
+
+@Service
+public class DrivingSchoolService {
+
+	@Autowired
+	private DrivingSchoolMapper drivingSchoolMapper;
+	@Autowired
+	private DrivingSchoolLessonMapper drivingSchoolLessonMapper;
+	@Autowired
+	private AreaMapper areaMapper;
+	@Autowired
+	private LicenceMapper licenceMapper;
+	@Autowired
+	private UserCourseService userCourseService;
+	@Autowired
+	private UserCourseInfoService userCourseInfoService;
+	@Autowired
+	private ExamPlaceMapper examPlaceMapper;
+	
+	@Autowired
+	private UserCourseMapper userCourseMapper;
+
+	/**
+	 * 详情
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public DrivingSchoolVo selectOne(Integer id, Long userId) throws Exception {
+		DrivingSchoolVo vo = new DrivingSchoolVo();
+		DrivingSchool model = new DrivingSchool();
+		model.setId(id);
+		model.setIsDelete(0);
+		DrivingSchool data = drivingSchoolMapper.selectOne(model);
+		if (null != data) {
+			BeanUtils.copyProperties(vo, data);
+			vo.setName(data.getNameL());
+			// 获取课程列表
+			String shufflingImage = data.getShufflingImage();
+			if (StringUtils.isNotEmpty(shufflingImage)) {
+				List<String> imageList = new ArrayList<>();
+				String[] args = shufflingImage.split(";");
+				for (int i=0; i<args.length ;i++) {
+					imageList.add(args[i]);
+				}
+				vo.setShufflingImageList(imageList);
+			}			
+			vo.setLessonList(selectLessonListById(data.getId(), userId));
+		}
+		return vo;
+	}
+
+	/**
+	 * 驾校课程
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public List<DrivingSchoolLessonVo> selectLessonListById(Integer schoolId, Long userId) throws Exception {
+		List<DrivingSchoolLessonVo> result = new ArrayList<>();
+		// 单表自定义查询
+		Example example = new Example(DrivingSchoolLesson.class);
+		Criteria criteria = example.createCriteria();
+		criteria.andCondition("is_delete = 0");
+		criteria.andCondition("school_id = ", schoolId);
+
+		List<DrivingSchoolLesson> pageList = drivingSchoolLessonMapper.selectByExample(example);
+//		Map<Long, Integer> buyCourseMap = new HashMap<>();
+//		if (userId > 0) {
+//			// 获取用户已购买课程
+//			List<Long> userCourse = userCourseMapper.queryPayCourse(userId, UserCourseTypeEnum.lesson.code);
+//			for (Long courseId : userCourse) {
+//				buyCourseMap.put(courseId, 1);
+//			}
+//		}
+		for (DrivingSchoolLesson data : pageList) {
+			DrivingSchoolLessonVo vo = new DrivingSchoolLessonVo();
+			BeanUtils.copyProperties(vo, data);
+			vo.setBeginTime(DateUtil.dateToDateString(data.getStartTime(), DateUtil.DATAFORMAT_STR));
+			vo.setStatus(-1);
+			if (userId > 0) {
+				UserCourse uc = userCourseService.selectPayCourseByUser(data.getId(), userId, UserCourseTypeEnum.lesson.code);
+				if (uc != null) {					
+					vo.setIsPay(1);
+					UserCourseInfo info = userCourseInfoService.selectByCourseId(uc.getId());
+					if (null != info) {
+						vo.setStatus(info.getStatus());
+					} 
+				} else {
+					vo.setIsPay(0);
+				}			
+			}
+			result.add(vo);
+		}
+		return result;
+	}
+	
+	/**
+	 * 驾校课程详情
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public DrivingSchoolLesson selectLessonById(Long lessonId) {
+		DrivingSchoolLesson record = new DrivingSchoolLesson();
+		record.setId(lessonId);
+		record.setIsDelete(0);
+		return drivingSchoolLessonMapper.selectOne(record);
+	}
+
+	/**
+	 * 筛选驾校
+	 * 
+	 * @param areaId
+	 *            地区id
+	 * @param priceFrom
+	 * @param priceTo
+	 * @param licence
+	 *            驾照车型
+	 * @param pageIndex
+	 * @param pageSize
+	 * @return
+	 * @throws Exception
+	 */
+	public List<DrivingSchoolVo> selectConditionByPage(Integer areaId, Integer priceFrom, Integer priceTo,
+			String licence, Integer pageIndex, Integer pageSize) throws Exception {
+		List<DrivingSchoolVo> result = new ArrayList<DrivingSchoolVo>();
+		// 单表分页
+		PageHelper.startPage(pageIndex, pageSize, false);
+
+		// 单表自定义查询
+		Example example = new Example(DrivingSchool.class);
+		Criteria criteria = example.createCriteria();
+		criteria.andCondition("is_delete = 0");
+		if (null != areaId) {
+			criteria.andCondition("area_id = ", areaId);
+		}
+		if (null != priceFrom) {
+			criteria.andGreaterThanOrEqualTo("price", priceFrom);
+		}
+		if (null != priceTo) {
+			criteria.andLessThanOrEqualTo("price", priceTo);
+		}
+		if (StringUtils.isNotEmpty(licence)) {
+			criteria.andLike("licence", "%" + licence + "%");
+		}
+
+		List<DrivingSchool> pageList = drivingSchoolMapper.selectByExample(example);
+		for (DrivingSchool data : pageList) {
+			DrivingSchoolVo vo = new DrivingSchoolVo();
+			BeanUtils.copyProperties(vo, data);
+			vo.setName(data.getNameL());
+			result.add(vo);
+		}
+		return result;
+	}
+
+	/**
+	 * 地区列表
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public List<Area> selectAreaList() {
+		List<Area> list = areaMapper.selectAll();
+		return list;
+	}
+
+	/**
+	 * 驾照类型列表
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public List<LicenceVo> selectLicenceList() {
+		List<LicenceVo> result = new ArrayList<LicenceVo>();
+		List<Licence> pageList = licenceMapper.selectAll();
+		for (Licence data : pageList) {
+			LicenceVo vo = new LicenceVo();
+			vo.setCode(data.getCode());
+			vo.setName(data.getCode() + "(" + data.getName() + ")");
+			result.add(vo);
+		}
+		return result;
+	}
+	
+	/**
+	 * 预约课程模块
+	 * 驾校列表
+	 * @param id
+	 * @return
+	 */
+	public List<AppointSchoolVo> selectSchoolList() {
+		List<AppointSchoolVo> result = new ArrayList<>();
+		List<DrivingSchool> list = drivingSchoolMapper.selectAll();
+		for (DrivingSchool school : list) {
+			AppointSchoolVo vo = new AppointSchoolVo();
+			vo.setId(school.getId());
+			vo.setName(school.getNameS());
+			vo.setPrice(school.getPrice());
+			result.add(vo);
+		}
+		return result;
+	}
+	
+	/**
+	 * 考场列表
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public List<ExamPlace> selectExamPlaceList() {
+		List<ExamPlace> list = examPlaceMapper.selectAll();
+		return list;
+	}
+	
+	/**
+	 * 预约价格
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public BigDecimal getPriceBySchoolId(Integer id) {
+		DrivingSchool data = drivingSchoolMapper.selectByPrimaryKey(id);
+		if (null != data) {
+			return data.getPrice();
+		}
+		return null;
+	}
+	
+	/**
+	 * 驾校下拉框
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public Map<Integer, String> selectSchoolMap() {
+		// 单表自定义查询
+		Example example = new Example(DrivingSchool.class);
+		Criteria criteria = example.createCriteria();
+		criteria.andCondition("is_delete = 0");
+
+		List<DrivingSchool> pageList = drivingSchoolMapper.selectByExample(example);
+		Map<Integer, String> schoolMap = new HashMap<>();
+		for (DrivingSchool data: pageList) {
+			schoolMap.put(data.getId(), data.getNameS());
+		}
+		return schoolMap;
+	}
+	
+	/**
+     * 删除
+     * @param id
+     * @return
+     */
+    public int deleteById(Integer id) {
+    	DrivingSchool record = drivingSchoolMapper.selectByPrimaryKey(id);
+    	if (null != record) {
+        	record.setIsDelete(1);
+        	return drivingSchoolMapper.updateByPrimaryKey(record);
+    	}
+    	return 0;
+    }
+    
+    /**
+     * 查
+     * @param id
+     * @return
+     */
+    public DrivingSchool selectById(Integer id) {
+    	return drivingSchoolMapper.selectByPrimaryKey(id);
+    }
+    
+    /**
+     * 改&插
+     * @param model
+     * @return
+     */
+    public int createOrUpdate(DrivingSchool model) {
+    	if (null != model.getId() && model.getId() > 0) {
+    		// update
+    		return drivingSchoolMapper.updateByPrimaryKey(model);
+    	} else {
+    		// add
+    		return drivingSchoolMapper.insert(model);
+    	}
+    }
+    
+    /**
+     * 后台显示详情
+     * @param id
+     * @return
+     */
+    public DrivingSchoolOpsVo selectOpsOne(Integer id) throws Exception {
+    	DrivingSchoolOpsVo vo = new DrivingSchoolOpsVo();
+    	DrivingSchool model = new DrivingSchool();
+    	model.setId(id);
+    	model.setIsDelete(0);
+    	DrivingSchool data = drivingSchoolMapper.selectOne(model);
+		if (null != data) {
+			BeanUtils.copyProperties(vo, data);
+            String images = data.getShufflingImage();
+            List<String> shufflingImageList = new ArrayList<>();
+            if (!StringUtils.isEmpty(images)) {
+            	String args[] = images.split(";");
+            	for (int i = 0; i < args.length; i++) {
+            		shufflingImageList.add(args[i]);
+            	}            	
+            }
+            vo.setShufflingImageList(shufflingImageList);
+            Area area = new Area();
+            area.setId(Long.parseLong(data.getAreaId() + ""));
+            area = areaMapper.selectOne(area);
+            vo.setAreaName(area.getCity());
+		}
+
+        return vo;
+    }
+    
+    /**
+     * 后台管理分页查询
+     * @param pageIndex
+     * @param pageSize
+     * @param schoolId 
+     * @return
+     * @throws Exception
+     */
+    public Page<DrivingSchool> selectByPage(Integer pageIndex, Integer pageSize, String filters) throws Exception{   	
+        // 单表分页
+        PageHelper.startPage(pageIndex, pageSize, true);
+
+        //单表自定义查询
+        Example example = new Example(DrivingSchool.class);
+        Criteria criteria = example.createCriteria();
+        criteria.andCondition("is_delete = 0");
+        if (!StringUtils.isEmpty(filters)) {
+        	criteria.andLike("nameL", "%"+ filters +"%");
+        }
+        example.and(criteria);
+        example.setOrderByClause("update_time desc");   
+        
+        return (Page<DrivingSchool>)drivingSchoolMapper.selectByExample(example);
+    }
+   
+    /**
+     * 获取可以调班的列表
+     * @param params
+     * @return
+     * @throws Exception
+     */
+	public List<DrivingSchoolLesson> selectAdjustClasses( Map<String,String> params
+			) throws Exception {
+		String schoolId = params.get("schoolId");
+		String lessonId = params.get("lessonId");
+		Example example = new Example(DrivingSchoolLesson.class);
+		Criteria criteria = example.createCriteria();
+		criteria.andCondition("is_delete = 0");
+		if (StringUtil.isNotEmpty(schoolId)) {
+			criteria.andCondition("school_id = ", schoolId);
+		}
+		if (StringUtil.isNotEmpty(lessonId)) {
+			criteria.andCondition("id <> ", schoolId);
+		}
+		List<DrivingSchoolLesson> result = drivingSchoolLessonMapper.selectByExample(example);
+		return result;
+		
+	}
+	
+
+    /**
+     * 分页查询驾校课程
+     * @param pageIndex
+     * @param limit
+     * @param schoolId
+     * @param licence
+     * @param startTime 
+     * @return
+     * @throws Exception
+     */
+	public List<SchoolLessonVo> selectSchoolLessionByPage( Map<String,String> params
+			) throws Exception {
+		Integer pageIndex=Integer.valueOf(params.get("pageIndex"));
+		Integer pageSize= Integer.valueOf(params.get("pageSize"));
+		String schoolId= params.get("schoolId");
+		String licence= params.get("licence");
+		String classNo= params.get("classNo");
+		String className= params.get("className");
+		String startTime= params.get("startTime");
+		
+		  // 单表分页
+        PageHelper.startPage(pageIndex, pageSize, true);
+        
+		Example example = new Example(DrivingSchoolLesson.class);
+		Criteria criteria = example.createCriteria();
+		criteria.andCondition("is_delete = 0");
+		if (schoolId != null) {
+			criteria.andCondition("school_id = ", schoolId);
+		}
+		
+		 if (StringUtil.isNotEmpty(licence)) {
+	            criteria.andCondition("licence=", licence);
+	      }
+		 if (StringUtil.isNotEmpty(classNo)) {
+			  criteria.andLike("classNo", "%" + classNo + "%");
+	      }
+		 if (StringUtil.isNotEmpty(className)) {
+			 criteria.andLike("className", "%" + className + "%");
+	      }
+	     if (StringUtil.isNotEmpty(startTime)) {
+	            criteria.andCondition("date_format(start_time, '%Y-%m-%d')=", startTime);
+	      }
+
+		List<DrivingSchoolLesson> pageList = drivingSchoolLessonMapper.selectByExample(example);
+		List<SchoolLessonVo> resultPageList  = new ArrayList<SchoolLessonVo>();
+		//统计报名人数
+		for (DrivingSchoolLesson drivingSchoolLesson:pageList) {
+			SchoolLessonVo schoolLessonVo = new SchoolLessonVo();
+			
+			BeanUtils.copyProperties(schoolLessonVo, drivingSchoolLesson);
+			Map<String,Object> courseMap = new HashMap<String, Object>();
+			courseMap.put("lessonId", drivingSchoolLesson.getId());
+			courseMap.put("status", 2);
+			Integer num = userCourseMapper.selectSchoolStudentCourseCnt(courseMap);
+			
+//			example = new Example(UserCourse.class);
+//			criteria = example.createCriteria();
+//			criteria.andCondition("is_delete = 0");
+//			criteria.andCondition("course_type = ",UserCourseTypeEnum.lesson.code);
+//			criteria.andCondition("course_id = ", drivingSchoolLesson.getId());
+//			List<UserCourse> userCoursePageList = userCourseMapper.selectByExample(example);
+			
+			schoolLessonVo.setUserCourseNum(num);
+			//schoolLessonVo.setUserCourses(userCoursePageList);
+			
+			resultPageList.add(schoolLessonVo);
+			
+		}
+
+		return resultPageList;
+	}
+	
+	 /**
+     * 改&插
+     * @param model
+     * @return
+     */
+    public int createOrUpdateSchoolLesson(DrivingSchoolLesson model) {
+    	if (null != model.getId() && model.getId() > 0) {
+    		// update
+    		return drivingSchoolLessonMapper.updateByPrimaryKey(model);
+    	} else {
+    		// add
+    		return drivingSchoolLessonMapper.insert(model);
+    	}
+    }
+
+	public int deleteSchoolLessonById(Long id) {
+		DrivingSchoolLesson record = drivingSchoolLessonMapper.selectByPrimaryKey(id);
+    	if (null != record) {
+        	record.setIsDelete(1);
+        	return drivingSchoolLessonMapper.updateByPrimaryKey(record);
+    	}
+    	return 0;
+	}
+	
+	/**
+     * 扣减驾校课程库存
+     * @param model
+     * @return
+     */
+    public int decreaseCount(DrivingSchoolLesson model) {
+    	if (null == model) {
+    		return 0;
+    	}
+    	model.setLeftNum(model.getLeftNum() - 1);
+    	model.setUpdateTime(new Date());
+    	return drivingSchoolLessonMapper.updateByPrimaryKey(model);   	
+    }
+    
+    /**
+     * 回补驾校课程库存
+     * @param model
+     * @return
+     */
+    public int increaseCount(DrivingSchoolLesson model) {
+    	if (null == model) {
+    		return 0;
+    	}
+    	model.setLeftNum(model.getLeftNum() + 1);
+    	model.setUpdateTime(new Date());
+    	return drivingSchoolLessonMapper.updateByPrimaryKey(model);   	
+    }
+
+    /**
+     * 查询可调班的班级
+     * @param params
+     * @return
+     */
+	public List<DrivingSchoolLesson> selectAdjustClassesByPage(Map<String, String> params) {
+		Integer pageIndex=Integer.valueOf(params.get("pageIndex"));
+		Integer pageSize= Integer.valueOf(params.get("pageSize"));
+		String schoolId = params.get("schoolId");
+		String lessonId = params.get("lessonId");
+		String licence= params.get("licence");
+		String classNo= params.get("classNo");
+		String className= params.get("className");
+		String startTime= params.get("startTime");
+		
+		  // 单表分页
+        PageHelper.startPage(pageIndex, pageSize, true);
+        
+		Example example = new Example(DrivingSchoolLesson.class);
+		Criteria criteria = example.createCriteria();
+		criteria.andCondition("is_delete = 0");
+		criteria.andCondition("school_id = ", schoolId);
+		criteria.andCondition("id <> ", lessonId);
+		
+		 if (StringUtil.isNotEmpty(licence)) {
+	            criteria.andCondition("licence=", licence);
+	      }
+		 if (StringUtil.isNotEmpty(classNo)) {
+			  criteria.andLike("classNo", "%" + classNo + "%");
+	      }
+		 if (StringUtil.isNotEmpty(className)) {
+			 criteria.andLike("className", "%" + className + "%");
+	      }
+	     if (StringUtil.isNotEmpty(startTime)) {
+	            criteria.andCondition("date_format(start_time, '%Y-%m-%d')=", startTime);
+	      }
+
+		List<DrivingSchoolLesson> pageList = drivingSchoolLessonMapper.selectByExample(example);
+		return pageList;
+	}
+	
+	
+	public DrivingSchool selectByModel(DrivingSchool model) {
+		return drivingSchoolMapper.selectOne(model);
+	}
+}

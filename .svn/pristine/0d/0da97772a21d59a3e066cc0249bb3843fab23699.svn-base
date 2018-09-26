@@ -1,0 +1,815 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>个人中心</title>
+    <link rel="shortcut icon" th:href="@{/img/icon.png}" type="image/x-icon">
+    <link rel="stylesheet" th:href="@{/css/calendar.css}">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style type="text/css">
+	    .per-menu>ul>li>a.cur>span{color:#fd9938;}
+	    .per-pic{position:relative;}
+	    .per-pic img,.per-pic input{width:120px;height:120px;border-radius:50%;position:absolute;top:0;left:0;}
+	    .per-pic input{opacity: 0;z-index:999;border:0!important}
+	    .per-pic .edit{width:34px!important;height:34px!important;position:absolute;top:42px;left:42px;display:none;}
+	    .per-pic:hover .edit{display:block;}
+    </style>
+<script type="text/javascript" th:src="@{/js/swiper.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery-1.11.2.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/videoCT.js}"></script>
+<script type="text/javascript" th:src="@{/js/style.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery.base64.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery.pagination.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery.toTop.min.js}"></script>
+</head>
+<body>
+    <div class="container">
+        <!--header-->
+        <div class="header clear">
+            <ul class="left-menu fl">
+                <li><a th:href="${ctx} + index"><img th:src="@{/img/index-logo.png}" alt=""></a></li>
+                <li class="active"><a th:href="${ctx} + index">首页</a></li>
+                <li><a th:href="${ctx} + traffic_regulations">交通法规</a></li>
+                <li class="father-menu"><a href="javascript:void(0);" id="policy_regulations">驾考资讯</a>
+					<ul class="child-menu">
+						<li><a th:href="${ctx} + test_plan">考试计划</a></li>
+						<li><a th:href="${ctx} + policy_regulations">驾考资讯</a></li>
+					</ul>
+				</li>
+                <li class="father-menu">
+                    <a href="javascript:void(0);">驾培服务</a>
+                    <ul class="child-menu">
+                        <li><a th:href="${ctx} + platform_info">网点分布</a></li>
+                        <li><a th:href="${ctx} + platform_course">培训计划</a></li>
+                        <li><a th:href="${ctx} + platform_teacher">师资配备</a></li>
+                    </ul>
+                </li>
+                <li class="father-menu">
+                    <a href="javascript:void(0);">驾考练习</a>
+                    <ul class="child-menu">
+                        <li><a th:href="@{${ctx} + 'simulation_test?kemu=1'}">科目一模拟考试</a></li>
+						<li><a th:href="@{${ctx} + 'simulation_test?kemu=4'}">科目四模拟考试</a></li>
+						<li><a th:href="@{${ctx} + 'free_practice?kemu=1'}">科目一自由练习</a></li>
+						<li><a th:href="@{${ctx} + 'free_practice?kemu=4'}">科目四自由练习</a></li>
+                    </ul>
+                </li>
+                <li><a th:href="${ctx} + app_download.html">APP下载</a></li>
+            </ul>
+            <ul class="right-menu fr">
+                <li>
+                    <a th:href="${ctx} + platform_notice">
+                        <img th:src="@{/img/header-2.png}" alt="">
+                        <img class="img-2" th:src="@{/img/header-2.1.png}" alt="">
+                    </a>
+                </li>
+                <li class="header-person">         
+                    <a th:href="@{${ctx} + 'person_center/person_video'}" th:if="${user!=null}"><img th:src="@{/img/header-4.png}"/></a>               
+                    <a href="#login" id="loginShow" th:unless="${user!=null}">
+                    <span id="loginText" th:text="登录"></span>
+                    <img th:src="@{/img/header-4.png}" id="myAvatorImg" th:unless="${user!=null}" style="display:none"/> 
+                    </a>                                  
+                </li>
+            </ul>
+        </div>
+        <!--content-->
+        <div class="content person-content">
+            <div class="com-width clear">
+                <div class="per-menu fl">
+                    <ul>
+                        <li>
+                            <a th:href="@{${ctx} + 'person_center/person_video'}">
+                                <img th:src="@{/img/my-icon1.png}" alt="">
+                                <span>购买视频</span>
+                            </a>
+                        </li>
+                        <li class="no-icon">
+                            <a href="person_video_1.html">
+                                <span>已购买视频</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{${ctx} + 'person_center/person_test_all'}">
+                                <img th:src="@{/img/my-icon2.png}" alt="">
+                                <span>个人练习记录</span>
+                            </a>
+                        </li>
+                        <li class="no-icon">
+                            <a th:href="@{${ctx} + 'person_center/person_test'}">                           
+                                <span>模拟考试</span>
+                            </a>
+                        </li>
+                        <li class="no-icon">
+                            <a th:href="@{${ctx} + 'person_center/person_practice'}">
+                                <span>自由练习</span>
+                            </a>
+                        </li>
+                        <li class="buy-card">
+                        	 <a th:href="@{${ctx} + 'person_center/person_card'}">
+	                            <img th:src="@{/img/my-icon3.png}" alt="">
+	                            <span>购买练习卡</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{${ctx} + 'person_center/person_course'}">
+                                <img th:src="@{/img/my-icon4.png}" alt="">
+                                <span>购买网点课程</span>
+                            </a>
+                        </li>
+                        <li class="no-icon">
+                            <a th:href="@{${ctx} + 'person_center/person_course_1'}">
+                                <span>已购买网点课程</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{${ctx} + 'person_center/person_order_test'}">
+                                <img th:src="@{/img/my-icon5.png}" alt="">
+                                <span>自主预约考试</span>
+                            </a>
+                        </li>
+                        <li class="no-icon">
+                            <a th:href="@{${ctx} + 'person_center/person_order_record'}">
+                                <span>查看预约记录</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{${ctx} + 'person_center/person_check_score'}">
+                                <img th:src="@{/img/my-icon6.png}" alt="">
+                                <span>查看各科目考试成绩</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{${ctx} + 'person_center/person_sign_up'}">
+                                <img th:src="@{/img/my-icon7.png}" alt="">
+                                <span>驾校报名</span>
+                            </a>
+                        </li>
+                        <li class="no-icon">
+                            <a th:href="@{${ctx} + 'person_center/person_sign_up_1'}">
+                                <span>已报名驾校</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="per-main fr">
+                    <div class="per-header clear">
+                        <div class="per-pic fl">
+                            <img class="show tximg1" id="avatar_Preview3" th:if="${user.avatar}" th:src="${imageUrl} + ${user.avatar}" alt="" />
+                            <img class="img3" th:if="${user.avatar}" th:src="${imageUrl} + ${user.avatar}" alt="">
+                            <img class="img3" th:unless="${user.avatar}" th:src="@{/img/header-pic.png}" alt="">                           
+                            <input id="Previewimg3" type="file" name="file" accept="image/*" />
+                            <img class="edit" th:src="@{/img/edit_photo.png}" alt="">
+                        </div>
+                        <div class="per-edit fl">
+                            <span th:text="${user.name == ''?user.mobile:user.name}"></span><br>
+                            <span class="edit-btn">修改个人信息</span>
+                        </div>
+                        <a th:href="@{${baseUrl} + 'home/auth/logout'}"><button class="fr">退出登录</button></a>
+                    </div>
+					<!--购买视频-->
+                   <div class="tab clear" th:include="this::content">           
+                   </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<!--login/regist/forget_password fade-->
+    <div id="login" class="fade" style="display: none;">
+        <div class="login">
+            <h3>登录</h3>
+            <img class="fork" th:src="@{/img/app-pic1.png}" alt="">
+            <div class="login-info clear">
+                <form th:action="@{${ctx} + 'auth/login'}" method="post" id="loginForm">
+                    <div class="input-box">
+                        <label for="">请输入手机号</label><br>
+                        <input class="mobile" type="text" name="username" id="username" placeholder="请输入手机号">
+                        <div class="mark"></div>
+                    </div>
+                    <div class="input-box">
+                        <label for="">请输入密码</label><br>
+                        <input class="pwd" type="password" name="password" id="password" placeholder="请输入密码">
+                        <div class="mark"></div>
+                        <input class="pwdEncode" type="hidden" name="pwdEncode" id="pwdEncode"/>
+                        <img class="hide-img" th:src="@{/img/hidden.png}" alt="">
+                        <img class="show-img" th:src="@{/img/show.png}" alt="">
+                    </div>
+                    <p class="forget fr"><a href="#forget">忘记密码？</a></p>
+                    <input class="login-btn" type="button" id="loginButton" value="登录" />
+                    <p class="sign-in">还没有账号？去<a href="#regist" class="sign-1">注册</a></p>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="regist" class="fade" style="display: none;">
+        <div class="login">
+            <h3>注册</h3>
+            <img class="fork" th:src="@{/img/app-pic1.png}" alt="">
+            <div class="login-info" id="register_send_code">
+                <form th:action="@{${baseUrl} + '/api/register/sendCode'}" id="sendCodeForm">
+                    <div class="input-box">
+                        <label for="">请输入手机号</label><br>
+                        <input class="mobile" type="text" name="phoneNum" placeholder="请输入手机号" id="register_phone_num">
+                        <div class="mark"></div>
+                        <input type="hidden" name="type" value="1">
+                        <input type="button" class="send-code" value="获取验证码" onclick="sendRegisterCode(this)" />
+                        <div class="mark"></div>
+                    </div>
+                    <div class="input-box">
+                        <label for="">请输入验证码</label><br>
+                        <input class="code" type="text" name="code" id="register_code" placeholder="请输入验证码">
+                        <div class="mark"></div>
+                    </div>
+                    <input class="login-btn" type="button" value="下一步" onclick="checkRegisterCode()">
+                    <p class="sign-in">已有账号？去<a href="#login" class="sign-2">登录</a></p>
+                </form>
+            </div>
+            <div class="login-info" style="display: none;"  id="register_set_pwd">
+                <form th:action="@{${baseUrl} + '/api/register/addPwd'}" id="register_set_pwd_form">
+                    <div class="input-box">
+                        <label for="">请输入密码</label><br>
+                        <input class="pwd" type="password" name="pwd" id="register_pwd" placeholder="请输入密码">
+                        <div class="mark"></div>
+                        <img class="hide-img" th:src="@{/img/hidden.png}" alt="">
+                        <img class="show-img" th:src="@{/img/show.png}" alt="">
+                    </div>
+                    <div class="input-box">
+                        <label for="">请确认密码</label><br>
+                        <input class="repwd" type="password" name="rePassword" id="register_repwd" placeholder="请确认密码">
+                        <div class="mark"></div>
+                        <img class="hide-img" th:src="@{/img/hidden.png}" alt="">
+                        <img class="show-img" th:src="@{/img/show.png}" alt="">
+                    </div>
+                    <input type="hidden" name="phoneNum" id="phoneNum"/>
+                    <input class="login-btn" type="button" value="注册" onclick="registerPwd()">
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="forget" class="fade" style="display: none;">
+        <div class="login">
+            <h3>忘记密码</h3>
+            <img class="fork" th:src="@{/img/app-pic1.png}" alt="">
+            <div class="login-info" id="forget_send_code">
+                <form th:action="@{${baseUrl} + '/api/register/sendCode'}" id="forget_code_form">
+                    <div class="input-box">
+                        <label for="">请输入手机号</label><br>
+                        <input type="hidden" name="type" value="2">                      
+                        <input class="mobile" type="text" name="phoneNum" id="forget_phone_num" placeholder="请输入手机号">
+                        <div class="mark"></div>
+                        <input type="button" class="send-code" value="获取验证码" onclick="sendForgetPwdCode(this)" />
+                    </div>
+                    <div class="input-box">
+                        <label for="">请输入验证码</label><br>
+                        <input class="code" type="text" name="code" id="forget_code" placeholder="请输入验证码">
+                        <div class="mark"></div>
+                    </div>
+                    <input class="login-btn" type="button" value="下一步" onclick="checkForgetCode()">
+                </form>
+            </div>
+            <div class="login-info" style="display: none;" id="forget_set_pwd">
+                <form action="" id="forget_pwd_form">
+                    <div class="input-box">
+                        <label for="">请输入密码</label><br>
+                        <input class="pwd" type="password" name="pwd" id="forget_pwd" placeholder="请输入密码">
+                        <div class="mark"></div>
+                        <img class="hide-img" th:src="@{/img/hidden.png}" alt="">
+                        <img class="show-img" th:src="@{/img/show.png}" alt="">
+                    </div>
+                        <input type="hidden" name="phoneNum" id="forget_phoneNum"/>                    
+                    <div class="input-box">
+                        <label for="">请确认密码</label><br>
+                        <input class="repwd" type="password" name="rePassword" id="forget_rePassword" placeholder="请确认密码">
+                        <div class="mark"></div>
+                        <img class="hide-img" th:src="@{/img/hidden.png}" alt="">
+                        <img class="show-img" th:src="@{/img/show.png}" alt="">
+                    </div>
+                    <input class="login-btn" type="button" value="确认" onclick="updatePwd()">
+                </form>
+            </div>
+        </div>
+    </div>
+    <!--修改个人信息-->
+    <div id="edit" class="fade" style="display: none;">
+        <div class="edit-box">
+            <h3>修改个人信息</h3>
+            <img class="fork" th:src="@{/img/app-pic1.png}" alt="">
+            <div class="edit-info">
+                <form action="" id="update_user_form">
+                    <ul>
+                        <li class="clear">
+                            <div class="edit-name fl">
+                                <label for="">昵称</label><br>
+                                <input type="text" name="name" id="userName" th:value="${user.name}" placeholder="请输入昵称">
+                                <div class="mark"></div>
+                            </div>
+<!--                             <div class="edit-phone fr"> -->
+<!--                                 <label for="">手机号</label><br> -->
+<!--                                 <input type="text" name="" id="editNum" placeholder="请输入手机号"> -->
+<!--                                 <div class="mark" style="right:15px;"></div> -->
+<!--                             </div> -->
+                        </li>
+                        <li>
+                            <label for="">真实姓名</label>
+                            <input type="text" name="realName" id="realName" th:value="${user.realName}" placeholder="请输入真实姓名">
+                            <div class="mark"></div>
+                        </li>
+                        <li>
+                            <label for="">身份证号码</label>
+                            <input type="text" name="idNo" id="idNo" th:value="${user.idNo}" placeholder="请输入身份证号码">
+                            <div class="mark"></div>
+                        </li>
+                    </ul>
+                    <input type="button" class="edit-submit" id="file_update_button" value="确认修改">
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" th:src="@{/js/calendar.js}"></script>
+<script type="text/javascript" th:src="@{/js/person_center.js}"></script>
+
+<script>
+    var swiper = new Swiper('.swiper-container', {
+        centeredSlides: true,
+        autoplay: {
+            delay: 5000,
+            disableOnInteraction: false
+        },
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true
+        }
+    });
+    var imageSrc;
+    //header
+    var urlstr = location.href; 
+	if (urlstr != '' && urlstr != undefined) {
+		var index = urlstr.lastIndexOf("/");
+		if (index != -1) {
+			var urlKey = urlstr.substring(index + 1, urlstr.length);
+			console.log(urlKey);
+			if (urlKey == 'platform_info' || urlKey == 'platform_course' || urlKey == 'platform_teacher') {
+				$("#platform").addClass('cur');
+			} else {
+				$("#" + urlKey + "").addClass('cur');
+			}
+		}
+	}
+	
+//    menu
+
+	var urlstr_1 = location.href;    
+	  var urlstatus_1 = false;  
+	  $(".per-menu>ul>li>a").each(function () {  
+	    if ((urlstr_1 + '/').lastIndexOf($(this).attr('href')) > -1 && $(this).attr('href')!='') {  
+	      $(this).addClass('cur');
+	      urlstatus_1 = true;
+	    } else {  
+	      $(this).removeClass('cur');  
+	    }  
+	  });
+	  if (!urlstatus_1) {
+		  $(".per-menu>ul>li>a").eq(0).addClass('cur');
+	  }  
+	  
+	  //修改头像
+	  
+$("#Previewimg3").change(function() {
+    if(checkPic3()) {
+        $(".tximg1").attr("src", preImgs(this.id, 'avatar_Preview3'));
+        $('.img3').hide();
+    }
+});
+
+function checkPic3() {
+    var picPath = $("#Previewimg3").val();
+    var type = picPath.substring(picPath.lastIndexOf(".") + 1, picPath.length).toLowerCase();
+    if(type != "jpg" && type != "bmp" && type != "gif" && type != "png") {
+        alert("请上传正确的图片格式");
+        return false;
+    }
+    return true;
+}
+
+function preImgs(sourceId, targetId) {
+    if(typeof FileReader === 'undefined') {
+        alert('Your browser does not support FileReader...');
+        return;
+    }
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        var img = document.getElementById(targetId);
+        img.src = this.result;
+        imageSrc = img.src;
+        // 图片更改，调用后台
+    	if (imageSrc != undefined && imageSrc.indexOf(",") != -1) {
+    		console.log(imageSrc);
+              // 修改信息
+      	      jQuery.ajax({
+      	         type:"post",
+      	         url: '[[${baseUrl}]]user/updateUser',
+      	         data:{avatar:imageSrc.split(",")[1]},
+      	         success:function(msg){
+      	        	// console.log(msg)
+      	         }
+      	      })  
+    	}
+        return img.src;
+    };
+    reader.readAsDataURL(document.getElementById(sourceId).files[0]);
+
+       
+}
+	//修改个人信息
+	$('.fork').click(function(){
+	    $('#edit').hide();
+	});
+	$('.edit-btn').click(function () {
+	    $('#edit').show();
+	});
+	// -----------个人信息修改-------------------
+	$('#file_update_button').click(function(){
+		var name = $("#userName").val();
+	  	if (name == null) {
+	  		$("#userName").next(".mark").show().text("请输入用户名");
+	          return false;
+	  	}
+	  	// 修改信息
+	      jQuery.ajax({
+	         type:"post",
+	         url: '[[${baseUrl}]]user/updateUser',
+	         data:$("#update_user_form").serialize(),
+	         success:function(msg){
+	             if(msg.status=="1"){
+	          	   // 成功跳转设置密码页
+	          	   $('#edit').hide();
+	             }
+	         }
+	      })   
+    });
+ 	
+	//  验证手机号
+	$('input[name="editNum"]').keyup(function() {
+	    var editNum = $("#editNum").val();
+	    if(editNum.search(/^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/) == -1) {
+	        $(this).next(".mark").show().text("请输入大陆手机号码");
+	        return false;
+	    }else{
+	        $(this).next(".mark").hide();
+	    }
+	});
+	//  验证身份证号
+	$('input[name="IDcard"]').keyup(function() {
+	    var IDcard = $("#IDcard").val();
+	    if(IDcard.search(/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/) == -1) {
+	        $(this).next(".mark").show().text("身份证格式不正确");
+	        return false;
+	    }else{
+	        $(this).next(".mark").hide();
+	    }
+	});
+	
+//    login
+    $('#loginShow').click(function(){
+        $('#login').show();
+    });
+    $('.forget').click(function(){
+       $('#login').hide();
+       $('#forget').show();
+    });
+    $('.sign-1').click(function(){
+        $('#login').hide();
+        $('#regist').show();
+    });
+    $('.sign-2').click(function(){
+        $('#regist').hide();
+        $('#login').show();
+    });
+    
+    
+//  验证手机号
+    $('#username').keyup(function() {
+        var username = $("#username").val();
+        if(username.search(/^(((13[0-9]{1})|(15[0-9]{1})|(17[0-9]{1})|(18[0-9]{1})|(16[0-9]{1})|(19[0-9]{1}))+\d{8})$/) == -1) {
+            $(this).next(".mark").show().text("请输入大陆手机号码");
+            return false;
+        }else{
+            $(this).next(".mark").hide();
+        }
+    });
+    $('#register_phone_num').keyup(function() {
+        var register_phone_num = $("#register_phone_num").val();
+        if(register_phone_num.search(/^(((13[0-9]{1})|(15[0-9]{1})|(17[0-9]{1})|(18[0-9]{1})|(16[0-9]{1})|(19[0-9]{1}))+\d{8})$/) == -1) {
+            $(this).next(".mark").show().text("请输入大陆手机号码");
+            return false;
+        }else{
+            $(this).next(".mark").hide();
+        }
+    });
+    $('#forget_phone_num').keyup(function() {
+        var forget_phone_num = $("#forget_phone_num").val();
+        if(forget_phone_num.search(/^(((13[0-9]{1})|(15[0-9]{1})|(17[0-9]{1})|(18[0-9]{1})|(16[0-9]{1})|(19[0-9]{1}))+\d{8})$/) == -1) {
+            $(this).next(".mark").show().text("请输入大陆手机号码");
+            return false;
+        }else{
+            $(this).next(".mark").hide();
+        }
+    });
+    //验证密码
+    $('#password').keyup(function() {
+        var password = $("#password").val();
+        if(password.search(/^(\w){6,16}$/) == -1) {
+            $(this).next(".mark").show().text("请输入正确的密码");
+            return false;
+        }else{
+            $(this).next(".mark").hide();
+        }
+    });
+    $('#register_pwd').keyup(function() {
+        var register_pwd = $("#register_pwd").val();
+        if(register_pwd.search(/^(\w){6,16}$/) == -1) {
+            $(this).next(".mark").show().text("请输入正确的密码");
+            return false;
+        }else{
+            $(this).next(".mark").hide();
+        }
+    });
+    $('#forget_pwd').keyup(function() {
+        var forget_pwd = $("#forget_pwd").val();
+        if(forget_pwd.search(/^(\w){6,16}$/) == -1) {
+            $(this).next(".mark").show().text("请输入正确的密码");
+            return false;
+        }else{
+            $(this).next(".mark").hide();
+        }
+    });
+    //确认密码
+    $('#register_repwd').keyup(function() {
+    	var register_pwd = $("#register_pwd").val();
+        var register_repwd = $("#register_repwd").val();
+        if(register_repwd != register_pwd) {
+            $(this).next(".mark").show().text("两次密码不一致");
+            return false;
+        }else{
+            $(this).next(".mark").hide();
+        }
+    });
+    $('#forget_rePassword').keyup(function() {
+    	var forget_pwd = $("#forget_pwd").val();
+        var forget_rePassword = $("#forget_rePassword").val();
+        if(forget_rePassword != forget_pwd) {
+            $(this).next(".mark").show().text("两次密码不一致");
+            return false;
+        }else{
+            $(this).next(".mark").hide();
+        }
+    });
+    var countdown = 60;
+
+    
+    // 发送注册验证码
+    function sendRegisterCode(val) {
+    	var phoneNum = $("#register_phone_num").val();
+    	if (phoneNum.search(/^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1})|(16[0-9]{1})|(19[0-9]{1}))+\d{8})$/) == -1) {
+    		$("#register_phone_num").next(".mark").show().text("请输入手机号码");
+            return false;
+    	}
+    	// 发送验证码
+        jQuery.ajax({
+           type:"post",
+           url: $("#sendCodeForm").attr("action"),
+           data:$("#sendCodeForm").serialize(),
+           success:function(msg){
+               if(msg.status=="1"){
+            	   settime(val);
+               }
+        	   $('.send-code').next('.mark').show().text(msg.msg);
+           }
+        })         
+    }
+
+    // 注册验证码校验
+    function checkRegisterCode() {
+    	var phoneNum = $("#register_phone_num").val();
+    	if (phoneNum.search(/^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1})|(16[0-9]{1})|(19[0-9]{1}))+\d{8})$/) == -1) {
+    		$("#register_phone_num").next(".mark").show().text("请输入手机号码");
+            return false;
+    	}
+    	var code = $("#register_code").val();
+    	if (code == null) {
+    		$("#register_code").next(".mark").show().text("请输入验证码");
+            return false;
+    	}
+    	// 发送验证码
+        jQuery.ajax({
+           type:"post",
+           url: '[[${baseUrl}]]api/register/checkCode',
+           data:$("#sendCodeForm").serialize(),
+           success:function(msg){
+               if(msg.status=="1"){
+            	   // 成功跳转设置密码页
+            	   $('#register_send_code').hide();
+            	   $('#register_set_pwd').show();  
+            	   $('#phoneNum').val(phoneNum);
+               } else {
+           		 $("#register_code").next(".mark").show().text(msg.msg);
+               }
+           }
+        })    	
+    }
+      
+    // 注册设置密码
+    function registerPwd() {
+    	var password = $("#register_repwd").val();
+    	if (password == null) {
+    		$("#register_repwd").next(".mark").show().text("请输入密码");
+            return false;
+    	}
+    	var pwd = $('#register_pwd').val();
+    	$('#register_pwd').val(encodeBase64(pwd));
+    	// 发送验证码
+        jQuery.ajax({
+           type:"post",
+           url: '[[${baseUrl}]]api/register/addPwd',
+           data:$("#register_set_pwd_form").serialize(),
+           success:function(msg){
+               if(msg.status=="1"){
+            	   // 成功跳转设置密码页
+            	   $('#regist').hide();
+            	   $('#register_set_pwd').hide();
+            	   $('#login').show();
+               } else {
+           		 $("#rePassword").next(".mark").show().text(msg.msg);
+               }
+           }
+        })         
+    }
+    // ===============================忘记密码=================================
+    // 发送忘记密码验证码
+    function sendForgetPwdCode(val) {
+    	var phoneNum = $("#forget_phone_num").val();
+    	if (phoneNum.search(/^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1})|(16[0-9]{1})|(19[0-9]{1}))+\d{8})$/) == -1) {
+    		$("#register_phone_num").next(".mark").show().text("请输入手机号码");
+            return false;
+    	}
+    	// 发送验证码
+        jQuery.ajax({
+           type:"post",
+           url: $("#forget_code_form").attr("action"),
+           data:$("#forget_code_form").serialize(),
+           success:function(msg){
+               if(msg.status=="1"){
+            	   settime(val);
+               }
+        	   $('.send-code').next('.mark').show().text(msg.msg);
+           }
+        })   
+    	
+    }
+    
+   // 忘记密码验证码校验
+    function checkForgetCode() {
+    	var phoneNum = $("#forget_phone_num").val();
+    	if (phoneNum.search(/^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1})|(16[0-9]{1})|(19[0-9]{1}))+\d{8})$/) == -1) {
+    		$("#register_phone_num").next(".mark").show().text("请输入手机号码");
+            return false;
+    	}
+    	var code = $("#forget_code").val();
+    	if (code == null) {
+    		$("#forget_code").next(".mark").show().text("请输入验证码");
+            return false;
+    	}
+    	// 发送验证码
+        jQuery.ajax({
+           type:"post",
+           url: '[[${baseUrl}]]api/register/checkCode',
+           data:$("#forget_code_form").serialize(),
+           success:function(msg){
+               if(msg.status=="1"){
+            	   // 成功跳转设置密码页
+            	   $('#forget_send_code').hide();
+            	   $('#forget_set_pwd').show();  
+            	   $('#forget_phoneNum').val(phoneNum);
+               } else {
+           		 $("#forget_code").next(".mark").show().text(msg.msg);
+               }
+           }
+        })    	
+    }
+   
+   // 更新密码
+    function updatePwd() {
+    	var password = $("#forget_rePassword").val();
+    	if (password == null) {
+    		$("#forget_rePassword").next(".mark").show().text("请输入密码");
+            return false;
+    	}
+    	var pwd = $('#forget_pwd').val();
+    	$('#forget_pwd').val(encodeBase64(pwd));
+    	// 发送验证码
+        jQuery.ajax({
+           type:"post",
+           url: '[[${baseUrl}]]api/register/updatePwd',
+           data:$("#forget_pwd_form").serialize(),
+           success:function(msg){
+               if(msg.status=="1"){
+            	   // 成功跳转设置密码页
+            	   $('#forget').hide();
+            	   $('#forget_set_pwd').hide();
+            	   $('#login').show();
+               } else {
+           		 $("#forget_rePassword").next(".mark").show().text(msg.msg);
+               }
+           }
+        })         
+    }
+    
+    function settime(val) {
+    	
+        if(countdown == 1) {
+            val.removeAttribute("disabled");
+            val.value = "获取验证码";
+            countdown = 60;
+        } else {
+       		val.setAttribute("disabled", true);
+            val.value = countdown +"s";
+            countdown--;
+            setTimeout(function() {
+                settime(val)
+            }, 1000)          
+        }
+    }
+    
+    //        password show or hide
+    $(".hide-img").click(function(){
+        $(this).hide();
+        $(this).next(".show-img").show();
+        $(".pwd").attr("type","text");
+        $(".repwd").attr("type","text");
+    });
+    $(".show-img").click(function(){
+        $(this).hide();
+        $(this).prev(".hide-img").show();
+        $(".pwd").attr("type","password");
+        $(".repwd").attr("type","password");
+    });
+    // 登录操作
+    $("#loginButton").click(function(){   
+    	if($("#username").val() == '') {
+   		  $('#username').next(".mark").show().text("请输入手机号码"); 
+   	    }
+    	if($("#password").val() == '') {
+    		 $('#password').next(".mark").show().text("请输入密码"); 
+    	}
+    	$('#pwdEncode').val(encodeBase64($("#password").val()));
+    	// 登录提交
+        jQuery.ajax({
+            type:"POST",
+            url: $("#loginForm").attr('action'),
+            data:$("#loginForm").serialize(),
+            success:function(msg){
+                if(msg.status=="1"){
+                	$('#login').hide();
+                	$('#myAvatorImg').show();
+                	$('#loginText').hide();
+                	$('#loginShow').attr('href','[[${ctx}]]person_center');
+                }else{
+                    $('.pwd').next(".mark").show().text(msg.msg);
+                }
+            }
+        })        
+    });
+  //按enter键触发登录
+    $("body").keydown(function() {
+        if (event.keyCode == "13") {//keyCode=13是回车键
+            $('#loginButton').click();
+        }
+    });
+    
+  //加密可以加密N次，对应解密N次就可以获取明文    
+   function encodeBase64(mingwen,times){    
+      var code="";    
+      var num=1;    
+      if(typeof times=='undefined'||times==null||times==""){    
+         num=1;    
+      }else{    
+         var vt=times+"";    
+         num=parseInt(vt);    
+      }    
+      if(typeof mingwen=='undefined'||mingwen==null||mingwen==""){    
+      }else{    
+          $.base64.utf8encode = true;    
+          code=mingwen;    
+          for(var i=0;i<num;i++){    
+             code=$.base64.btoa(code);    
+          }    
+      }    
+      return code;    
+  };  
+  
+ 
+</script>
+</html>

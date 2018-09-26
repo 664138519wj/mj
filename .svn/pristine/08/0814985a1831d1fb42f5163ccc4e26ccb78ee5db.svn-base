@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+<head>
+    <title>教练详情</title>
+</head>
+<body th:fragment="content">
+        <div class="content">
+            <div class="com-width">
+                <div class="teacher-detail clear">
+                    <div class="teacher-pic fl">
+                        <img th:src="${imageUrl} + ${teacherDetail.avator}" alt="">
+                    </div>
+                    <div class="teacher-profile fl">
+                        <p><b th:text="${teacherDetail.name}"></b><span th:text="@{${teacherDetail.teachingAge} + '年教龄'}"></span></p>
+                        <p th:text="${teacherDetail.schoolName}"></p>
+                        <p th:text="${teacherDetail.tags}"></p>
+                        <p th:text="${teacherDetail.introduce}"></p>
+                        <p>授课地点：<span th:text="${teacherDetail.teachingAddress}"></span></p>
+                    </div>
+                    <div class="detail-label fr">
+                        <img th:src="@{/img/index-pic2.png}" alt="">
+                    </div>
+                </div>
+            </div>
+            <div class="index-video" style="padding: 60px 0 80px;margin-top:0;background:none">
+                <div class="plat-title">
+                    <h2>教练上传视频</h2>
+                    <b>Upload video</b>
+                    <p>—</p>
+                </div>
+                <div class="video-box com-width clear">
+                    <div class="video fl" th:each="onlineCourse:${onlineCourseList}">
+                        <a th:href="@{${ctx} + 'platform_video_detail?id=' + ${onlineCourse.id}}">
+                            <div class="video-img">
+                                <img th:src="${imageUrl} + ${onlineCourse.imagePath}" alt="">
+                                <div class="video-label">
+                                    <img th:src="@{/img/index-pic7.png}" alt="">
+                                </div>
+                            </div>
+                            <div class="video-name">
+                                <h3><span th:text="${onlineCourse.title}"></span></h3>
+                                <p class="clear">
+                                    <span th:text="@{'上传时间：'+${onlineCourse.updateTime}}"></span>
+                                    <img class="video-pic1" th:src="@{/img/index-pic9.png}" alt="">
+                                    <img class="video-pic2" th:src="@{/img/index-pic9.1.png}" alt="">
+                                </p>
+                            </div>
+                        </a>
+                    </div>                  
+                </div>
+            </div>
+        </div>
+</body>
+</html>

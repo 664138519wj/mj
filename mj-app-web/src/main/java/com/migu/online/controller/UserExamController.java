@@ -1,0 +1,503 @@
+package com.migu.online.controller;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSONArray;
+import com.migu.online.common.UserCourseTypeEnum;
+import com.migu.online.model.PracticeCard;
+import com.migu.online.model.ResposeModel;
+import com.migu.online.model.User;
+import com.migu.online.model.UserCourse;
+import com.migu.online.model.UserExamRecord;
+import com.migu.online.service.ExamTkCnService;
+import com.migu.online.service.PracticeCardService;
+import com.migu.online.service.UserCourseService;
+import com.migu.online.service.UserCourseVipService;
+import com.migu.online.service.UserExamRecordService;
+import com.migu.online.service.UserService;
+import com.migu.online.utils.DateUtil;
+import com.migu.online.vo.ExamTkAnsVo;
+import com.migu.online.vo.ExamTkWrongVo;
+
+/*用户答题*/
+@Controller
+@RequestMapping("/user/exam")
+public class UserExamController extends BaseController{
+	
+	private static final long serialVersionUID = -8218831504167197421L;
+
+	private Logger log = LoggerFactory.getLogger(UserExamController.class);
+
+	@Autowired
+	private ExamTkCnService examTkCnService;	
+	@Autowired
+	private UserExamRecordService userExamRecordService;
+	@Autowired
+	private UserCourseService userCourseService;
+	@Autowired
+	private UserCourseVipService userCourseVipService;
+	@Autowired
+	private UserService userService;
+	@Autowired
+	private PracticeCardService practiceCardService;
+	
+	/* 自由答题获取题目 */
+    @RequestMapping("/getExamFreedom")
+	@ResponseBody
+	public ResposeModel getExamFreedom(@RequestParam("kemu") Integer kemu,
+			@RequestParam(value = "examType", required = false) String examType,
+			@RequestParam(value = "qusType", required = false) String qusType,
+			@RequestParam("licType") Integer licType, 
+			@RequestParam(name = "answerMap", required=false) String answerMap,
+			@RequestParam(value = "language", required = false) Integer language) {
+		ResposeModel res = new ResposeModel();
+		User user = super.getCurrentUser();
+		if (null == user) {
+			res.setStatus("0");
+			res.setMsg("用户未登录");
+			return res;
+		}	
+		if (null == kemu || null == licType || (StringUtils.isEmpty(examType) && StringUtils.isEmpty(qusType))) {
+			res.setStatus("0");
+			res.setMsg("查询条件为空");
+			return res;
+		}
+//		//付费判断
+//		UserCourse pay = userCourseService.selectPayCourseByUser(1l, user.getId(), UserCourseTypeEnum.practice.code);
+//		if (null == pay) {
+//			res.setStatus("0");
+//			res.setCode("800001");
+//			res.setMsg("用户未购买答题卡，无法答题");
+//			return res;
+//		}
+		// 记录答题记录
+		examTkCnService.recordFreeExam(answerMap, user.getId(), user.getMobile(), kemu, licType, language);	
+	    // 获取课程
+		try {			
+			// 数据校验	
+			res.setData(examTkCnService.freeDomQuestions(qusType, examType, kemu + "", licType, language));
+		} catch (Exception e) {
+			log.info("getExamFreedom:" + e.toString());
+			res.setStatus("0");
+			res.setMsg("获取数据出错");
+		}
+
+		return res;
+	}
+   
+ 
+    /* 模拟考试生成试卷 */
+    @RequestMapping("/genTestExam")
+	@ResponseBody
+	public ResposeModel genTestExam(@RequestParam("kemu") int kemu, @RequestParam("licType") Integer licType, 
+			@RequestParam(name = "language", required = false) Integer language) {
+		ResposeModel res = new ResposeModel();
+		User user = super.getCurrentUser();
+		if (null == user) {
+			res.setStatus("0");
+			res.setMsg("用户未登录");
+			return res;
+		}	
+		Long userId = user.getId();
+		// vip用户，不用购买答题卡
+		if (!userCourseVipService.isVipUser(super.getCurrentUserId())) {
+			//付费判断
+			UserCourse pay = userCourseService.selectPayCourseByUser(1l, user.getId(), UserCourseTypeEnum.practice.code);
+			if (null == pay) {
+				res.setStatus("0");
+				res.setCode("800001");
+				res.setMsg("用户未购买答题卡，无法答题");
+				return res;
+			}
+			// 已购买练习卡，判断是否过期
+			User nowUser = userService.selectById(userId);
+			PracticeCard card = practiceCardService.getOne(1L);
+			int expiredHours = card.getExpiredDays() * 24;
+			if (nowUser.getCardExpiredTime() == null) {				
+				nowUser.setCardExpiredTime(DateUtils.addHours(new Date(), expiredHours));
+				userService.update(nowUser);
+			} else if (DateUtil.compareTime(DateUtils.addHours(nowUser.getCardExpiredTime(), expiredHours), new Date())) {
+				// 已过期
+				pay.setIsDelete(1);
+				userCourseService.createOrUpdate(pay);
+				nowUser.setCardExpiredTime(null);
+				userService.update(nowUser);
+				res.setStatus("0");
+				res.setCode("800002");
+				res.setMsg("您购买的理论练习卡已过期，请重新购买");
+				return res;
+			}			
+		}		
+	    // 获取课程
+		try {
+			// 数据校验	
+			if (examTkCnService.checkTestFinish(user.getId()) == false) {
+				// 有未完成的考试
+				res.setStatus("1");
+				res.setCode("200003");
+				res.setMsg("有未完成的考试，请先完成该测试");
+				return res;
+			}
+			res.setData(examTkCnService.examTestGenerate(user.getId(), user.getMobile(), licType, kemu, language));
+		} catch (Exception e) {
+			log.info("genTestExam:" + e.toString());
+			res.setStatus("0");
+			res.setMsg("获取数据出错");
+		}
+
+		return res;
+	}
+    
+    /* 模拟考试生成试卷 */
+    @RequestMapping("/genTestExam2")
+	@ResponseBody
+	public ResposeModel genTestExam2(@RequestParam("kemu") int kemu, @RequestParam("licType") Integer licType, 
+			@RequestParam(name = "language", required = false) Integer language) {
+		ResposeModel res = new ResposeModel();
+		User user = super.getCurrentUser();
+		if (null == user) {
+			res.setStatus("0");
+			res.setMsg("用户未登录");
+			return res;
+		}	
+		// vip用户，不用购买答题卡
+		Long userId = user.getId();
+		if (!userCourseVipService.isVipUser(super.getCurrentUserId())) {
+			//付费判断
+			UserCourse pay = userCourseService.selectPayCourseByUser(1l, user.getId(), UserCourseTypeEnum.practice.code);
+			if (null == pay) {
+				res.setStatus("0");
+				res.setCode("800001");
+				res.setMsg("用户未购买答题卡，无法答题");
+				return res;
+			}
+			// 已购买练习卡，判断是否过期
+			User nowUser = userService.selectById(userId);
+			PracticeCard card = practiceCardService.getOne(1L);
+			int expiredHours = card.getExpiredDays() * 24;
+			if (nowUser.getCardExpiredTime() == null) {
+				nowUser.setCardExpiredTime(DateUtils.addHours(new Date(), expiredHours));
+				userService.update(nowUser);
+			} else if (DateUtil.compareTime(DateUtils.addHours(nowUser.getCardExpiredTime(), expiredHours), new Date())) {
+				// 已过期
+				pay.setIsDelete(1);
+				userCourseService.createOrUpdate(pay);
+				nowUser.setCardExpiredTime(null);
+				userService.update(nowUser);
+				res.setStatus("0");
+				res.setCode("800002");
+				res.setMsg("您购买的理论练习卡已过期，请重新购买");
+				return res;
+			}			
+		}		
+	    // 获取课程
+		try {
+			res.setData(examTkCnService.examTestGenerate2(user.getId(), user.getMobile(), licType, kemu, language));
+		} catch (Exception e) {
+			log.info("genTestExam:" + e.toString());
+			res.setStatus("0");
+			res.setMsg("获取数据出错");
+		}
+
+		return res;
+	}
+    
+    /* 模拟考试app交卷 */
+    @RequestMapping("/submitAnswer")
+	@ResponseBody
+	public ResposeModel submitAnswer(@RequestParam("examId") Long examId, @RequestParam("answer") String answer, 
+			@RequestParam("score") Integer score) {
+		ResposeModel res = new ResposeModel();
+	    // 获取课程
+		try {
+			UserExamRecord record = userExamRecordService.selectById(examId);
+			if (null == record) {
+				res.setStatus("0");
+				res.setCode("200002");
+				res.setMsg("考试记录不存在");
+				return res;
+			}
+			res.setData(examTkCnService.appSubmitTest(record, answer, score));
+		} catch (Exception e) {
+			log.info("genTestExam:" + e.toString());
+			res.setStatus("0");
+			res.setMsg("获取数据出错");
+		}
+
+		return res;
+	}
+     
+    /**
+    * 模拟考试答题&获取题目 
+    * @param curIndex 当前下标
+    * @param next -1 上一题 1 下一题
+    * @param examId 本次考试记录id
+    * @return
+    */
+    @RequestMapping("/ansAndGetTest")
+	@ResponseBody
+	public ResposeModel ansAndGetTest(@RequestParam("curIndex") Integer curIndex, @RequestParam("next") Integer next,
+			@RequestParam("answer") String answer, @RequestParam("isCorrect") Integer isCorrect) {
+		ResposeModel res = new ResposeModel();
+		User user = super.getCurrentUser();
+		if (null == user) {
+			res.setStatus("0");
+			res.setMsg("用户未登录");
+			return res;
+		}	
+	    // 获取课程
+		try {
+			if (curIndex <= 0 || curIndex > 100) {
+				res.setStatus("0");
+				res.setMsg("题目范围在1~100" + curIndex);
+			}
+			// 获取当前用户考试id
+			Long examId = examTkCnService.getExamIdByUserId(user.getId());
+			if (null == examId || examId <= 0) {
+				res.setStatus("0");
+				res.setCode("200001");
+				res.setMsg("考试超时，已自动提交");
+				return res;
+			}
+			UserExamRecord record = userExamRecordService.selectById(examId);
+			if (null == record) {
+				res.setStatus("0");
+				res.setCode("200002");
+				res.setMsg("考试记录不存在");
+				return res;
+			}
+			// 数据校验	
+			res.setData(examTkCnService.ansAndGetTest(curIndex, next, record, user.getId(), answer, isCorrect, record.getLanguage()));
+		} catch (Exception e) {
+			log.info("getExamFreedom:" + e.toString());
+			res.setStatus("0");
+			res.setMsg("获取数据出错");
+		}
+
+		return res;
+	}
+    
+    /**
+     * 交卷
+     * @param curIndex 当前下标
+     * @param examId 本次考试记录id
+     * @return
+     */
+     @RequestMapping("/submitTest")
+ 	@ResponseBody
+ 	public ResposeModel submitTest(@RequestParam("curIndex") Integer curIndex, @RequestParam("examId") Long examId, 
+ 			@RequestParam("answer") String answer, @RequestParam("isCorrect") Integer isCorrect) {
+ 		ResposeModel res = new ResposeModel();
+ 		User user = super.getCurrentUser();
+ 		if (null == user) {
+ 			res.setStatus("0");
+ 			res.setMsg("用户未登录");
+ 			return res;
+ 		}	
+ 	    // 获取课程
+ 		try {
+ 			if (curIndex <= 0 || curIndex > 100) {
+ 				res.setStatus("0");
+ 				res.setMsg("题目范围在1~100" + curIndex);
+ 			}
+ 			UserExamRecord record = userExamRecordService.selectById(examId);
+ 			if (null == record) {
+ 				res.setStatus("0");
+ 				res.setCode("200002");
+ 				res.setMsg("考试记录不存在");
+ 				return res;
+ 			}
+ 			// 数据校验	
+ 			res.setData(examTkCnService.submitTest(curIndex, record, user.getId(), answer, isCorrect));
+ 			res.setMsg("提交成功");
+ 		} catch (Exception e) {
+ 			log.info("submitTest:" + e.toString());
+ 			res.setStatus("0");
+ 			res.setMsg("获取数据出错");
+ 		}
+
+ 		return res;
+ 	}
+    
+    /* 判断上次考试是否完成 */
+    @RequestMapping("/checkTestFinish")
+	@ResponseBody
+	public ResposeModel checkTestFinish() {
+		ResposeModel res = new ResposeModel();
+		User user = super.getCurrentUser();
+		if (null == user) {
+			res.setStatus("0");
+ 			res.setMsg("用户未登录");
+ 			return res;
+		} else {
+			res.setData(examTkCnService.getUnFinishExam(user.getId()));
+		}		
+		return res;
+	}
+     
+    /* 放弃本次考试 */
+    @RequestMapping("/abandonTest")
+	@ResponseBody
+	public ResposeModel abandonTest() {
+		ResposeModel res = new ResposeModel();
+		User user = super.getCurrentUser();
+		if (null == user) {
+			res.setStatus("0");
+			res.setMsg("用户未登录");
+			return res;
+		}
+		res.setData(examTkCnService.abandonTest(user.getId()));
+		return res;
+	}
+    
+    /* 我的模拟考试列表 */
+    @RequestMapping("/myTestList")
+	@ResponseBody
+	public ResposeModel myTestList() {
+		ResposeModel res = new ResposeModel();
+		User user = super.getCurrentUser();
+		if (null == user) {
+			res.setStatus("0");
+			res.setMsg("用户未登录");
+			return res;
+		}
+		res.setData(userExamRecordService.selectByUserId(user.getId(), 0));
+		return res;
+	}
+    
+    /* 我的自由练习考试列表 */
+    @RequestMapping("/myFreeList")
+	@ResponseBody
+	public ResposeModel myFreeList() {
+		ResposeModel res = new ResposeModel();
+		User user = super.getCurrentUser();
+		if (null == user) {
+			res.setStatus("0");
+			res.setMsg("用户未登录");
+			return res;
+		}
+		res.setData(userExamRecordService.selectByUserId(user.getId(), 1));
+		return res;
+	}
+    
+    /* 查看答题信息 */
+    @RequestMapping("/examAnswerList")
+	@ResponseBody
+	public ResposeModel examAnswerList(@RequestParam("examId") Long examId) {
+		ResposeModel res = new ResposeModel();
+		User user = super.getCurrentUser();
+		if (null == user) {
+			res.setStatus("0");
+			res.setMsg("用户未登录");
+			return res;
+		}
+		UserExamRecord record = userExamRecordService.selectById(examId);
+		if (null == record) {
+			res.setStatus("0");
+			res.setCode("200002");
+			res.setMsg("考试记录不存在");
+			return res;
+		}
+		List<ExamTkAnsVo> ansList = JSONArray.parseArray(record.getExamMap(), ExamTkAnsVo.class);
+		int index = 1;
+		// 过滤未答题
+		List<ExamTkAnsVo> resultList = new ArrayList<>();
+		for (ExamTkAnsVo ansVo: ansList) {
+			if (null != ansVo && ansVo.getIsCorrect() > 0) {
+				ansVo.setIndex(index ++);
+				resultList.add(ansVo);
+			}
+		}
+		res.setData(resultList);
+		return res;
+	}
+    
+    /* 查看错题列表 */
+    @RequestMapping("/wrongAnswerList")
+	@ResponseBody
+	public ResposeModel wrongAnswerList(@RequestParam("examId") Long examId) {
+		ResposeModel res = new ResposeModel();
+		User user = super.getCurrentUser();
+		if (null == user) {
+			res.setStatus("0");
+			res.setMsg("用户未登录");
+			return res;
+		}
+		UserExamRecord record = userExamRecordService.selectById(examId);
+		if (null == record) {
+			res.setStatus("0");
+			res.setCode("200002");
+			res.setMsg("考试记录不存在");
+			return res;
+		}
+		List<ExamTkAnsVo> list = JSONArray.parseArray(record.getExamMap(), ExamTkAnsVo.class);
+		List<ExamTkWrongVo> wrongList = new ArrayList<>();
+		
+		int index = 1;
+		for (ExamTkAnsVo vo: list) {
+			if (vo.getIsCorrect() == 2) {
+				ExamTkWrongVo wrongVo = new ExamTkWrongVo();
+				try {
+					BeanUtils.copyProperties(wrongVo, examTkCnService.queryFreeExamByCode(vo.getExamCode(), record.getLanguage()));
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				wrongVo.setIndex(index ++);
+				wrongVo.setWrongAns(vo.getAnswer());
+				wrongList.add(wrongVo);
+			}
+		}
+		
+		res.setData(wrongList);
+		return res;
+	}
+    
+    /* 查看错题详情 */
+    @RequestMapping("/wrongAnswerDetail")
+	@ResponseBody
+	public ResposeModel wrongAnswerDetail(@RequestParam("examId") Long examId, @RequestParam("index") Integer index) {
+		ResposeModel res = new ResposeModel();
+		User user = super.getCurrentUser();
+		if (null == user) {
+			res.setStatus("0");
+			res.setMsg("用户未登录");
+			return res;
+		}
+		UserExamRecord record = userExamRecordService.selectById(examId);
+		if (null == record) {
+			res.setStatus("0");
+			res.setCode("200002");
+			res.setMsg("考试记录不存在");
+			return res;
+		}
+		List<ExamTkAnsVo> list = JSONArray.parseArray(record.getExamMap(), ExamTkAnsVo.class);
+		ExamTkAnsVo vo = list.get(index - 1);
+		ExamTkWrongVo wrongVo = new ExamTkWrongVo();
+		try {
+			BeanUtils.copyProperties(wrongVo, examTkCnService.queryFreeExamByCode(vo.getExamCode(), record.getLanguage()));
+			wrongVo.setWrongAns(vo.getAnswer());
+			res.setData(wrongVo);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
+		return res;
+	}
+}

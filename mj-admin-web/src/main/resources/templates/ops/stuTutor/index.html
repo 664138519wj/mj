@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" th:href="@{/lib/lui/css/layui.css}">
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+    <style type="text/css">
+        .layui-table-box {
+            min-height: 450px;
+        }
+    </style>
+</head>
+<body>
+
+<fieldset class="layui-elem-field">
+    <div class="site-text site-block">
+        <div class="layui-row" style="margin-top: 20px">
+            <div class="layui-col-xs8">
+                <div class="grid-demo grid-demo-bg1">
+                    <form class="layui-form" action="">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">手机号</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="mobile" id="mobile" placeholder="报名学生手机号" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">发布老师</label>
+                            <div class="layui-input-block">
+                                <select name="teacherId" id="teacherId" lay-filter="teacherId">
+                                    <option value="">ALL</option>
+							        <option th:each="teacher:${teacherList}" th:value="${teacher.id}" th:text="@{${teacher.name} + ':' + ${teacher.id}}"></option>
+							    </select>  
+                            </div>
+                        </div>
+                       
+                    </form>
+                </div>
+            </div>
+            <div class="layui-col-xs4">
+                <div class="grid-demo">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" onclick="filter()">查询</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</fieldset>
+<table id="couseOnlineTable" class="layui-table"
+       lay-data="{cellMinWidth: 80, page: true, limit:20, url:'data'}"
+       lay-filter="courseTable">
+    <thead>
+    <tr>
+        <th lay-data="{field:'id',type:'checkbox'}">ID</th>
+        <th lay-data="{field:'userName', width:120, sort: true}">手机号码</th>
+        <th lay-data="{field:'title', width:220, sort: true}">私教标题</th>
+        <th lay-data="{field:'price', width:100, sort: true}">价格</th>
+        <th lay-data="{field:'teacherName', width:100, sort: true}">发布老师</th>
+        <th lay-data="{field:'beginTime', sort: true, width: 200, align: 'right',templet:'#begin_time'}">开课时间</th>
+        <th lay-data="{field:'payTime', sort: true, width: 200, align: 'right',templet:'#pay_time'}">支付时间</th>        
+        <th lay-data="{field:'address', width:230, sort: true}">上课地址</th>       
+<!--         <th lay-data="{fixed: 'right', width:180, align:'center', toolbar: '#operation'}"></th> -->
+    </tr>
+    </thead>
+</table>
+
+<script id="operation" type="text/html">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+<script id="begin_time" type="text/html">
+    {{# var date = layui.util.toDateString(d.beginTime, 'yyyy-MM-dd HH:mm:ss') }}
+    <span>{{date}}</span>
+</script>
+<script id="pay_time" type="text/html">
+    {{# var date = layui.util.toDateString(d.payTime, 'yyyy-MM-dd HH:mm:ss') }}
+    <span>{{date}}</span>
+</script>
+
+<script th:src="@{/lib/jquery/jquery.js}"></script>
+<script th:src="@{/lib/lui/layui.all.js}"></script>
+
+<script type="text/javascript">
+    var table = layui.table;
+    var layer = layui.layer;
+    var laydate = layui.laydate;
+
+    var iframeWin = null;
+
+    laydate.render({
+        elem: '#date_range'
+        , range: true
+    });
+
+    function openWin(title, isShow, id) {
+        var url = 'ops/tutor/edit';
+        if (!!id) {
+            url += "?id=" + id;
+            if (isShow) {
+                url += "&flag=2";
+            } else {
+                url += "&flag=1";
+            }
+        } else {
+            url += "?flag=0";
+        }
+        var option = {
+            type: 2,
+            title: [title, "color:green"],
+            success: function (layero, index) {
+                iframeWin = parent.window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+            },
+            content: url,
+            area: ['800px', '600px']
+        };
+        var btn = ['保存', '关闭'];
+        var okFun = function () {
+            parent.layer.close(index);
+        };
+        if (isShow) {
+            btn = ['关闭']
+        }
+        if (btn.length > 1) {
+            okFun = function () {
+                if (iframeWin != null) {
+                    iframeWin.doSave(function () {
+                        parent.layer.close(index);
+                        // 刷新table数据
+                        table.reload("couseOnlineTable");
+                    });
+                }
+            };
+            option['btn2'] = function () {
+                parent.layer.close(index);
+            }
+        }
+        option['btn'] = btn;
+        option['yes'] = okFun;
+        var index = parent.layer.open(option);
+    }
+
+    function add() {
+        openWin("新增", false);
+    }
+    //table点击事件
+    table.on("tool(courseTable)", function (obj) {
+        var data = obj.data;
+        if (obj.event === 'detail') {
+            openWin("详细", true, data.id);
+        } else if (obj.event === 'del') {
+            parent.layer.confirm('确定删除？', function (index) {
+                parent.layer.close(index);
+                $.ajax("del?id=" + data.id, {
+                    method: "delete",
+                    contentType: "application/json;charset=utf-8",
+                    success: function (data) {
+                        if (data) {
+                            parent.tips(1, "删除成功！");
+                            table.reload("couseOnlineTable");
+
+                        } else {
+                            parent.tips(0, "删除失败！");
+                        }
+                    },
+                    error: function (e) {
+                        parent.tips(0, "删除失败！");
+                    }
+                });
+
+            });
+        } else if(obj.event === 'edit'){
+            openWin("编辑",false,data.id);
+        } 
+    });
+
+
+    function filter() {
+        var mobile = $("#mobile").val();
+        var teacherId = $("#teacherId").val();
+
+       /*  var date_range = $("#date_range").val();
+        var charge = $("#charge").val(); */
+        var filters = {};
+        if (mobile !== "") {
+            filters.mobile = mobile;
+        }
+        if (teacherId !== "") {
+            filters.teacherId = teacherId;
+        }
+       /*  if (charge !== "") {
+            filters.charge = charge;
+        }
+        if (date_range !== "") {
+            filters.release_time = date_range;
+        } */
+        table.reload("couseOnlineTable", {
+            where: {
+                filters: JSON.stringify(filters)
+            }
+        })
+
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,500 @@
+package com.migu.online.service;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.beanutils.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.alibaba.druid.util.StringUtils;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.google.common.collect.Lists;
+import com.migu.online.common.Constants;
+import com.migu.online.common.OnlineTypeEnum;
+import com.migu.online.common.UserCourseTypeEnum;
+import com.migu.online.mapper.CourseOnlineMapper;
+import com.migu.online.mapper.TeacherMapper;
+import com.migu.online.model.CourseOnline;
+import com.migu.online.model.Teacher;
+import com.migu.online.model.TrafficLaw;
+import com.migu.online.model.User;
+import com.migu.online.model.UserCourse;
+import com.migu.online.model.UserVideoRecord;
+import com.migu.online.ops.vo.CourseOnlineOpsVo;
+import com.migu.online.utils.DateUtil;
+import com.migu.online.utils.NumberUtil;
+import com.migu.online.vo.CourseOnlineVo;
+import com.migu.online.vo.UserCourseOnlineVo;
+
+import tk.mybatis.mapper.entity.Example;
+import tk.mybatis.mapper.entity.Example.Criteria;
+
+@Service
+public class CourseOnlineService {
+
+    @Autowired
+    private CourseOnlineMapper courseOnlineMapper;
+    @Autowired
+    private TeacherMapper teacherMapper;
+    @Autowired
+    private UserVideoRecordService userVideoRecordService;
+    @Autowired
+    private RedisService redisService;
+    @Autowired
+    private UserCourseService userCourseService;
+
+    ExecutorService cachedThreadPool = Executors.newCachedThreadPool();
+
+
+    /**
+     * 首页推荐视频
+     *
+     * @return
+     * @throws
+     * @throws Exception
+     */
+    public List<CourseOnlineVo> selectHomePageAll() throws Exception {
+        List<CourseOnlineVo> result = new ArrayList<CourseOnlineVo>();
+        //单表自定义查询
+        Example example = new Example(CourseOnline.class);
+        example.createCriteria().andCondition("is_delete = 0").andCondition("recommand = 1");
+        example.setOrderByClause("create_time desc");
+        List<CourseOnline> list = courseOnlineMapper.selectByExample(example);
+        for (CourseOnline data : list) {
+            CourseOnlineVo vo = new CourseOnlineVo();
+            BeanUtils.copyProperties(vo, data);
+            String time = NumberUtil.addZeroForNum(data.getHour().toString(), 2)
+                    + ":" + NumberUtil.addZeroForNum(data.getMinute().toString(), 2)
+                    + ":" + NumberUtil.addZeroForNum(data.getSecond().toString(), 2);
+            vo.setTime(time);
+            vo.setUpdateTime(DateUtil.dateToDateString(data.getUpdateTime(), DateUtil.DATAFORMAT_STR));
+            result.add(vo);
+        }
+        return result;
+    }
+
+    /**
+     * 列表页推荐数据
+     *
+     * @return
+     * @throws
+     * @throws Exception
+     */
+    public List<List<CourseOnlineVo>> selectListRec() throws Exception {
+        List<List<CourseOnlineVo>> result = new ArrayList<>();
+        Example example = new Example(CourseOnline.class);
+        example.createCriteria().andCondition("is_delete = 0").andCondition("is_list_rec = 1");
+        example.setOrderByClause("type");
+        List<CourseOnline> courseList = courseOnlineMapper.selectByExample(example);
+        if (null == courseList || courseList.size() <= 0) {
+            return null;
+        }
+        List<CourseOnlineVo> courseList1 = new ArrayList<>();
+        List<CourseOnlineVo> courseList2 = new ArrayList<>();
+        List<CourseOnlineVo> courseList3 = new ArrayList<>();
+        List<CourseOnlineVo> courseList4 = new ArrayList<>();
+
+        for (CourseOnline data : courseList) {
+            CourseOnlineVo vo = new CourseOnlineVo();
+            BeanUtils.copyProperties(vo, data);
+            String time = NumberUtil.addZeroForNum(data.getHour().toString(), 2)
+                    + ":" + NumberUtil.addZeroForNum(data.getMinute().toString(), 2)
+                    + ":" + NumberUtil.addZeroForNum(data.getSecond().toString(), 2);
+            vo.setTime(time);
+            vo.setUpdateTime(DateUtil.dateToDateString(data.getUpdateTime(), DateUtil.DATAFORMAT_STR));
+            if (data.getType().equals(OnlineTypeEnum.kemu1.code)) {
+                courseList1.add(vo);
+            } else if (data.getType().equals(OnlineTypeEnum.kemu2.code)) {
+                courseList2.add(vo);
+            } else if (data.getType().equals(OnlineTypeEnum.kemu3.code)) {
+                courseList3.add(vo);
+            } else if (data.getType().equals(OnlineTypeEnum.kemu4.code)) {
+                courseList4.add(vo);
+            }
+        }
+        result.add(courseList1);
+        result.add(courseList2);
+        result.add(courseList3);
+        result.add(courseList4);
+        return result;
+    }
+
+    /**
+     * 推荐列表
+     *
+     * @param type
+     * @param isRecommended
+     * @param pageIndex
+     * @param pageSize
+     * @return
+     */
+    public List<CourseOnlineVo> selectByPage(Integer type, Integer isListRec, Integer pageIndex, Integer pageSize) throws Exception {
+        List<CourseOnlineVo> result = new ArrayList<>();
+        // 单表分页
+        PageHelper.startPage(pageIndex, pageSize, false);
+
+        //单表自定义查询
+        Example example = new Example(TrafficLaw.class);
+        Criteria criteria = example.createCriteria();
+        criteria.andCondition("is_delete = 0");
+        if (null != type) {
+            criteria.andCondition("type = ", type);
+        }
+        if (null != isListRec) {
+            criteria.andCondition("is_list_rec = ", isListRec);
+        }
+        example.and(criteria);
+        example.setOrderByClause("sort desc");
+        List<CourseOnline> pageList = courseOnlineMapper.selectByExample(example);
+        for (CourseOnline data : pageList) {
+            CourseOnlineVo vo = new CourseOnlineVo();
+            BeanUtils.copyProperties(vo, data);
+            String time = NumberUtil.addZeroForNum(data.getHour().toString(), 2)
+                    + ":" + NumberUtil.addZeroForNum(data.getMinute().toString(), 2)
+                    + ":" + NumberUtil.addZeroForNum(data.getSecond().toString(), 2);
+            vo.setTime(time);
+            vo.setUpdateTime(DateUtil.dateToDateString(data.getUpdateTime(), DateUtil.DATAFORMAT_STR));
+            result.add(vo);
+        }
+        return result;
+    }
+
+    /**
+     * 详情
+     *
+     * @param id
+     * @return
+     */
+    public UserCourseOnlineVo selectUserOne(Long id, Long userId) throws Exception {
+        CourseOnline model = new CourseOnline();
+        model.setId(id);
+        model.setIsDelete(0);
+        CourseOnline data = courseOnlineMapper.selectOne(model);
+        UserCourseOnlineVo vo = new UserCourseOnlineVo();
+        BeanUtils.copyProperties(vo, data);
+        String time = NumberUtil.addZeroForNum(data.getHour().toString(), 2)
+                + ":" + NumberUtil.addZeroForNum(data.getMinute().toString(), 2)
+                + ":" + NumberUtil.addZeroForNum(data.getSecond().toString(), 2);
+        vo.setTime(time);
+        vo.setUpdateTime(DateUtil.dateToDateString(data.getUpdateTime(), DateUtil.DATAFORMAT_STR));
+        if (data.getIsHotAndCharge() >= 2) {
+            // 付费视频 判断user是否已付费
+            vo.setIsPay(0);
+            // 用户课程购买记录
+            UserCourse course = userCourseService.selectPayCourseByUser(id, userId, UserCourseTypeEnum.online.code);
+            if (null != course) {
+                vo.setIsPay(1);
+            } else {
+                vo.setIsPay(2);
+            }
+        } else {
+            vo.setIsPay(1);
+        }
+        return vo;
+    }
+
+    /**
+     * 老师发布在线课程列表
+     *
+     * @param type
+     * @param isRecommended
+     * @param pageIndex
+     * @param pageSize
+     * @return
+     */
+    public List<CourseOnlineVo> selectPageByTeacher(Long tId, Integer pageIndex, Integer pageSize) throws Exception {
+        List<CourseOnlineVo> result = new ArrayList<>();
+        // 单表分页
+        PageHelper.startPage(pageIndex, pageSize, false);
+
+        //单表自定义查询
+        Example example = new Example(TrafficLaw.class);
+        Criteria criteria = example.createCriteria();
+        criteria.andCondition("is_delete = 0");
+        criteria.andCondition("teacher_id = ", tId);
+        example.and(criteria);
+        example.setOrderByClause("sort desc");
+        List<CourseOnline> pageList = courseOnlineMapper.selectByExample(example);
+        for (CourseOnline data : pageList) {
+            CourseOnlineVo vo = new CourseOnlineVo();
+            BeanUtils.copyProperties(vo, data);
+            String time = NumberUtil.addZeroForNum(data.getHour().toString(), 2)
+                    + ":" + NumberUtil.addZeroForNum(data.getMinute().toString(), 2)
+                    + ":" + NumberUtil.addZeroForNum(data.getSecond().toString(), 2);
+            vo.setTime(time);
+            vo.setUpdateTime(DateUtil.dateToDateString(data.getUpdateTime(), DateUtil.DATAFORMAT_STR));
+            result.add(vo);
+        }
+        return result;
+    }
+
+    /**
+     * 删除
+     *
+     * @param id
+     * @return
+     */
+    public int deleteById(Long id) {
+        CourseOnline record = courseOnlineMapper.selectByPrimaryKey(id);
+        if (null != record) {
+            record.setIsDelete(1);
+            return courseOnlineMapper.updateByPrimaryKey(record);
+        }
+        return 0;
+    }
+
+    /**
+     * 查
+     *
+     * @param id
+     * @return
+     */
+    public CourseOnline selectById(Long id) {
+        return courseOnlineMapper.selectByPrimaryKey(id);
+    }
+
+    /**
+     * 改&插
+     *
+     * @param model
+     * @return
+     */
+    public int createOrUpdate(CourseOnline model) {
+        if (null != model.getId() && model.getId() > 0) {
+            // update
+            return courseOnlineMapper.updateByPrimaryKey(model);
+        } else {
+            // add
+            return courseOnlineMapper.insert(model);
+        }
+    }
+
+
+    /**
+     * 分页查询
+     *
+     * @param pageIndex
+     * @param pageSize
+     * @param platId
+     * @return
+     * @throws Exception
+     */
+    public Page<CourseOnlineOpsVo> selectConditionByPage(Integer pageIndex, Integer pageSize, String filters) throws Exception {
+        Page<CourseOnlineOpsVo> result = new Page<CourseOnlineOpsVo>();
+        // 单表分页
+        PageHelper.startPage(pageIndex, pageSize, true);
+
+        //单表自定义查询
+        Example example = new Example(CourseOnline.class);
+        Criteria criteria = example.createCriteria();
+        criteria.andCondition("is_delete = 0");
+        if (!StringUtils.isEmpty(filters)) {
+            criteria.andLike("title", "%" + filters + "%");
+        }
+        example.setOrderByClause("update_time desc");
+        Page<CourseOnline> pageList = (Page<CourseOnline>) courseOnlineMapper.selectByExample(example);
+        for (CourseOnline data : pageList) {
+            CourseOnlineOpsVo vo = new CourseOnlineOpsVo();
+            if (null != data) {
+                BeanUtils.copyProperties(vo, data);
+                // 查询平台
+                Teacher record = new Teacher();
+                record.setId(data.getTeacherId());
+                record = teacherMapper.selectOne(record);
+                if (null != record) {
+                	vo.setTeacherName(record.getName());
+                } else {
+                	vo.setTeacherName("");
+                }             
+                vo.setKemu(OnlineTypeEnum.getEnumByCode(data.getType()).desc);
+                result.add(vo);
+            }
+        }
+        result.setTotal(pageList.getTotal());
+        return result;
+    }
+
+    /**
+     * @param pageIndex
+     * @param pageSize
+     * @param platId
+     * @return
+     * @throws Exception
+     */
+    public Page<CourseOnlineOpsVo> selectConditionsByPage(Integer pageIndex, Integer pageSize, Map<String, String> filters) throws Exception {
+        Page<CourseOnlineOpsVo> result = new Page<CourseOnlineOpsVo>();
+        // 单表分页
+        PageHelper.startPage(pageIndex, pageSize, true);
+
+        //单表自定义查询
+        Example example = new Example(CourseOnline.class);
+        Criteria criteria = example.createCriteria();
+        criteria.andCondition("is_delete = 0");
+        if (filters.size() > 0) {
+            for (String key : filters.keySet()) {
+                String value = filters.get(key);
+                switch (key) {
+                    case "title":
+                        criteria.andLike("title", "%" + value + "%");
+                        break;
+                    case "release":
+                        if (value.equals("true")) {
+                            criteria.andCondition("release_time is not null");
+                        } else {
+                            criteria.andCondition("release_time is null");
+                        }
+                        break;
+                    case "release_time":
+                        String[] range = value.split(" - ");
+                        criteria.andBetween("releaseTime", range[0], range[1]);
+                        break;
+                    case "charge":
+                        criteria.andIn("isHotAndCharge", value.equals("true") ? Lists.newArrayList(2, 3) : Lists.newArrayList(0, 1));
+                        break;
+                    case "teacher_id":
+                        criteria.andEqualTo("teacherId", value);
+                    default:
+                        break;
+                }
+            }
+        }
+        Page<CourseOnline> pageList = (Page<CourseOnline>) courseOnlineMapper.selectByExample(example);
+        for (CourseOnline data : pageList) {
+            CourseOnlineOpsVo vo = new CourseOnlineOpsVo();
+            if (null != data) {
+                BeanUtils.copyProperties(vo, data);
+                // 查询平台
+                Teacher record = new Teacher();
+                record.setId(data.getTeacherId());
+                record = teacherMapper.selectOne(record);
+                vo.setTeacherName(record.getName());
+                vo.setKemu(OnlineTypeEnum.getEnumByCode(data.getType()).desc);
+                result.add(vo);
+            }
+        }
+        result.setTotal(pageList.getTotal());
+        return result;
+    }
+
+    /**
+     * 后台显示详情
+     *
+     * @param id
+     * @return
+     */
+    public CourseOnlineOpsVo selectOpsOne(Long id) throws Exception {
+        CourseOnlineOpsVo vo = new CourseOnlineOpsVo();
+        CourseOnline model = new CourseOnline();
+        model.setId(id);
+        model.setIsDelete(0);
+        CourseOnline data = courseOnlineMapper.selectOne(model);
+        if (null != data) {
+            BeanUtils.copyProperties(vo, data);
+            // 查询平台
+            Teacher record = new Teacher();
+            record.setId(data.getTeacherId());
+            record = teacherMapper.selectOne(record);
+            vo.setTeacherName(record.getName());
+            vo.setKemu(OnlineTypeEnum.getEnumByCode(data.getType()).desc);
+        }
+        return vo;
+    }
+
+    /**
+     * 记录用户点播视频记录 TODO 未来考虑并发的情况，使用日志形式记录数据，延迟插入数据库
+     */
+    public boolean videoPlayRecord(Long courseId, User user, String ip) {
+        // 异步记录数据日志
+        cachedThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                UserVideoRecord record = new UserVideoRecord();
+                if (null != user) {
+                    record.setUserId(user.getId());
+                    record.setUserName(user.getMobile());
+                }
+                record.setCourseId(courseId);
+                record.setIp(ip);
+                record.setCreateTime(new Date());
+                userVideoRecordService.insert(record);
+                // 视频播放次数累加
+                String key = Constants.VIDEO_PLAY_RECORDE + courseId;
+                Long playNumber = (Long) redisService.get(key);
+                CourseOnline data;
+                if (null != playNumber) {
+                    playNumber = playNumber + 1;
+                } else {
+                    // 获取最新的播放记录
+                    data = courseOnlineMapper.selectByPrimaryKey(courseId);
+                    if (null != data) {
+                        playNumber = data.getPlayNumber() + 1;
+                    }
+                }
+                redisService.set(key, playNumber);
+                // 100的倍数
+                if (playNumber % 100 == 0) {
+                    // 更新播放记录
+                    data = courseOnlineMapper.selectByPrimaryKey(courseId);
+                    data.setPlayNumber(playNumber);
+                    courseOnlineMapper.updateByPrimaryKeySelective(data);
+                }
+            }
+        });
+        return true;
+    }
+
+    /**
+     * 获取视频播放次数
+     *
+     * @return
+     */
+    public Long getVideoPlayNumber(Long courseId) {
+        String key = Constants.VIDEO_PLAY_RECORDE + courseId;
+        Long playNumber = (Long) redisService.get(key);
+        if (null == playNumber) {
+            // 数据库查找
+            CourseOnline data = courseOnlineMapper.selectByPrimaryKey(courseId);
+            if (null != data) {
+                playNumber = data.getPlayNumber();
+                redisService.set(key, playNumber);
+            }
+        }
+        return playNumber;
+    }
+
+    /**
+     * 获取客户端ip
+     *
+     * @param request
+     * @return
+     */
+    public static String getIpAddress(HttpServletRequest request) {
+        String ip = request.getHeader("X-Forwarded-For");
+        if (!StringUtils.isEmpty(ip) && !"unKnown".equalsIgnoreCase(ip)) {
+            //多次反向代理后会有多个ip值，第一个ip才是真实ip
+            int index = ip.indexOf(",");
+            if (index != -1) {
+                return ip.substring(0, index);
+            } else {
+                return ip;
+            }
+        }
+        ip = request.getHeader("X-Real-IP");
+        if (!StringUtils.isEmpty(ip) && !"unKnown".equalsIgnoreCase(ip)) {
+            return ip;
+        }
+        ip = request.getRemoteAddr();
+        if (ip.equals("0:0:0:0:0:0:0:1")) {
+            ip = "127.0.0.1";
+        }
+        return ip;
+    }
+}

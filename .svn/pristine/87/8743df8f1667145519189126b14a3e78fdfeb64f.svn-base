@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+<head>
+    <title>自由练习</title>
+</head>
+<body th:fragment="content" >
+        <div class="choose-type com-width clear">
+            <div class="plat-title">
+                <h2 th:if="${language == 0}">自由练习</h2>
+				<h2 th:if="${language == 1}">ᠴᠢᠯᠥᠭᠡᠲᠦ ᠪᠣᠯᠪᠠᠰᠤᠷᠠᠯᠲᠠ </h2>
+				<h2 th:if="${language == 2}">ەركىن جاتتىعۋ </h2>
+				<h2 th:if="${language == 3}">ئەركىن مەشىق قىلساڭلار </h2>	
+                <p>—</p>
+            </div>
+            <div class="choose-box clear">
+                <ul class="choose_1 fl" th:if="${kemu==1}" style="width:570px;">
+                    <li><p>
+                      <b th:if="${language==0}">按照试题习题练习</b>
+                      <b th:if="${language==1}">ᠰᠡᠳᠦᠪ ᠳᠠᠰᠬᠠᠯ ᠤᠨ ᠶᠣᠰᠣᠭᠠᠷ ᠪᠣᠯᠪᠠᠰᠤᠷᠠᠯ </b>
+                      <b th:if="${language==2}">ەمتيحان سۇراۋى بويىنشا ەسەبى جاتتىعۋ </b>
+                      <b th:if="${language==3}">ئىمتىھان سوئالىنى مەشىق بويىچە مەشىق قىلىش </b>
+                    </p></li>
+                    <li>
+                        <input type="radio" name="radio_1" value="A01">
+                        <span th:if="${language==0}">驾驶证和机动车管理规定</span>
+                        <span th:if="${language==1}">ᠵᠢᠯᠣᠭᠣᠳᠬᠤ ᠦᠨᠡᠮᠯᠡᠯ ᠪᠣᠯᠤᠨ ᠮᠠᠰᠢᠨᠲᠤ ᠲᠡᠷᠭᠡᠨ ᠦ ᠬᠠᠮᠢᠶᠠᠷᠤᠯᠲᠠ ᠶᠢᠨ ᠲᠣᠭᠲᠠᠭᠠᠯ </span>
+                        <span th:if="${language==2}">تىزگىنشى كۋالىگىن جانە موتورلى كولىك باسقارۋ بەلگىلەمەسىنە </span>
+                        <span th:if="${language==3}">پىراۋىڭىز بىلەن موتۇرلۇق قاتناش ۋاسىتىسى باشقۇرۇش بەلگىلىمىسى </span>
+                        <!-- 下面的参考上面做法 -->
+                    </li>
+                    <li>
+                        <input type="radio" name="radio_1" value="A02">
+                        <span th:if="${language==0}">道路通行条件及通行规定</span>
+                        <span th:if="${language==1}">ᠵᠠᠮ ᠨᠡᠪᠲᠡᠷᠡᠯᠭᠡ ᠶᠢᠨ ᠨᠥᠬᠥᠴᠡᠯ ᠪᠣᠯᠤᠨ ᠵᠠᠮ ᠨᠡᠪᠲᠡᠷᠡᠯᠭᠡ ᠶᠢᠨ ᠲᠤᠬᠠᠶ ᠲᠣᠭᠲᠠᠭᠠᠯ </span>
+                        <span th:if="${language==2}">جولدا قاتىناۋ شارتتارى جانە قاتىناۋى جونىندەگى بەلگىلەمەلەر </span>
+                        <span th:if="${language==3}">يول يۈرۈش شەرتى ۋە يول يۈرۈشىگە دائىر بەلگىلىمە </span>
+                    </li>
+                    <li>
+                        <input type="radio" name="radio_1" value="A03">
+                        <span th:if="${language==0}">道路交通安全违法行为及处罚</span>
+                        <span th:if="${language==1}">ᠵᠠᠮ ᠬᠠᠷᠢᠯᠴᠠᠭᠠᠨ ᠤ ᠠᠮᠤᠷ ᠲᠦᠪᠰᠢᠨ ᠦ ᠬᠠᠤᠯᠢ ᠶᠢ ᠵᠥᠷᠢᠴᠡᠭᠰᠡᠨ ᠦᠢᠯᠡ ᠠᠵᠢᠯᠯᠠᠭ᠎ᠠ ᠵᠢᠴᠢ ᠲᠡᠭᠦᠨ ᠳᠦ ᠣᠯᠭᠣᠬᠤ ᠰᠢᠳᠬᠡᠯ ᠦᠨ ᠲᠤᠬᠠᠶ </span>
+                        <span th:if="${language==2}">جول قاتىناس حاۋىپسىزدىك زاڭىنا جانە وعان بەرىلەتىن جازا </span>
+                        <span th:if="${language==3}">يول قاتناش بىخەتەرلىكىگە ئائىت قانۇنغا خىلاپ قىلمىش ۋە بېرىلىدىغان جازا</span>
+                    </li>
+                    <li>
+                        <input type="radio" name="radio_1" value="A04">
+                        <span th:if="${language==0}">道路交通事故处理相关规定</span>
+                        <span th:if="${language==1}">ᠵᠠᠮ ᠬᠠᠷᠢᠯᠴᠠᠭᠠᠨ ᠤ ᠡᠨᠳᠡᠭᠳᠡᠯ ᠢ ᠰᠢᠶᠳᠪᠦᠷᠢᠯᠡᠬᠦ ᠬᠣᠯᠪᠣᠭᠳᠠᠯ ᠪᠦᠬᠦᠢ ᠲᠣᠭᠲᠠᠭᠠᠯ </span>
+                        <span th:if="${language==2}">جول قاتىناس شىرعالاڭى ٴبىر جايلى ەتۋىنە قاتىستى بەلگىلەمەسى </span>
+                        <span th:if="${language==3}">يول قاتناش ھادىسىلىرىنى بىر تەرەپ ئالاقىدار بەلگىلىمە </span>
+                    </li>
+                    <li>
+                        <input type="radio" name="radio_1" value="A05">
+                        <span th:if="${language==0}">机动车基础信息</span>
+                        <span th:if="${language==1}">ᠮᠠᠰᠢᠨᠲᠤ ᠲᠡᠷᠭᠡᠨ ᠦ ᠰᠠᠭᠤᠷᠢ ᠮᠡᠳᠡᠭᠡ ᠵᠠᠩᠭᠢ </span>
+                        <span th:if="${language==2}">موتورلى كولىك نەگىزى حابار </span>
+                        <span th:if="${language==3}">ماتورلۇق قاتناش ۋاستىسى ئاساسىي ئۇچۇر </span>
+                    </li>
+                    <li>
+                        <input type="radio" name="radio_1" value="A06">
+                        <span th:if="${language==0}">科目一地方性法规</span>
+                        <span th:if="${language==1}">ᠵᠦᠢᠯ ᠢᠯᠭᠠᠯ ᠤᠨ ᠨᠢᠭᠡ ᠣᠷᠣᠨ ᠨᠤᠲᠤᠭ ᠤᠨ ᠴᠢᠨᠠᠷᠲᠠᠶ ᠬᠠᠤᠯᠢ ᠲᠣᠭᠲᠠᠭᠠᠯ </span>
+                        <span th:if="${language==2}">ەسەپ ٴتۇرى ٴبىر جەرگىلىكتى زاڭ - ەرەجەلەردى </span>
+                        <span th:if="${language==3}">بىرىنچى تۈردىكى يەرلىك نىزام </span>
+                    </li>
+                    <li>
+                        <input type="radio" name="radio_1" value="A07">
+                        <span th:if="${language==0}">大中型客货车制动系统与安全装置知识</span>
+                        <span th:if="${language==1}">ᠳᠤᠮᠤ ᠳᠤᠮᠳᠠ ᠬᠡᠯᠪᠡᠷᠢ ᠟ᠢᠢᠨ ᠲᠡᠷᠭᠡᠨ ᠲᠣᠷᠣᠮᠰᠤᠯᠠᠬᠤ ᠰᠢᠰᠲ᠋ᠧᠮ ᠪᠠ ᠠᠮᠤᠷ ᠲᠦᠪᠰᠢᠨ ᠦ ᠲᠥᠬᠥᠭᠡᠷᠦᠮᠵᠢ ᠮᠡᠳᠡᠯᠭᠡ </span>
+                        <span th:if="${language==2}">ٴىرى ، ورتاشا اۆتوموبيل تورموز جۇيە مەن حاۋىپسىزدىك قۇرىلعىلارى ٴبىلىم </span>
+                        <span th:if="${language==3}">چوڭ ئوتتۇرا تىپتىكى يولۇچى ، يۈك ئاپتوموبىلىنىڭ تورمۇزلاش سىستېمىسى ۋە بىخەتەرلىك قۇرۇلمىسى بىلىم </span>
+                    </li>                                      
+                </ul>
+                <ul class="choose_1 fl" th:if="${kemu==4}" style="width:570px;">
+                    <li><p>
+                    	<b th:if="${language==0}">按照试题习题练习</b>
+                    	<b th:if="${language==1}">ᠰᠡᠳᠦᠪ ᠳᠠᠰᠬᠠᠯ ᠤᠨ ᠶᠣᠰᠣᠭᠠᠷ ᠪᠣᠯᠪᠠᠰᠤᠷᠠᠯ </b>
+                    	<b th:if="${language==2}">ەمتيحان سۇراۋى بويىنشا ەسەبى جاتتىعۋ </b>
+                    	<b th:if="${language==3}">ئىمتىھان سوئالىنى مەشىق بويىچە مەشىق قىلىش </b>
+                    </p></li>
+                    <li>
+                        <input type="radio" name="radio_1" value="B01">
+                        <span th:if="${language==0}">安全行车常识</span>
+                        <span th:if="${language==1}">ᠠᠶᠤᠯᠭᠦᠶ ᠪᠡᠷ ᠲᠡᠷᠭᠡ ᠶᠠᠪᠤᠭᠤᠯᠬᠤ ᠶᠡᠷᠦ ᠶᠢᠨ ᠮᠡᠳᠡᠯᠭᠡ </span>
+                        <span th:if="${language==2}">قاتەرسىز باسقان جول ساۋاتىن </span>
+                        <span th:if="${language==3}">بىخەتەر يۈرۈش ساۋات </span>
+                    </li>
+                    <li>
+                        <input type="radio" name="radio_1" value="B02">
+                        <span th:if="${language==0}">文明行车常识</span>
+                        <span th:if="${language==1}">ᠪᠣᠯᠪᠠᠰᠤᠨ ᠲᠡᠷᠭᠡᠨ ᠶᠡᠷᠦ ᠶᠢᠨ ᠮᠡᠳᠡᠯᠭᠡ </span>
+                        <span th:if="${language==2}">وركەنيەت قاتىناۋ ساۋاتىن </span>
+                        <span th:if="${language==3}">مەدەنىي يۈرۈش ساۋات </span>
+                    </li>
+                    <li>
+                        <input type="radio" name="radio_1" value="B03">
+                        <span th:if="${language==0}">道路交通信号在交通场景中的综合应用</span>
+                        <span th:if="${language==1}">ᠵᠠᠮ ᠬᠠᠷᠢᠯᠴᠠᠭᠠᠨ ᠤ ᠬᠢᠵᠠᠭᠠᠷᠯᠠᠬᠤ ᠴᠢᠨᠠᠷᠲᠠᠶ ᠳᠤᠬᠢᠶᠡᠨ ᠵᠠᠮ ᠬᠠᠷᠢᠯᠴᠠᠭᠠᠨ ᠤ ᠲᠠᠯᠠᠪᠤᠷ  ᠠᠴᠠ ᠶᠡᠷᠦᠩᠬᠡᠶᠢᠯᠡᠭᠰᠡᠨ ᠠᠰᠢᠭᠯᠠᠯᠲᠠ </span>
+                        <span th:if="${language==2}">جول قاتىناس بەلگىسى قولدانىلادى قاتىناس ورتادا جالپىلىق </span>
+                        <span th:if="${language==3}">يول قاتناش سىگنال قاتناش مەيداننىڭ ئۇنىۋېرسال ئەمەلىي </span>
+                    </li>
+                    <li>
+                        <input type="radio" name="radio_1" value="B04">
+                        <span th:if="${language==0}">恶劣气象和复杂道路条件下安全驾驶知识</span>
+                        <span th:if="${language==1}">ᠮᠠᠭᠤ ᠴᠠᠭ ᠠᠭᠤᠷ ᠪᠠ ᠪᠤᠳᠤᠯᠢᠶᠠᠨᠲᠠᠶ ᠵᠠᠮ ᠤᠨ ᠨᠥᠬᠥᠴᠡᠯ ᠳᠣᠣᠷ᠎ᠠ ᠠᠶᠤᠯᠭᠦᠶ ᠪᠡᠷ ᠵᠢᠯᠣᠭᠣᠳᠬᠤ ᠶᠢ ᠮᠡᠳᠡᠯᠭᠡ </span>
+                        <span th:if="${language==2}">ناشار اۋا رايى جانە كۇردەلى جول جاعدايى جاعدايدا حاۋىپسىز ايداۋ ٴبىلىم </span>
+                        <span th:if="${language==3}">ناچار ھاۋارايى ۋە مۇرەككەپ يول شارائىتىدا بىخەتەر ھەيدەش بىلىملىرى </span>
+                    </li>
+                    <li>
+                        <input type="radio" name="radio_1" value="B05">
+                        <span th:if="${language==0}">紧急情况下避险常识</span>
+                        <span th:if="${language==1}">ᠪᠠᠴᠢᠮ ᠪᠠᠶᠢᠳᠠᠯ ᠳᠣᠣᠷ᠎ᠠ ᠵᠠᠶᠢᠯᠠᠭᠤᠯᠬᠤ ᠠᠵᠢᠯᠯᠠᠭ᠎ᠠ ᠨᠢ ᠶᠡᠷᠦ ᠶᠢᠨ ᠮᠡᠳᠡᠯᠭᠡ </span>
+                        <span th:if="${language==2}">شۇعىل جاعدايدا حاۋىپتەن ساقتانۋ ساۋاتىن </span>
+                        <span th:if="${language==3}">جىددىي ئەھۋالدا خەتەردىن ساقلىنىش ساۋاتلىرى </span>
+                    </li>
+                    <li>
+                        <input type="radio" name="radio_1" value="B06">
+                        <span th:if="${language==0}">典型事故案例分析</span>
+                        <span th:if="${language==1}">ᠭᠡᠨᠡᠳᠡᠯ ᠦᠨ ᠨᠡᠶᠢᠲᠡᠯᠢᠭ ᠬᠡᠷᠡᠭ ᠦᠨ ᠵᠢᠱᠢᠶ᠎ᠡ ᠶᠢ ᠵᠠᠳᠠᠯᠬᠤ </span>
+                        <span th:if="${language==2}">تيپتىك شىرعالاڭ دەلو دەرەكتەرى تالداۋ جاساۋ </span>
+                        <span th:if="${language==3}">تىپىك دېلو مىسالىنى تەھلىل قىلىش </span>
+                    </li>
+                    <li>
+                        <input type="radio" name="radio_1" value="B07">
+                        <span th:if="${language==0}">交通事故救护及常见危险化学品处置常识</span>
+                        <span th:if="${language==1}">ᠵᠠᠮ ᠬᠠᠷᠢᠯᠴᠠᠭᠠᠨ ᠤ ᠡᠨᠳᠡᠯ ᠦᠨ ᠠᠪᠤᠷᠠᠨ ᠲᠤᠰᠠᠯᠠᠬᠤ ᠪᠠ ᠪᠠᠶᠢᠩᠭᠤ ᠲᠣᠬᠢᠶᠠᠯᠳᠤᠳᠠᠭ ᠠᠶᠤᠯᠲᠠᠶ ᠬᠢᠮᠢ ᠶᠢᠨ ᠵᠦᠢᠯ ᠢ ᠰᠢᠶᠳᠪᠦᠷᠢᠯᠡᠬᠦ ᠶᠡᠷᠦ ᠶᠢᠨ ᠮᠡᠳᠡᠯᠭᠡ </span>
+                        <span th:if="${language==2}">قاتىناس شىرعالاڭى قۇتقارۋ جانە كوپ كەزىگەتىن حاۋپىتى حيميالىق زاتتاردى ٴبىرجايلى ەتۋ ساۋاتىن </span>
+                        <span th:if="${language==3}">قاتناش ھادىسىسى ئاپەتتىن قۇتقۇزۇش ۋە كۆپ ئۇچرايدىغان خەتەرلىك خىمىيىۋى بۇيۇملارنى بىر تەرەپ قىلىش ساۋاتلىرى </span>
+                    </li>
+                    <li>
+                        <input type="radio" name="radio_1" value="B08">
+                        <span th:if="${language==0}">科目三安全文明地方题</span>
+                        <span th:if="${language==1}">ᠭᠤᠷᠪᠠᠳᠤᠭᠠᠷ ᠠᠮᠤᠷ ᠲᠦᠪᠰᠢᠨ ᠪᠣᠯᠪᠠᠰᠤᠨ ᠭᠠᠵᠠᠷ ᠰᠡᠳᠦᠪ </span>
+                        <span th:if="${language==2}">ەسەپ ٴتۇرى 3 حاۋىپسىز ، وركەنيەتتى جەرگىلىكتى دەگەن </span>
+                        <span th:if="${language==3}">3 بىخەتەر مەدەنىي يەرلىك سوئالى </span>
+                    </li>
+                    
+                </ul>
+                <ul class="choose_2 fr">
+                    <li><p>
+                    	<b th:if="${language==0}">按照试题题型练习</b>
+                    	<b th:if="${language==1}">ᠪᠣᠯᠪᠠᠰᠤᠷᠠᠯ ᠰᠢᠯᠭᠠᠯᠲᠠ ᠶᠢᠨ ᠰᠡᠳᠦᠪ ᠰᠡᠳᠦᠪ ᠦᠨ ᠬᠡᠯᠪᠡᠷᠢ ᠶᠣᠰᠣᠭᠠᠷ </b>
+                    	<b th:if="${language==2}">ەمتيقان سۇراقتارىن ەمتيحان سۇراۋى بويىنشا جاتتىعۋ </b>
+                    	<b th:if="${language==3}">ئىمتىھان سوئالى بويىچە مەشىق قىلىپ </b>
+                    </p></li>
+                    <li>
+                        <input type="radio" name="radio_1" value="1">
+                        <span th:if="${language==0}">是非题</span>
+                        <span th:if="${language==1}">ᠵᠥᠪ ᠪᠤᠷᠤᠭᠤ  ᠶᠢᠨ ᠤᠴᠢᠷ </span>
+                        <span th:if="${language==2}">قاتە </span>
+                        <span th:if="${language==3}">توغرا - خاتالىق سوئالى </span>
+                    </li>
+                    <li>
+                        <input type="radio" name="radio_1" value="2">
+                        <span th:if="${language==0}">单选题</span>
+                        <span th:if="${language==1}">ᠰᠣᠩᠭᠣᠬᠤ ᠰᠡᠳᠦᠪ </span>
+                        <span th:if="${language==2}">، جاۋاپتاردىڭ </span>
+                        <span th:if="${language==3}">تاللاش سوئاللىرى </span>
+                    </li>
+                    <li>
+                        <input type="radio" name="radio_1" value="3">
+                        <span th:if="${language==0}">多选题</span>
+                        <span th:if="${language==1}">ᠰᠣᠩᠭᠣᠬᠤ ᠰᠡᠳᠦᠪ </span>
+                        <span th:if="${language==2}">، جاۋاپتاردىڭ </span>
+                        <span th:if="${language==3}">تاللاش سوئاللىرى </span>
+                    </li>
+                </ul>
+            </div>
+            <div class="car-btn fr">
+                <a href="javascript:;" id="next_a" style="display:inline-block;width:60px;height:60px" onclick="goToPractice();">
+                    <img th:src="@{/img/my-pic4.1.png}">
+                </a>
+            </div>
+        </div>
+        <input type="hidden" name="kemu" th:value="${kemu}" id="kemu"> 
+        <input type="hidden" name="licType" id="licType" th:value="${licType}"> 
+        <input type="hidden" name="language" id="language" th:value="${language}"> 
+        <script>
+		function goToPractice() {
+			var kemu= $('#kemu').val();
+			var licType = $('#licType').val();
+			var language = $('#language').val();
+			var examType = $("input[name='radio_1']:checked").val();
+			
+			if (examType == '' || examType == undefined) {
+				alert("请选择题目类型");
+				return;
+			}
+			var url = '[[${ctx}]]' + 'free_practice_2?kemu=' + kemu + '&licType=' + licType + '&language=' + language;
+			if (examType == 1 || examType == 2 || examType == 3) {
+				url = url + '&qusType=' + examType;
+			} else {
+				url = url + '&examType=' + examType;
+			}
+			$('#next_a').attr("href", url);
+		}		
+			
+	</script>
+</body>
+</html>

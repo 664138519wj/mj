@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+<head>
+    <title>APP下载</title>
+</head>
+<body th:fragment="content">
+        <!--content-->
+        <div class="content">
+            <div class="app-banner">
+                <div class="com-width">
+                    <div class="app-left fl">
+                        <div class="app-title">
+                            <p><b>我的学车网APP</b></p>
+                            <p>驾考之路&nbsp;&nbsp;&nbsp;我们助您一路畅通</p>
+                        </div>
+                        <div class="app-down">
+                            <ul class="clear">
+                                <li class="fl"><img th:src="@{/img/app-3.png}" alt=""><br><br><img th:src="@{/img/app-4.png}" alt=""></li>
+                                <li class="fl"><img th:src="@{/img/app-2.png}" alt=""><br><br><img th:src="@{/img/app-4.png}" alt=""></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="app-right fr">
+                        <img th:src="@{/img/app-1.png}" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+</body>
+</html>

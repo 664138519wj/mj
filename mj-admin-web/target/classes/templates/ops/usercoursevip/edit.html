@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" th:href="@{/lib/lui/css/layui.css}">
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+</head>
+<body>
+<div class="layui-container">
+<div th:html="${data.id}"></div>
+
+<form id="appointmentForm" class="layui-form" action="edit" method="post">
+    <input type="hidden" name="id" th:value="${data.id}"/>  
+    
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">学员手机号</label>
+        <div class="layui-input-inline" th:if="${edit==1}">
+           <div class="layui-form-mid" th:text="${data.mobile}"></div>
+        </div>		           
+    </div> 
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">类型</label>
+        <div class="layui-input-inline" th:if="${edit==1}">
+           <div class="layui-form-mid" th:text="${kemuStr}"></div>
+        </div>		           
+    </div> 
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">价格</label>
+        <div class="layui-input-inline" th:if="${edit==1}">
+           <div class="layui-form-mid" th:text="${data.price}"></div>
+        </div>		           
+    </div> 
+    <div class="layui-form-item layui-form-text">
+       <label class="layui-form-label">开课时间</label>
+       <div class="layui-input-inline" th:if="${edit==1}">
+       <input type="text" name="beginTimeStr" id="beginTimeStr" lay-verify="date" placeholder="yyyy-MM-dd HH:mm:ss" th:value="${#dates.format(data.beginTime, 'yyyy-MM-dd')}" 
+       autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    
+    <div class="layui-form-item layui-form-text" th:if="${kemu1}">
+        <label class="layui-form-label">科目一老师</label>
+        <div class="layui-input-inline" >
+           <select name="kemuTeacherId1" id="kemuTeacherId1" lay-filter="kemu">
+            <option th:if="${teacherId1 == null}" value="">未分配</option>
+	        <option th:each="teacher:${teacherList}" th:value="${teacher.id}" th:selected="${teacherId1 != null && teacherId1 == teacher.id}" th:text="@{${teacher.name} + ':' + ${teacher.id}}"></option>
+	      </select>   
+         </div>
+    </div>
+    <div class="layui-form-item layui-form-text" th:if="${kemu2}">
+        <label class="layui-form-label">科目二老师</label>
+        <div class="layui-input-inline" >
+           <select name="kemuTeacherId2" id="kemuTeacherId2" lay-filter="kemu">
+            <option th:if="${teacherId2 == null}" value="">未分配</option>
+	        <option th:each="teacher:${teacherList}" th:value="${teacher.id}" th:selected="${teacherId2 != null && teacherId2 == teacher.id}" th:text="@{${teacher.name} + ':' + ${teacher.id}}"></option>
+	      </select>   
+         </div>
+    </div>
+     <div class="layui-form-item layui-form-text" th:if="${kemu3}">
+        <label class="layui-form-label">科目三老师</label>
+        <div class="layui-input-inline" >
+           <select name="kemuTeacherId3" id="kemuTeacherId3" lay-filter="kemu">
+            <option th:if="${teacherId3 == null}" value="">未分配</option>
+	        <option th:each="teacher:${teacherList}" th:value="${teacher.id}" th:selected="${teacherId3 != null && teacherId3 == teacher.id}" th:text="@{${teacher.name} + ':' + ${teacher.id}}"></option>
+	      </select>   
+         </div>
+    </div>
+     <div class="layui-form-item layui-form-text" th:if="${kemu4}">
+        <label class="layui-form-label">科目四老师</label>
+        <div class="layui-input-inline" >
+           <select name="kemuTeacherId4" id="kemuTeacherId4" lay-filter="kemu">
+            <option th:if="${teacherId4 == null}" value="">未分配</option>
+	        <option th:each="teacher:${teacherList}" th:value="${teacher.id}" th:selected="${teacherId4 != null && teacherId4 == teacher.id}" th:text="@{${teacher.name} + ':' + ${teacher.id}}"></option>
+	      </select>   
+         </div>
+    </div>
+
+    
+</form>
+</div>
+<script th:src="@{/lib/jquery/jquery.js}"></script>
+<script th:src="@{/lib/jquery/jquery.forms.js}"></script>
+<script th:src="@{/lib/lui/layui.all.js}"></script>
+<script type="text/javascript">
+    $.fn.serializeObject = function()
+    {
+        var o = {};
+        var a = this.serializeArray();
+        $.each(a, function() {
+            if (o[this.name] !== undefined) {
+                if (!o[this.name].push) {
+                    o[this.name] = [o[this.name]];
+                }
+                o[this.name].push(this.value || '');
+            } else {
+                o[this.name] = this.value || '';
+            }
+        });
+        return o;
+    };
+</script>
+<script type="text/javascript">
+   
+    //layui.layedit.build('LAY_demo_editor');
+	layui.laydate.render({
+        elem: '#beginTimeStr'
+        ,type: 'datetime'
+    });
+     function checkForm(arr){
+  	  for(var i=0;i<arr.length;i++){
+  	  if($("#"+arr[i][0]).val()==''){
+  	    alert(arr[i][1]);
+  	    $("#"+arr[i][0]).focus();
+  	    return false;
+  	  }
+  	  }
+  	  return true;
+  	};
+  	//调用方式
+  	var arr=new Array(
+  	  new Array('beginTimeStr','开课时间不可为空!'),
+  	  new Array('kemuTeacherId1','科目一老师不可为空!'),
+  	  new Array('kemuTeacherId2','科目二老师不可为空!'),
+  	  new Array('kemuTeacherId3','科目三老师不可为空!'),
+  	  new Array('kemuTeacherId4','科目四老师不可为空!')
+  	);
+    function doSave(fn){
+    	if(!checkForm(arr)){
+    		  return false;
+        } 
+    	
+        var dataParam = $("#appointmentForm").serialize();
+        jQuery.ajax({
+        	type:"post",
+            url: 'save.html',
+            data: dataParam,
+            success:function(data){
+         	    if(data && data == "success") {
+                    parent.tips(1, "保存成功！");
+                    fn.call();
+                }else{
+                    parent.tips(0, "保存信息失败！");
+                }  
+            },
+            error:function(e){
+                parent.tips(0,e);
+            }	    
+         })  
+
+    }
+
+</script>
+
+</body>
+</html>

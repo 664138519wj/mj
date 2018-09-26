@@ -1,0 +1,1583 @@
+<!doctype html>
+<!--[if lt IE 7 ]><html xmlns:th="http://www.thymeleaf.org" lang="en" class="no-js ie6"> <![endif]-->
+<!--[if IE 7 ]><html xmlns:th="http://www.thymeleaf.org" lang="en" class="no-js ie7"> <![endif]-->
+<!--[if IE 8 ]><html xmlns:th="http://www.thymeleaf.org" lang="en" class="no-js ie8"> <![endif]-->
+<!--[if IE 9 ]><html xmlns:th="http://www.thymeleaf.org" lang="en" class="no-js ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!-->
+<html xmlns:th="http://www.thymeleaf.org" lang="en" class="no-js">
+<!--<![endif]-->
+<head>
+    <meta charset="utf-8" />
+    <meta name="author" content="" />
+    <meta name="keywords" content="" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>复安</title>
+    <link rel="stylesheet" href="css/common.css" th:href="@{css/common.css}">
+    <link rel="stylesheet" href="css/style.css" th:href="@{css/style.css}">
+    <link rel="stylesheet" href="css/sweetalert.css">
+
+    <base th:href="@{#request.get}">
+    <script src="js/jquery-1.11.0.min.js"
+            th:src="@{js/jquery-1.11.0.min.js}"></script>
+
+    <script src="js/jquery.webcam.min.js"></script>
+    <script src="js/sweetalert.min.js"></script>
+
+    <!-- 摄像头 -->
+    <script src="js/camera.js">
+
+    </script>
+
+    <!-- //指纹 -->
+    <script>
+        var nBrowseType = 0;
+        var Sys = {};
+        var ua = navigator.userAgent.toLowerCase();
+        var s;
+        (s = ua.match(/msie ([\d.]+)/)) ? Sys.ie = s[1] : (s = ua
+            .match(/firefox\/([\d.]+)/)) ? Sys.firefox = s[1] : (s = ua
+                .match(/chrome\/([\d.]+)/)) ? Sys.chrome = s[1] : (s = ua
+                    .match(/opera.([\d.]+)/)) ? Sys.opera = s[1] : (s = ua
+                        .match(/version\/([\d.]+).*safari/)) ? Sys.safari = s[1] : 0;
+        var BrowserStr;
+        if (Sys.ie)
+            BrowserStr = "(" + "IE " + Sys.ie + ")";
+        else if (Sys.firefox)
+            BrowserStr = "(" + "FireFox " + Sys.firefox + ")";
+        else if (Sys.chrome)
+            BrowserStr = "(" + "Chrome " + Sys.chrome + ")";
+        else if (Sys.opera)
+            BrowserStr = "(" + "Opera " + Sys.opera + ")";
+        else if (Sys.safari)
+            BrowserStr = "(" + "Safari " + Sys.safari + ")";
+        else
+            BrowserStr = "UnKonwn";
+
+        function isIE() { //ie?
+            if (!!window.ActiveXObject || "ActiveXObject" in window)
+                return true;
+            else
+                return false;
+        }
+
+        function InitNetSsVerify() {
+            if (isIE()) {
+                TLFPAPICtrl.InitInstance("12345678912345678912345678912345");//初始化
+                TLFPAPICtrl.SetFingerHasEnroll("L2R2")//设置显示已经注册哪些手指
+                TLFPAPICtrl.SetHexFlg(1);//设置输出十六进制可见字符格式数据。
+                TLFPAPICtrl.SetFPVersion(0);//设置SDK可见字符格式数据。
+            } else {
+                document.getElementById('pluginobj').focus();
+                pluginobj.InitInstance("12345678912345678912345678912345");//初始化
+                pluginobj.SetFingerHasEnroll("L2R2")//设置显示已经注册哪些手指
+                pluginobj.SetHexFlg("1");//设置输出十六进制可见字符格式数据。
+                pluginobj.SetFPVersion("0");//设置SDK可见字符格式数据。
+            }
+        }
+        function InitFingerInfo() { //重新设置已注册手指
+            if (isIE()) {
+                TLFPAPICtrl.InitInstance("12345678912345678912345678912345");//初始化
+                TLFPAPICtrl.SetFingerHasEnroll("L2R2")//设置显示已经注册哪些手指
+                TLFPAPICtrl.SetHexFlg(1);//设置输出十六进制可见字符格式数据。
+                TLFPAPICtrl.ShowPopupWindow();//弹出窗口
+            } else {
+                document.getElementById('pluginobj').focus();
+                pluginobj.InitInstance("12345678912345678912345678912345");//初始化
+                pluginobj.SetFingerHasEnroll("L2R2")//设置显示已经注册哪些手指
+                pluginobj.SetHexFlg("1");//设置输出十六进制可见字符格式数据。
+                pluginobj.ShowPopupWindow();//弹出窗口
+            }
+        }
+        function HasGotFeatureEvent() {
+            if (isIE()) {
+                tp = TLFPAPICtrl.GetFingerPrintData();//IE浏览器获取指纹信息数据
+                /* FReg.tpdata.value = tp; */
+                $("#fingerprint").val(tp);
+            } else {
+                tp = pluginobj.GetFingerPrintData();//其他浏览器获取指纹信息数据
+                /* document.getElementById('tpdata').value = tp; */
+                $("#fingerprint").val(tp);
+            }
+            swal({ title: "指纹采集成功", timer: 2000, confirmButtonColor: "#fa8229" });
+            $(".finger-mark.finger button.cancel").click();
+        }
+        
+        function addEvent(name, func)//其他浏览器添加事件
+        {
+            if (isIE()) {
+                TLFPAPICtrl.focus();
+            } else {
+                var obj = document.getElementById('pluginobj');
+                if (window.addEventListener) {
+                    obj.addEventListener(name, func, false);
+                } else {
+                    obj.attachEvent(name, func);
+                }
+            }
+        }
+    </script>
+    <style type="text/css">
+        #webcam {
+            border: 1px solid #666666;
+            width: 320px;
+            height: 240px;
+            margin-left: 250px;
+            margin-top: 80px;
+        }
+
+        #photos {
+            border: 1px solid #666666;
+            width: 320px;
+            height: 240px;
+        }
+
+        .btn {
+            width: 320px;
+            height: auto;
+            margin: 5px 0px;
+        }
+
+            .btn input[type=button] {
+                width: 150px;
+                height: 50px;
+                line-height: 50px;
+                margin: 3px;
+            }
+    </style>
+
+    <!--输入筛选-->
+    <style type="text/css">
+        .newinput {
+            width: 150px;
+            height: 44px;
+            font-size: 17px;
+            color: #333;
+            padding: 2px 0px 2px 0px;
+            margin-bottom: -1px;
+            /*background: url(114755leueqeys1ps8dtzy.jpg.thumb.jpg) no-repeat scroll right center;*/
+            border: 1px solid #ccc;
+            box-shadow: 0 1px 0 0 #eee inset;
+            cursor: default;
+        }
+
+            .newinput:focus {
+                cursor: text;
+            }
+
+        .input_div {
+            width: 78%;
+            border: 1px solid #ddd;
+            border-radius: 0 0 3px 3px;
+            display: none;
+        }
+
+        .soption {
+            display: block;
+            padding: 2px 5px;
+        }
+
+            .soption:hover {
+                background: #f9f9f9;
+                border-top: 1px dotted #ddd;
+                border-bottom: 1px dotted #ddd;
+                padding: 1px 5px;
+            }
+    </style>
+</head>
+<body onload="addEvent('GotFeatureEvent',HasGotFeatureEvent);">
+    <div style="height: 0;">
+        <object type="application/cert-reader" id="CertCtl"
+                style="width: 0px; height: 0;"></object>
+    </div>
+
+    <input type="hidden" id="nation" />
+    <input type="hidden" id="idcardBefore" />
+    <input type="hidden" id="idcardBack" />
+    <input type="hidden" id="scenePicture" />
+    <input type="hidden" id="fingerprint" />
+    <img id="img" src="" style="display: none">
+    <div class="main-content" style="width: 200px; float: left">
+        <p th:replace="menu"></p>
+    </div>
+    <div class="content right-content"
+         style="margin-left: 200px;">
+        <p th:replace="header"></p>
+        <div class="main-content">
+            <p>
+                <img src="img/now-location.png" alt=""> <span>预录入</span> <img src="img/arrow.png" alt=""> <span>学员信息录入</span>
+            </p>
+        </div>
+        <div class="info-progress">
+            <p>信息录入进程</p>
+            <ul class="clear" style="height: 132px;">
+                <li class="active">
+                    <div class="top-pic">
+                        <img src="img/icon1.png" alt="">
+                    </div>
+                    <div class="bottom-pic">
+                        <img src="img/pro-pic1.png" alt="">
+                    </div>
+                </li>
+                <li>
+                    <div class="top-pic">
+                        <img class="img2" src="img/icon2.png" alt=""
+                             style="display: none;"> <img class="img1"
+                                                          src="img/icon2.1.png" alt="">
+                    </div>
+                    <div class="bottom-pic">
+                        <img class="img1" src="img/pro-pic2.png" alt=""> <img class="img2" src="img/pro-pic2.1.png" alt=""
+                                                                              style="display: none;">
+                    </div>
+                </li>
+                <li>
+                    <div class="top-pic">
+                        <img class="img2" src="img/icon3.png" alt=""
+                             style="display: none;"> <img class="img1"
+                                                          src="img/icon3.1.png" alt="">
+                    </div>
+                    <div class="bottom-pic">
+                        <img class="img1" src="img/pro-pic3.png" alt=""> <img class="img2" src="img/pro-pic3.1.png" alt=""
+                                                                              style="display: none;">
+                    </div>
+                </li>
+                <li>
+                    <div class="top-pic">
+                        <img class="img2" src="img/icon4.png" alt=""
+                             style="display: none;"> <img class="img1"
+                                                          src="img/icon4.1.png" alt="">
+                    </div>
+                    <div class="bottom-pic">
+                        <img class="img1" src="img/pro-pic4.png" alt=""> <img class="img2" src="img/pro-pic4.1.png" alt=""
+                                                                              style="display: none;">
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div name="inputForm" action="auth/Input1" method="post">
+            <div class="tab-contents">
+                <div class="tab1 clear">
+                    <div class="info-title clear" style="height: 39px;">
+                        <p class="fl">录入学员个人信息</p>
+                        <!--<div class="info-btn fr edit">
+                            <button class="save">编辑</button>
+                        </div>-->
+                        <div class="info-btn fr">
+                            <button class="save" onclick="toTab('1')">下一步</button>
+                            <!--<button class="cancel">取消</button>-->
+                        </div>
+                    </div>
+                    <div class="info-box">
+                        <div class="flex-box">
+                            <ul>
+                                <li class="father">
+                                    <p>证件名称</p>
+                                    <div class="card-name">
+                                        <select id="certificate">
+                                            <option value="A">居民身份证</option>
+                                            <option value="B">组织机构代码证书</option>
+                                            <option value="C">军官证</option>
+                                            <option value="D">士兵证</option>
+                                            <option value="E">军官离退休证</option>
+                                            <option value="F">境外人员身份证明</option>
+                                            <option value="G">外交人员身份证明</option>
+                                            <option value="H">居民户口簿</option>
+                                            <option value="I">外国人永久居留身份证</option>
+                                            <option value="J">单位注销证明</option>
+                                            <option value="K">居住暂住证明</option>
+                                            <option value="L">驻华机构证明</option>
+                                            <option value="M">临时居民身份证</option>
+                                            <option value="N">统一社会信用代码</option>
+                                            <option value="P">个体工商户营业执照注册号</option>
+                                        </select>
+                                    </div>
+                                </li>
+                                <li>
+                                    <p>出生日期</p> <input type="text" id="birth_day" disabled="disabled"/>
+                                </li>
+                                <li class="search">
+                                    <p>登记住所行政区域</p>
+                                    <!--<input class="disable" type="text" id="register_area" />
+                                    <img src="img/search.png" alt="" />-->
+
+                                    <div class="pre" id="register_area">
+                                        <input class="newinput" type="text"> <img src="img/search.png" alt="" />
+                                        <div class="input_div" style="display: none;">
+                                            <span class="soption" data-val="650000">新疆维吾尔自治区</span> <span class="soption" data-val="650100">新疆维吾尔自治区乌鲁木齐市</span> <span class="soption" data-val="650101">新疆维吾尔自治区乌鲁木齐市市辖区</span> <span class="soption" data-val="650102">新疆维吾尔自治区乌鲁木齐市天山区</span> <span class="soption" data-val="650103">新疆维吾尔自治区乌鲁木齐市沙依巴克区</span>
+                                            <span class="soption" data-val="650104">新疆维吾尔自治区乌鲁木齐市新市区</span>
+                                            <span class="soption" data-val="650105">新疆维吾尔自治区乌鲁木齐市水磨沟区</span>
+                                            <span class="soption" data-val="650106">新疆维吾尔自治区乌鲁木齐市头屯河区</span>
+                                            <span class="soption" data-val="650107">新疆维吾尔自治区乌鲁木齐市达坂城区</span>
+                                            <span class="soption" data-val="650108">新疆维吾尔自治区乌鲁木齐市东山区</span>
+                                            <span class="soption" data-val="650120">新疆维吾尔自治区乌鲁木齐市区</span>
+                                            <span class="soption" data-val="650121">新疆维吾尔自治区乌鲁木齐县</span>
+                                            <span class="soption" data-val="650200">新疆维吾尔自治区克拉玛依市</span>
+                                            <span class="soption" data-val="650201">新疆维吾尔自治区克拉玛依市市辖区</span>
+                                            <span class="soption" data-val="650202">新疆维吾尔自治区克拉玛依市独山子区</span>
+                                            <span class="soption" data-val="650203">新疆维吾尔自治区克拉玛依市克拉玛依区</span>
+                                            <span class="soption" data-val="650204">新疆维吾尔自治区克拉玛依市白碱滩区</span>
+                                            <span class="soption" data-val="650205">新疆维吾尔自治区克拉玛依市乌尔禾区</span>
+                                            <span class="soption" data-val="650300">新疆维吾尔自治区石河子市</span> <span class="soption" data-val="652100">新疆维吾尔自治区吐鲁番地区</span> <span class="soption" data-val="652101">新疆维吾尔自治区吐鲁番市</span> <span class="soption" data-val="652121">新疆维吾尔自治区吐鲁番县</span> <span class="soption" data-val="652122">新疆维吾尔自治区鄯善县</span> <span class="soption" data-val="652123">新疆维吾尔自治区托克逊县</span> <span class="soption" data-val="652200">新疆维吾尔自治区哈密地区</span> <span class="soption" data-val="652201">新疆维吾尔自治区哈密市</span> <span class="soption" data-val="652221">新疆维吾尔自治区哈密县</span> <span class="soption" data-val="652222">新疆维吾尔自治区巴里坤哈萨克自治县</span> <span class="soption" data-val="652223">新疆维吾尔自治区伊吾县</span> <span class="soption" data-val="652300">新疆维吾尔自治区昌吉回族自治州</span> <span class="soption" data-val="652301">新疆维吾尔自治区昌吉市</span> <span class="soption" data-val="652302">新疆维吾尔自治区阜康市</span> <span class="soption" data-val="652303">新疆维吾尔自治区米泉市</span> <span class="soption" data-val="652321">新疆维吾尔自治区昌吉县</span> <span class="soption" data-val="652322">新疆维吾尔自治区米泉县</span> <span class="soption" data-val="652323">新疆维吾尔自治区呼图壁县</span> <span class="soption" data-val="652324">新疆维吾尔自治区玛纳斯县</span> <span class="soption" data-val="652325">新疆维吾尔自治区奇台县</span> <span class="soption" data-val="652326">新疆维吾尔自治区阜康县</span> <span class="soption" data-val="652327">新疆维吾尔自治区吉木萨尔县</span> <span class="soption" data-val="652328">新疆维吾尔自治区木垒哈萨克自治县</span> <span class="soption" data-val="652401">新疆维吾尔自治区伊宁市</span> <span class="soption" data-val="652402">新疆维吾尔自治区奎屯市</span> <span class="soption" data-val="652421">新疆维吾尔自治区伊宁县</span> <span class="soption" data-val="652422">新疆维吾尔自治区察布查尔锡伯自治县</span> <span class="soption" data-val="652423">新疆维吾尔自治区霍城县</span> <span class="soption" data-val="652424">新疆维吾尔自治区巩留县</span> <span class="soption" data-val="652425">新疆维吾尔自治区新源县</span> <span class="soption" data-val="652426">新疆维吾尔自治区昭苏县</span> <span class="soption" data-val="652427">新疆维吾尔自治区特克斯县</span> <span class="soption" data-val="652428">新疆维吾尔自治区尼勒克县</span> <span class="soption" data-val="652500">新疆维吾尔自治区塔城地区</span> <span class="soption" data-val="652521">新疆维吾尔自治区塔城县</span> <span class="soption" data-val="652522">新疆维吾尔自治区额敏县</span> <span class="soption" data-val="652523">新疆维吾尔自治区乌苏县</span> <span class="soption" data-val="652524">新疆维吾尔自治区沙湾县</span> <span class="soption" data-val="652525">新疆维吾尔自治区托里县</span> <span class="soption" data-val="652526">新疆维吾尔自治区裕民县</span> <span class="soption" data-val="652527">新疆维吾尔自治区和布克赛尔蒙古族自治县</span>
+                                            <span class="soption" data-val="652600">新疆维吾尔自治区阿勒泰地区</span>
+                                            <span class="soption" data-val="652621">新疆维吾尔自治区阿勒泰县</span> <span class="soption" data-val="652622">新疆维吾尔自治区布尔津县</span> <span class="soption" data-val="652623">新疆维吾尔自治区富蕴县</span> <span class="soption" data-val="652624">新疆维吾尔自治区福海县</span> <span class="soption" data-val="652625">新疆维吾尔自治区哈巴河县</span> <span class="soption" data-val="652626">新疆维吾尔自治区青河县</span> <span class="soption" data-val="652627">新疆维吾尔自治区吉木乃县</span> <span class="soption" data-val="652700">新疆维吾尔自治区博尔塔拉蒙古自治州</span> <span class="soption" data-val="652701">新疆维吾尔自治区博乐市</span> <span class="soption" data-val="652721">新疆维吾尔自治区博乐县</span> <span class="soption" data-val="652722">新疆维吾尔自治区精河县</span> <span class="soption" data-val="652723">新疆维吾尔自治区温泉县</span> <span class="soption" data-val="652800">新疆维吾尔自治区巴音郭楞蒙古自治州</span> <span class="soption" data-val="652801">新疆维吾尔自治区库尔勒市</span> <span class="soption" data-val="652821">新疆维吾尔自治区库尔勒县</span> <span class="soption" data-val="652822">新疆维吾尔自治区轮台县</span> <span class="soption" data-val="652823">新疆维吾尔自治区尉犁县</span> <span class="soption" data-val="652824">新疆维吾尔自治区若羌县</span> <span class="soption" data-val="652825">新疆维吾尔自治区且末县</span> <span class="soption" data-val="652826">新疆维吾尔自治区焉耆回族自治县</span> <span class="soption" data-val="652827">新疆维吾尔自治区和静县</span> <span class="soption" data-val="652828">新疆维吾尔自治区和硕县</span> <span class="soption" data-val="652829">新疆维吾尔自治区博湖县</span> <span class="soption" data-val="652900">新疆维吾尔自治区阿克苏地区</span> <span class="soption" data-val="652901">新疆维吾尔自治区阿克苏市</span> <span class="soption" data-val="652921">新疆维吾尔自治区阿克苏县</span> <span class="soption" data-val="652922">新疆维吾尔自治区温宿县</span> <span class="soption" data-val="652923">新疆维吾尔自治区库车县</span> <span class="soption" data-val="652924">新疆维吾尔自治区沙雅县</span> <span class="soption" data-val="652925">新疆维吾尔自治区新和县</span> <span class="soption" data-val="652926">新疆维吾尔自治区拜城县</span> <span class="soption" data-val="652927">新疆维吾尔自治区乌什县</span> <span class="soption" data-val="652928">新疆维吾尔自治区阿瓦提县</span> <span class="soption" data-val="652929">新疆维吾尔自治区柯坪县</span> <span class="soption" data-val="653000">新疆维吾尔自治区克孜勒苏柯尔克孜自治州</span>
+                                            <span class="soption" data-val="653001">新疆维吾尔自治区阿图什市</span> <span class="soption" data-val="653021">新疆维吾尔自治区阿图什县</span> <span class="soption" data-val="653022">新疆维吾尔自治区阿克陶县</span> <span class="soption" data-val="653023">新疆维吾尔自治区阿合奇县</span> <span class="soption" data-val="653024">新疆维吾尔自治区乌恰县</span> <span class="soption" data-val="653100">新疆维吾尔自治区喀什地区</span> <span class="soption" data-val="653101">新疆维吾尔自治区喀什市</span> <span class="soption" data-val="653121">新疆维吾尔自治区疏附县</span> <span class="soption" data-val="653122">新疆维吾尔自治区疏勒县</span> <span class="soption" data-val="653123">新疆维吾尔自治区英吉沙县</span> <span class="soption" data-val="653124">新疆维吾尔自治区泽普县</span> <span class="soption" data-val="653125">新疆维吾尔自治区莎车县</span> <span class="soption" data-val="653126">新疆维吾尔自治区叶城县</span> <span class="soption" data-val="653127">新疆维吾尔自治区麦盖提县</span> <span class="soption" data-val="653128">新疆维吾尔自治区岳普湖县</span> <span class="soption" data-val="653129">新疆维吾尔自治区伽师县</span> <span class="soption" data-val="653130">新疆维吾尔自治区巴楚县</span> <span class="soption" data-val="653131">新疆维吾尔自治区塔什库尔干塔吉克自治县</span>
+                                            <span class="soption" data-val="653200">新疆维吾尔自治区和田地区</span> <span class="soption" data-val="653201">新疆维吾尔自治区和田市</span> <span class="soption" data-val="653221">新疆维吾尔自治区和田县</span> <span class="soption" data-val="653222">新疆维吾尔自治区墨玉县</span> <span class="soption" data-val="653223">新疆维吾尔自治区皮山县</span> <span class="soption" data-val="653224">新疆维吾尔自治区洛浦县</span> <span class="soption" data-val="653225">新疆维吾尔自治区策勒县</span> <span class="soption" data-val="653226">新疆维吾尔自治区于田县</span> <span class="soption" data-val="653227">新疆维吾尔自治区民丰县</span> <span class="soption" data-val="654000">新疆维吾尔自治区伊犁哈萨克自治州</span> <span class="soption" data-val="654001">新疆维吾尔自治区奎屯市</span> <span class="soption" data-val="654002">新疆维吾尔自治区伊宁市</span> <span class="soption" data-val="654003">新疆维吾尔自治区奎屯市</span> <span class="soption" data-val="654021">新疆维吾尔自治区伊宁县</span> <span class="soption" data-val="654022">新疆维吾尔自治区察布查尔锡伯自治县</span> <span class="soption" data-val="654023">新疆维吾尔自治区霍城县</span> <span class="soption" data-val="654024">新疆维吾尔自治区巩留县</span> <span class="soption" data-val="654025">新疆维吾尔自治区新源县</span> <span class="soption" data-val="654026">新疆维吾尔自治区昭苏县</span> <span class="soption" data-val="654027">新疆维吾尔自治区特克斯县</span> <span class="soption" data-val="654028">新疆维吾尔自治区尼勒克县</span> <span class="soption" data-val="654100">新疆维吾尔自治区伊犁地区</span> <span class="soption" data-val="654101">新疆维吾尔自治区伊宁市</span> <span class="soption" data-val="654121">新疆维吾尔自治区伊宁县</span> <span class="soption" data-val="654122">新疆维吾尔自治区察布查尔锡伯自治县</span> <span class="soption" data-val="654123">新疆维吾尔自治区霍城县</span> <span class="soption" data-val="654124">新疆维吾尔自治区巩留县</span> <span class="soption" data-val="654125">新疆维吾尔自治区新源县</span> <span class="soption" data-val="654126">新疆维吾尔自治区昭苏县</span> <span class="soption" data-val="654127">新疆维吾尔自治区特克斯县</span> <span class="soption" data-val="654128">新疆维吾尔自治区尼勒克县</span> <span class="soption" data-val="654200">新疆维吾尔自治区塔城地区</span> <span class="soption" data-val="654201">新疆维吾尔自治区塔城市</span> <span class="soption" data-val="654202">新疆维吾尔自治区乌苏市</span> <span class="soption" data-val="654221">新疆维吾尔自治区额敏县</span> <span class="soption" data-val="654222">新疆维吾尔自治区乌苏县</span> <span class="soption" data-val="654223">新疆维吾尔自治区沙湾县</span> <span class="soption" data-val="654224">新疆维吾尔自治区托里县</span> <span class="soption" data-val="654225">新疆维吾尔自治区裕民县</span> <span class="soption" data-val="654226">新疆维吾尔自治区和布克赛尔蒙古自治县</span>
+                                            <span class="soption" data-val="654300">新疆维吾尔自治区阿勒泰地区</span>
+                                            <span class="soption" data-val="654301">新疆维吾尔自治区阿勒泰市</span> <span class="soption" data-val="654321">新疆维吾尔自治区布尔津县</span> <span class="soption" data-val="654322">新疆维吾尔自治区富蕴县</span> <span class="soption" data-val="654323">新疆维吾尔自治区福海县</span> <span class="soption" data-val="654324">新疆维吾尔自治区哈巴河县</span> <span class="soption" data-val="654325">新疆维吾尔自治区青河县</span> <span class="soption" data-val="654326">新疆维吾尔自治区吉木乃县</span> <span class="soption" data-val="659001">新疆维吾尔自治区石河子市</span> <span class="soption" data-val="659002">新疆维吾尔自治区阿拉尔市</span> <span class="soption" data-val="659003">新疆维吾尔自治区图木舒克市</span> <span class="soption" data-val="659004">新疆维吾尔自治区五家渠市</span>
+                                        </div>
+                                        <input class="savedata" type="hidden" value=''>
+                                        <div style="clear: both"></div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <p>联系住所行政区域</p> <input class="disable" type="text"
+                                                           id="contact_area">
+                                </li>
+                                <li>
+                                    <p>固定电话</p> <input class="disable" value="020-66668888" type="text" id="phone">
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="flex-box">
+                            <ul>
+                                <li>
+                                    <p>证件号码</p> <input class="disable" type="text"
+                                                       id="certificate_code">
+                                </li>
+                                <li class="father">
+                                    <p>国籍</p>
+                                    <div class="card-name">
+                                        <select id="country" class="disable">
+                                            <option value="004">阿富汗/AFG</option>
+                                            <option value="008">阿尔巴尼亚/ALB</option>
+                                            <option value="010">南极洲/ATA</option>
+                                            <option value="012">阿尔及利亚/DZA</option>
+                                            <option value="016">美属萨摩亚/ASM</option>
+                                            <option value="020">安道尔/AND</option>
+                                            <option value="024">安哥拉/AGO</option>
+                                            <option value="028">安提瓜和巴布达/ATG</option>
+                                            <option value="031">阿塞拜疆/AZE</option>
+                                            <option value="032">阿根廷/ARG</option>
+                                            <option value="036">澳大利亚/AUS</option>
+                                            <option value="040">奥地利/AUT</option>
+                                            <option value="044">巴哈马/BHS</option>
+                                            <option value="048">巴林/BHR</option>
+                                            <option value="050">孟加拉国/BGD</option>
+                                            <option value="051">亚美尼亚/ARM</option>
+                                            <option value="052">巴巴多斯/BRB</option>
+                                            <option value="056">比利时/BEL</option>
+                                            <option value="060">百慕大/BMU</option>
+                                            <option value="064">不丹/BTN</option>
+                                            <option value="068">玻利维亚/BOL</option>
+                                            <option value="070">波斯尼亚和黑塞哥维那/BIH</option>
+                                            <option value="072">博茨瓦纳/BWA</option>
+                                            <option value="074">布维岛/BVT</option>
+                                            <option value="076">巴西/BRA</option>
+                                            <option value="084">伯利兹/BLZ</option>
+                                            <option value="086">英属印度洋领土/IOT</option>
+                                            <option value="090">所罗门群岛/SLB</option>
+                                            <option value="092">英属维尔京群岛/VGB</option>
+                                            <option value="096">文莱/BRN</option>
+                                            <option value="100">保加利亚/BGR</option>
+                                            <option value="104">缅甸/MMR</option>
+                                            <option value="108">布隆迪/BDI</option>
+                                            <option value="112">白俄罗斯/BLR</option>
+                                            <option value="116">柬埔寨/KHM</option>
+                                            <option value="120">喀麦隆/CMR</option>
+                                            <option value="124">加拿大/CAN</option>
+                                            <option value="132">佛得角/CPV</option>
+                                            <option value="136">开曼群岛/CYM</option>
+                                            <option value="140">中非/CAF</option>
+                                            <option value="144">斯里兰卡/LKA</option>
+                                            <option value="148">乍得/TCD</option>
+                                            <option value="152">智利/CHL</option>
+                                            <option value="156" selected>中国/CHN</option>
+                                            <option value="158">中国（台湾）/TWN</option>
+                                            <option value="162">圣诞岛/CSR</option>
+                                            <option value="166">科科斯（基林）群岛/CCK</option>
+                                            <option value="170">哥伦比亚/COL</option>
+                                            <option value="174">科摩罗/COM</option>
+                                            <option value="175">马约特/MYT</option>
+                                            <option value="178">刚果/COG</option>
+                                            <option value="180">刚果民主共和国/COD</option>
+                                            <option value="184">库克群岛/COK</option>
+                                            <option value="188">哥斯达黎加/CR</option>
+                                            <option value="191">克罗地亚/HRV</option>
+                                            <option value="192">古巴/CUB</option>
+                                            <option value="196">塞浦路斯/CYP</option>
+                                            <option value="203">捷克/CZE</option>
+                                            <option value="204">贝宁/BEN</option>
+                                            <option value="208">丹麦/DNK</option>
+                                            <option value="218">厄瓜多尔/ECU</option>
+                                            <option value="222">萨尔瓦多/SLV</option>
+                                            <option value="226">赤道几内亚/GNQ</option>
+                                            <option value="231">埃塞俄比亚/ETH</option>
+                                            <option value="232">厄立特里亚/ERI</option>
+                                            <option value="233">爱沙尼亚/EST</option>
+                                            <option value="234">法罗群岛/FRO</option>
+                                            <option value="238">马尔维纳斯群岛/FLK</option>
+                                            <option value="239">南乔治亚岛和南桑德韦奇岛/SGS</option>
+                                            <option value="242">斐济/FJI</option>
+                                            <option value="246">芬兰/FIN</option>
+                                            <option value="250">法国/FRA</option>
+                                            <option value="254">法属圭亚那/GUF</option>
+                                            <option value="258">法属玻利尼西亚/PYF</option>
+                                            <option value="260">法属南部领土/ATF</option>
+                                            <option value="262">吉布提/DJI</option>
+                                            <option value="266">加蓬/GAB</option>
+                                            <option value="268">格鲁吉亚/GEO</option>
+                                            <option value="270">冈比亚/GMB</option>
+                                            <option value="276">德国/DEU</option>
+                                            <option value="288">加纳/GHA</option>
+                                            <option value="292">直布罗陀/GIB</option>
+                                            <option value="296">基里巴斯/KIR</option>
+                                            <option value="300">希腊/GRC</option>
+                                            <option value="304">格陵兰/GRL</option>
+                                            <option value="308">格林纳达/GRD</option>
+                                            <option value="312">多米尼克</option>
+                                            <option value="314">多米尼加共和国</option>
+                                            <option value="316">关岛/GUM</option>
+                                            <option value="320">危地马拉/GTM</option>
+                                            <option value="324">几内亚/GIN</option>
+                                            <option value="328">圭亚那/GUY</option>
+                                            <option value="332">海地/HTI</option>
+                                            <option value="334">赫德岛和麦克唐纳岛/HMD</option>
+                                            <option value="336">梵蒂冈/VAT</option>
+                                            <option value="340">洪都拉斯/HND</option>
+                                            <option value="344">中国（香港）/HKG</option>
+                                            <option value="348">匈牙利/HUN</option>
+                                            <option value="352">冰岛/ISL</option>
+                                            <option value="356">印度/IND</option>
+                                            <option value="360">印度尼西亚/IDN</option>
+                                            <option value="364">伊朗/IRN</option>
+                                            <option value="368">伊拉克/IRQ</option>
+                                            <option value="372">爱尔兰/IRL</option>
+                                            <option value="374">巴勒斯坦/PST</option>
+                                            <option value="376">以色列/ISR</option>
+                                            <option value="380">意大利/ITA</option>
+                                            <option value="384">科特迪瓦/CIV</option>
+                                            <option value="388">牙买加/JAM</option>
+                                            <option value="392">日本/JPN</option>
+                                            <option value="398">哈萨克斯坦/KAZ</option>
+                                            <option value="400">约旦/JOR</option>
+                                            <option value="404">肯尼亚/KEN</option>
+                                            <option value="408">朝鲜/PRK</option>
+                                            <option value="410">韩国/KOR</option>
+                                            <option value="414">科威特/KWT</option>
+                                            <option value="417">吉尔吉斯斯坦/KGZ</option>
+                                            <option value="418">老挝/LAO</option>
+                                            <option value="422">黎巴嫩/LBN</option>
+                                            <option value="426">莱索托/LSO</option>
+                                            <option value="428">拉脱维亚/LVA</option>
+                                            <option value="430">利比里亚/LBR</option>
+                                            <option value="434">利比亚/LBY</option>
+                                            <option value="438">列支敦士登/LIE</option>
+                                            <option value="440">立陶宛/LTU</option>
+                                            <option value="442">卢森堡/LUX</option>
+                                            <option value="446">中国（澳门）/MAC</option>
+                                            <option value="450">马达加斯加/MDG</option>
+                                            <option value="454">马拉维/MWI</option>
+                                            <option value="458">马来西亚/MYS</option>
+                                            <option value="462">马尔代夫/MDV</option>
+                                            <option value="466">马里/MLI</option>
+                                            <option value="470">马耳他/MLT</option>
+                                            <option value="474">马提尼克/MTQ</option>
+                                            <option value="478">毛里塔尼亚/MRT</option>
+                                            <option value="480">毛里求斯/MUS</option>
+                                            <option value="484">墨西哥/MEX</option>
+                                            <option value="492">摩纳哥/MCO</option>
+                                            <option value="496">蒙古/MNG</option>
+                                            <option value="498">摩尔多瓦/MDA</option>
+                                            <option value="499">黑山</option>
+                                            <option value="500">蒙特塞拉特/MSR</option>
+                                            <option value="504">摩洛哥/MAR</option>
+                                            <option value="508">莫桑比克/MOZ</option>
+                                            <option value="512">阿曼/OMN</option>
+                                            <option value="516">纳米比亚/NAM</option>
+                                            <option value="520">瑙鲁/NRU</option>
+                                            <option value="524">尼泊尔/NPL</option>
+                                            <option value="528">荷兰/NLD</option>
+                                            <option value="530">荷属安的列斯/ANT</option>
+                                            <option value="533">阿鲁巴/ABW</option>
+                                            <option value="540">新喀里多尼亚/NCL</option>
+                                            <option value="548">瓦努阿图/VUT</option>
+                                            <option value="554">新西兰/NZL</option>
+                                            <option value="558">尼家拉瓜/NIC</option>
+                                            <option value="562">尼日尔/NER</option>
+                                            <option value="566">尼日利亚/NGA</option>
+                                            <option value="570">纽埃/NIU</option>
+                                            <option value="574">诺福克岛/NFK</option>
+                                            <option value="578">挪威/NOR</option>
+                                            <option value="580">北马里亚纳/MNP</option>
+                                            <option value="581">美属太平洋各群岛/UMI</option>
+                                            <option value="583">密克罗尼西亚/FSM</option>
+                                            <option value="584">马绍尔群岛/MHL</option>
+                                            <option value="585">贝劳/PLW</option>
+                                            <option value="586">巴基斯坦/PAK</option>
+                                            <option value="591">巴拿马/PAN</option>
+                                            <option value="598">巴布亚新几内亚/PNG</option>
+                                            <option value="600">巴拉圭/PRY</option>
+                                            <option value="604">秘鲁/PER</option>
+                                            <option value="608">菲律宾/PHL</option>
+                                            <option value="612">皮特凯恩群岛/PCN</option>
+                                            <option value="616">波兰/POL</option>
+                                            <option value="620">葡萄牙/PRT</option>
+                                            <option value="624">几内亚比绍/GNB</option>
+                                            <option value="626">东帝汶/TMP</option>
+                                            <option value="630">波多黎各/PRI</option>
+                                            <option value="634">卡塔尔/QAT</option>
+                                            <option value="638">留尼汪/REU</option>
+                                            <option value="642">罗马尼亚/ROM</option>
+                                            <option value="643">俄罗斯/RUS</option>
+                                            <option value="646">卢旺达/RWA</option>
+                                            <option value="654">圣赫勒拿/SHN</option>
+                                            <option value="659">圣基茨和尼维斯/KNA</option>
+                                            <option value="660">安圭拉/AIA</option>
+                                            <option value="662">圣卢西亚/LCA</option>
+                                            <option value="666">圣皮埃尔和密克隆/SPM</option>
+                                            <option value="670">圣文森特和格林纳丁斯/VCT</option>
+                                            <option value="674">圣马力诺/SMR</option>
+                                            <option value="678">圣多美和普林西比/STP</option>
+                                            <option value="682">沙特阿拉伯/SAU</option>
+                                            <option value="686">塞内加尔/SEN</option>
+                                            <option value="688">塞尔维亚</option>
+                                            <option value="690">塞舌尔/SYC</option>
+                                            <option value="694">塞拉利昂/SLE</option>
+                                            <option value="702">新加坡/SGP</option>
+                                            <option value="703">斯洛伐克/SVK</option>
+                                            <option value="704">越南/VNM</option>
+                                            <option value="705">斯洛文尼亚/SVN</option>
+                                            <option value="706">索马里/SOM</option>
+                                            <option value="710">南非/ZAF</option>
+                                            <option value="716">津巴布韦/ZWE</option>
+                                            <option value="724">西班牙/ESP</option>
+                                            <option value="728">南苏丹</option>
+                                            <option value="732">西撒哈拉/ESH</option>
+                                            <option value="736">苏丹/SDN</option>
+                                            <option value="740">苏里南/SUR</option>
+                                            <option value="744">斯瓦巴群岛/SJM</option>
+                                            <option value="748">斯威士兰/SWZ</option>
+                                            <option value="752">瑞典/SWE</option>
+                                            <option value="756">瑞士/CHE</option>
+                                            <option value="760">叙利亚/SYR</option>
+                                            <option value="762">塔吉克斯坦/TJK</option>
+                                            <option value="764">泰国/THA</option>
+                                            <option value="768">多哥/TGO</option>
+                                            <option value="772">托克劳/TKL</option>
+                                            <option value="776">汤加/TON</option>
+                                            <option value="780">特立尼达和多哥巴/TTO</option>
+                                            <option value="784">阿联酋/ARE</option>
+                                            <option value="788">突尼斯/TUN</option>
+                                            <option value="792">土耳其/TUR</option>
+                                            <option value="795">土库曼斯坦/TKM</option>
+                                            <option value="796">特克斯和凯科斯群岛/TCA</option>
+                                            <option value="798">图瓦卢/TUV</option>
+                                            <option value="800">乌干达/UGA</option>
+                                            <option value="804">乌克兰/UKR</option>
+                                            <option value="807">马其顿/MKD</option>
+                                            <option value="818">埃及/EGY</option>
+                                            <option value="826">英国/GBR</option>
+                                            <option value="834">坦桑尼亚/TZA</option>
+                                            <option value="840">美国/USA</option>
+                                            <option value="850">美属维尔京群岛/VIR</option>
+                                            <option value="854">布基纳法索/BFA</option>
+                                            <option value="858">乌拉圭/URY</option>
+                                            <option value="860">乌兹别克斯坦/UZB</option>
+                                            <option value="862">委内瑞拉/VEN</option>
+                                            <option value="876">瓦利斯和富图纳群岛/WLF</option>
+                                            <option value="882">萨摩亚/WSM</option>
+                                            <option value="887">也门/YEM</option>
+                                            <option value="891">南斯拉夫/YUG</option>
+                                            <option value="894">赞比亚/ZMB</option>
+                                        </select>
+                                    </div>
+                                </li>
+                                <li>
+                                    <p>登记住所详细地址</p> <input id="register_address" type="text">
+                                </li>
+                                <li>
+                                    <p>联系住所详细地址</p> <input id="contact_address" type="text">
+                                </li>
+                                <li>
+                                    <p>移动电话</p> <input id="mobile1" value="18888888888" type="text">
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="flex-box">
+                            <ul>
+                                <li>
+                                    <p>姓名</p> <input id="name" type="text">
+                                </li>
+                                <li class="father">
+                                    <p>申请车型</p>
+                                    <div class="card-name">
+                                        <select id="carmodel">
+                                            <option value="A1">大型客车</option>
+                                            <option value="A2">牵引车</option>
+                                            <option value="A3">城市公共汽车</option>
+                                            <option value="B1">中型客车</option>
+                                            <option value="B2">大型货车</option>
+                                            <option value="C1" selected>小型汽车</option>
+                                            <option value="C2">小型自动档汽车</option>
+                                            <option value="C3">低速载货汽车</option>
+                                            <option value="C4">三轮汽车</option>
+                                            <option value="C5">残疾人专用小型自动挡载客汽车</option>
+                                            <option value="D">三轮摩托车</option>
+                                            <option value="E">二轮摩托车</option>
+                                            <option value="F">轻便摩托车</option>
+                                            <option value="M">轮式自行机械车</option>
+                                            <option value="N">无轨电车</option>
+                                            <option value="P">有轨电车</option>
+                                        </select>
+                                    </div>
+                                </li>
+                                <li>
+                                    <p>驾驶人来源</p>
+                                    <div class="card-name">
+                                        <select id="source">
+                                            <option value="1" selected>本地</option>
+                                            <option value="2">外地</option>
+                                        </select>
+                                    </div>
+                                </li>
+                                <li class="father">
+                                    <p>所属辖区</p>
+                                    <div class="card-name">
+                                        <select id="contact_jurisdiction">
+                                            <option value="650000">新疆维吾尔自治区</option>
+                                            <option value="650100">新疆维吾尔自治区乌鲁木齐市</option>
+                                            <option value="650101">新疆维吾尔自治区乌鲁木齐市市辖区</option>
+                                            <option value="650102">新疆维吾尔自治区乌鲁木齐市天山区</option>
+                                            <option value="650103">新疆维吾尔自治区乌鲁木齐市沙依巴克区</option>
+                                            <option value="650104">新疆维吾尔自治区乌鲁木齐市新市区</option>
+                                            <option value="650105">新疆维吾尔自治区乌鲁木齐市水磨沟区</option>
+                                            <option value="650106">新疆维吾尔自治区乌鲁木齐市头屯河区</option>
+                                            <option value="650107">新疆维吾尔自治区乌鲁木齐市达坂城区</option>
+                                            <option value="650108">新疆维吾尔自治区乌鲁木齐市东山区</option>
+                                            <option value="650120">新疆维吾尔自治区乌鲁木齐市区</option>
+                                            <option value="650121">新疆维吾尔自治区乌鲁木齐县</option>
+                                            <option value="650200">新疆维吾尔自治区克拉玛依市</option>
+                                            <option value="650201">新疆维吾尔自治区克拉玛依市市辖区</option>
+                                            <option value="650202">新疆维吾尔自治区克拉玛依市独山子区</option>
+                                            <option value="650203">新疆维吾尔自治区克拉玛依市克拉玛依区</option>
+                                            <option value="650204">新疆维吾尔自治区克拉玛依市白碱滩区</option>
+                                            <option value="650205">新疆维吾尔自治区克拉玛依市乌尔禾区</option>
+                                            <option value="650300">新疆维吾尔自治区石河子市</option>
+                                            <option value="652100">新疆维吾尔自治区吐鲁番地区</option>
+                                            <option value="652101">新疆维吾尔自治区吐鲁番市</option>
+                                            <option value="652121">新疆维吾尔自治区吐鲁番县</option>
+                                            <option value="652122">新疆维吾尔自治区鄯善县</option>
+                                            <option value="652123">新疆维吾尔自治区托克逊县</option>
+                                            <option value="652200">新疆维吾尔自治区哈密地区</option>
+                                            <option value="652201">新疆维吾尔自治区哈密市</option>
+                                            <option value="652221">新疆维吾尔自治区哈密县</option>
+                                            <option value="652222">新疆维吾尔自治区巴里坤哈萨克自治县</option>
+                                            <option value="652223">新疆维吾尔自治区伊吾县</option>
+                                            <option value="652300">新疆维吾尔自治区昌吉回族自治州</option>
+                                            <option value="652301">新疆维吾尔自治区昌吉市</option>
+                                            <option value="652302">新疆维吾尔自治区阜康市</option>
+                                            <option value="652303">新疆维吾尔自治区米泉市</option>
+                                            <option value="652321">新疆维吾尔自治区昌吉县</option>
+                                            <option value="652322">新疆维吾尔自治区米泉县</option>
+                                            <option value="652323">新疆维吾尔自治区呼图壁县</option>
+                                            <option value="652324">新疆维吾尔自治区玛纳斯县</option>
+                                            <option value="652325">新疆维吾尔自治区奇台县</option>
+                                            <option value="652326">新疆维吾尔自治区阜康县</option>
+                                            <option value="652327">新疆维吾尔自治区吉木萨尔县</option>
+                                            <option value="652328">新疆维吾尔自治区木垒哈萨克自治县</option>
+                                            <option value="652401">新疆维吾尔自治区伊宁市</option>
+                                            <option value="652402">新疆维吾尔自治区奎屯市</option>
+                                            <option value="652421">新疆维吾尔自治区伊宁县</option>
+                                            <option value="652422">新疆维吾尔自治区察布查尔锡伯自治县</option>
+                                            <option value="652423">新疆维吾尔自治区霍城县</option>
+                                            <option value="652424">新疆维吾尔自治区巩留县</option>
+                                            <option value="652425">新疆维吾尔自治区新源县</option>
+                                            <option value="652426">新疆维吾尔自治区昭苏县</option>
+                                            <option value="652427">新疆维吾尔自治区特克斯县</option>
+                                            <option value="652428">新疆维吾尔自治区尼勒克县</option>
+                                            <option value="652500">新疆维吾尔自治区塔城地区</option>
+                                            <option value="652521">新疆维吾尔自治区塔城县</option>
+                                            <option value="652522">新疆维吾尔自治区额敏县</option>
+                                            <option value="652523">新疆维吾尔自治区乌苏县</option>
+                                            <option value="652524">新疆维吾尔自治区沙湾县</option>
+                                            <option value="652525">新疆维吾尔自治区托里县</option>
+                                            <option value="652526">新疆维吾尔自治区裕民县</option>
+                                            <option value="652527">新疆维吾尔自治区和布克赛尔蒙古族自治县</option>
+                                            <option value="652600">新疆维吾尔自治区阿勒泰地区</option>
+                                            <option value="652621">新疆维吾尔自治区阿勒泰县</option>
+                                            <option value="652622">新疆维吾尔自治区布尔津县</option>
+                                            <option value="652623">新疆维吾尔自治区富蕴县</option>
+                                            <option value="652624">新疆维吾尔自治区福海县</option>
+                                            <option value="652625">新疆维吾尔自治区哈巴河县</option>
+                                            <option value="652626">新疆维吾尔自治区青河县</option>
+                                            <option value="652627">新疆维吾尔自治区吉木乃县</option>
+                                            <option value="652700">新疆维吾尔自治区博尔塔拉蒙古自治州</option>
+                                            <option value="652701">新疆维吾尔自治区博乐市</option>
+                                            <option value="652721">新疆维吾尔自治区博乐县</option>
+                                            <option value="652722">新疆维吾尔自治区精河县</option>
+                                            <option value="652723">新疆维吾尔自治区温泉县</option>
+                                            <option value="652800">新疆维吾尔自治区巴音郭楞蒙古自治州</option>
+                                            <option value="652801">新疆维吾尔自治区库尔勒市</option>
+                                            <option value="652821">新疆维吾尔自治区库尔勒县</option>
+                                            <option value="652822">新疆维吾尔自治区轮台县</option>
+                                            <option value="652823">新疆维吾尔自治区尉犁县</option>
+                                            <option value="652824">新疆维吾尔自治区若羌县</option>
+                                            <option value="652825">新疆维吾尔自治区且末县</option>
+                                            <option value="652826">新疆维吾尔自治区焉耆回族自治县</option>
+                                            <option value="652827">新疆维吾尔自治区和静县</option>
+                                            <option value="652828">新疆维吾尔自治区和硕县</option>
+                                            <option value="652829">新疆维吾尔自治区博湖县</option>
+                                            <option value="652900">新疆维吾尔自治区阿克苏地区</option>
+                                            <option value="652901">新疆维吾尔自治区阿克苏市</option>
+                                            <option value="652921">新疆维吾尔自治区阿克苏县</option>
+                                            <option value="652922">新疆维吾尔自治区温宿县</option>
+                                            <option value="652923">新疆维吾尔自治区库车县</option>
+                                            <option value="652924">新疆维吾尔自治区沙雅县</option>
+                                            <option value="652925">新疆维吾尔自治区新和县</option>
+                                            <option value="652926">新疆维吾尔自治区拜城县</option>
+                                            <option value="652927">新疆维吾尔自治区乌什县</option>
+                                            <option value="652928">新疆维吾尔自治区阿瓦提县</option>
+                                            <option value="652929">新疆维吾尔自治区柯坪县</option>
+                                            <option value="653000">新疆维吾尔自治区克孜勒苏柯尔克孜自治州</option>
+                                            <option value="653001">新疆维吾尔自治区阿图什市</option>
+                                            <option value="653021">新疆维吾尔自治区阿图什县</option>
+                                            <option value="653022">新疆维吾尔自治区阿克陶县</option>
+                                            <option value="653023">新疆维吾尔自治区阿合奇县</option>
+                                            <option value="653024">新疆维吾尔自治区乌恰县</option>
+                                            <option value="653100">新疆维吾尔自治区喀什地区</option>
+                                            <option value="653101">新疆维吾尔自治区喀什市</option>
+                                            <option value="653121">新疆维吾尔自治区疏附县</option>
+                                            <option value="653122">新疆维吾尔自治区疏勒县</option>
+                                            <option value="653123">新疆维吾尔自治区英吉沙县</option>
+                                            <option value="653124">新疆维吾尔自治区泽普县</option>
+                                            <option value="653125">新疆维吾尔自治区莎车县</option>
+                                            <option value="653126">新疆维吾尔自治区叶城县</option>
+                                            <option value="653127">新疆维吾尔自治区麦盖提县</option>
+                                            <option value="653128">新疆维吾尔自治区岳普湖县</option>
+                                            <option value="653129">新疆维吾尔自治区伽师县</option>
+                                            <option value="653130">新疆维吾尔自治区巴楚县</option>
+                                            <option value="653131">新疆维吾尔自治区塔什库尔干塔吉克自治县</option>
+                                            <option value="653200">新疆维吾尔自治区和田地区</option>
+                                            <option value="653201">新疆维吾尔自治区和田市</option>
+                                            <option value="653221">新疆维吾尔自治区和田县</option>
+                                            <option value="653222">新疆维吾尔自治区墨玉县</option>
+                                            <option value="653223">新疆维吾尔自治区皮山县</option>
+                                            <option value="653224">新疆维吾尔自治区洛浦县</option>
+                                            <option value="653225">新疆维吾尔自治区策勒县</option>
+                                            <option value="653226">新疆维吾尔自治区于田县</option>
+                                            <option value="653227">新疆维吾尔自治区民丰县</option>
+                                            <option value="654000">新疆维吾尔自治区伊犁哈萨克自治州</option>
+                                            <option value="654001">新疆维吾尔自治区奎屯市</option>
+                                            <option value="654002">新疆维吾尔自治区伊宁市</option>
+                                            <option value="654003">新疆维吾尔自治区奎屯市</option>
+                                            <option value="654021">新疆维吾尔自治区伊宁县</option>
+                                            <option value="654022">新疆维吾尔自治区察布查尔锡伯自治县</option>
+                                            <option value="654023">新疆维吾尔自治区霍城县</option>
+                                            <option value="654024">新疆维吾尔自治区巩留县</option>
+                                            <option value="654025">新疆维吾尔自治区新源县</option>
+                                            <option value="654026">新疆维吾尔自治区昭苏县</option>
+                                            <option value="654027">新疆维吾尔自治区特克斯县</option>
+                                            <option value="654028">新疆维吾尔自治区尼勒克县</option>
+                                            <option value="654100">新疆维吾尔自治区伊犁地区</option>
+                                            <option value="654101">新疆维吾尔自治区伊宁市</option>
+                                            <option value="654121">新疆维吾尔自治区伊宁县</option>
+                                            <option value="654122">新疆维吾尔自治区察布查尔锡伯自治县</option>
+                                            <option value="654123">新疆维吾尔自治区霍城县</option>
+                                            <option value="654124">新疆维吾尔自治区巩留县</option>
+                                            <option value="654125">新疆维吾尔自治区新源县</option>
+                                            <option value="654126">新疆维吾尔自治区昭苏县</option>
+                                            <option value="654127">新疆维吾尔自治区特克斯县</option>
+                                            <option value="654128">新疆维吾尔自治区尼勒克县</option>
+                                            <option value="654200">新疆维吾尔自治区塔城地区</option>
+                                            <option value="654201">新疆维吾尔自治区塔城市</option>
+                                            <option value="654202">新疆维吾尔自治区乌苏市</option>
+                                            <option value="654221">新疆维吾尔自治区额敏县</option>
+                                            <option value="654222">新疆维吾尔自治区乌苏县</option>
+                                            <option value="654223">新疆维吾尔自治区沙湾县</option>
+                                            <option value="654224">新疆维吾尔自治区托里县</option>
+                                            <option value="654225">新疆维吾尔自治区裕民县</option>
+                                            <option value="654226">新疆维吾尔自治区和布克赛尔蒙古自治县</option>
+                                            <option value="654300">新疆维吾尔自治区阿勒泰地区</option>
+                                            <option value="654301">新疆维吾尔自治区阿勒泰市</option>
+                                            <option value="654321">新疆维吾尔自治区布尔津县</option>
+                                            <option value="654322">新疆维吾尔自治区富蕴县</option>
+                                            <option value="654323">新疆维吾尔自治区福海县</option>
+                                            <option value="654324">新疆维吾尔自治区哈巴河县</option>
+                                            <option value="654325">新疆维吾尔自治区青河县</option>
+                                            <option value="654326">新疆维吾尔自治区吉木乃县</option>
+                                            <option value="659001">新疆维吾尔自治区石河子市</option>
+                                            <option value="659002">新疆维吾尔自治区阿拉尔市</option>
+                                            <option value="659003">新疆维吾尔自治区图木舒克市</option>
+                                            <option value="659004">新疆维吾尔自治区五家渠市</option>
+                                        </select>
+                                    </div>
+                                </li>
+                                <li>
+                                    <p>电子邮箱</p> <input type="text" id="mobile2">
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="flex-box">
+                            <ul>
+                                <li>
+                                    <p>性别</p> <input id="sex" type="hidden"> <input id="sex_value" type="text" disabled="disabled">
+                                </li>
+                                <li>
+                                    <p>驾校名称</p> <input id="driving_school_id" type="hidden"
+                                                       value="1"> <input id="driving_school" type="text"
+                                                                         value="乌鲁木齐文博驾校" disabled="disabled">
+                                </li>
+                                <li>
+                                    <p>暂住证编号</p> <input id="temporary_residence_code" type="text">
+                                </li>
+                                <li>
+                                    <p>邮政编码</p> <input id="contact_zip" type="text">
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="btn-box fr">
+                        <button onclick="readCert()">读取二代证</button>
+                        <button class="center-btn">学员现场面签</button>
+                        <button class="right-btn">不需要面签</button>
+                    </div>
+                </div>
+                <div class="tab1" style="display: none;">
+                    <div class="info-title clear" style="height: 39px;">
+                        <p class="fl">采集指纹</p>
+                        <div class="info-btn fr">
+                            <button class="cancel" onclick="toTab('0')">上一步</button>
+                            <button class="save" onclick="toTab('2')">下一步</button>
+                        </div>
+                    </div>
+                    <div class="fade">
+                        <div class="finger-mark finger clear">
+                            <div class="info-title">
+                                <p>采集指纹</p>
+                            </div>
+                            <div class="big-box clear">
+                                <div class="left-box fl">
+                                    <p>学员一次采集指纹</p>
+                                    <div class="finger-pic">
+                                        <object id='TLFPAPICtrl' name='TLFPAPICtrl' width="97"
+                                                height="104"
+                                                classid="CLSID:57FA9034-0DC3-4882-A932-DDDA228FEE05">
+                                            <param name="Token" value="12345678912345678912345678912345" />
+                                            <param name="CtrlType" value="Verify" />
+                                        </object>
+                                        <embed id="pluginobj"
+                                               type="application/mozilla-TLFPAPICtrl-plugin" width="97"
+                                               height="104" Token="12345678912345678912345678912345"
+                                               CtrlType="Verify" style="margin-top: 100px;" />
+                                        <script for="TLFPAPICtrl" event="GotFeatureEvent()"
+                                                language="javascript">
+                                            HasGotFeatureEvent();
+                                        </script>
+                                    </div>
+                                </div>
+                                <div class="left-box fr">
+                                    <p>指纹采集参照</p>
+                                    <div class="finger-pic">
+                                        <img src="img/zhiwen.png" alt="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="info-btn fr">
+                                <button class="save" onclick="InitFingerInfo()">重新采集</button>
+                                <button class="cancel">取消退出</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!--采集成功and失败弹窗-->
+                    <div class="finger-fade" style="display: none;">
+                        <div class="wind" style="display: none;">
+                            <img src="img/success.png" alt="">
+                            <p>采集成功</p>
+                        </div>
+                        <div class="wind">
+                            <img src="img/error.png" alt="">
+                            <p>采集失败</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab1 clear" style="display: none;">
+                    <div class="info-title clear" style="height: 39px;">
+                        <p class="fl">上传照片信息</p>
+                        <div class="info-btn fr">
+                            <button class="cancel" onclick="toTab(1)">上一步</button>
+                            <button class="save" onclick="toTab(3)">下一步</button>
+                        </div>
+                    </div>
+                    <div class="img-box clear">
+                        <div class="box1 fl">
+                            <p>上传身份证照片信息</p>
+                            <div class="upload upload-pic cameraimg">
+                                <img src="img/label1.png" alt="">
+                                <p>扫描身份证正面照片</p>
+                            </div>
+                        </div>
+                        <div class="upload upload-pic s-box fl cameraimg">
+                            <img src="img/label1.png" alt="">
+                            <p>扫描身份证反面照片</p>
+                        </div>
+                        <div class="box2 fl">
+                            <p>现场拍照</p>
+                            <div class="upload cameraimg">
+                                <img src="img/label2.png" alt="">
+                                <p>现场拍照</p>
+                            </div>
+                        </div>
+                        <div class="box2 fl">
+                            <p>上传身份证电子照片</p>
+                            <div class="upload cameraimg cert">
+                                <img src="img/label3.png" alt="">
+                                <p>电子照片</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="refer-sample clear">
+                        <p>参照样例</p>
+                        <div class="refer fl">
+                            <img src="img/refer1.png" alt="">
+                        </div>
+                        <div class="refer fl">
+                            <img src="img/refer1.png" alt="">
+                        </div>
+                    </div>
+                    <div class="btns fr">
+                        <button class="save">确定保存</button>
+                        <button class="cancel">取消</button>
+                    </div>
+                </div>
+                <div class="tab1 clear" style="display: none;">
+                    <div class="info-title clear" style="height: 39px;">
+                        <p class="fl">提交注册表</p>
+                        <div class="info-btn fr">
+                            <button class="cancel" onclick="toTab(2)">上一步</button>
+                        </div>
+                    </div>
+                    <div class="img-box sub-table">
+                        <p>提交扫描注册表</p>
+                        <div class="upload table-box cameraimg">
+                            <img src="img/label1.png" alt="">
+                            <p>扫描注册表</p>
+                        </div>
+                    </div>
+                    <div class="btns sub-btn fl" id="errormessage" style="color: red;">
+
+                    </div>
+                    <div class="btns sub-btn fr">
+                        <button class="save" onclick="ensureSubmit()">确定提交</button>
+                        <button class="cancel">取消</button>
+                    </div>
+                    <!-- 提交成功弹窗-->
+                    <div class="fade" style="" hidden>
+                        <div class="boxs">
+                            <div class="top">
+                                <img src="img/success.png" alt="">
+                                <p>提交成功</p>
+                            </div>
+                            <p><a onclick="printStudent()" href="javascript:void(0)">"打印"机动车驾驶证申请表</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tab1 clear" style="display: none;">
+        <div class="fade" id="camera">
+            <div class="finger-mark camera clear">
+                <div class="info-title">
+                    <p>拍照</p>
+                </div>
+                <div class="big-box clear">
+                    <div id="webcam"></div>
+                    <div class="info-btn fl"
+                         style="margin-top: 30px; margin-left: 93px;">
+                        <!-- <input type="button" value="删除" id="delBtn" onclick="delPhoto();"/> -->
+                        <button class="save" type="button" id="saveBtn"
+                                onclick="savePhoto();">
+                            拍照
+                        </button>
+                    </div>
+                    <!-- <div id="photos">
+                        <img src="" id="img">
+                    </div> -->
+                    <div class="info-btn fr" style="margin-top: 30px;">
+                        <button class="cancel">取消退出</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        /*<![CDATA[*/
+        new inputSelect("register_area", "txt1");
+
+        function inputSelect(div_id, saveval_id) {
+            this.input_id = $("#" + div_id + ' .newinput');
+            this.input_div = $("#" + div_id + ' .input_div');
+            this.input_id.focus(function () {
+                $("#" + div_id + ' .input_div').show();
+                var L = $("span", $("#" + div_id + ' .input_div')).size();
+
+                $("span", $("#" + div_id + ' .input_div')).show();
+                $("#" + div_id + ' .input_div').show();
+                var selval = 0;
+                $(".savedata", $("#" + div_id)).val(selval);
+
+                for (var i = 0; i < L; i++) {
+                    var elem = $("span", $("#" + div_id + ' .input_div')).eq(i);
+                    var html = $("span", $("#" + div_id + ' .input_div')).eq(i).attr("data-val");
+                    if (i >= 10) {
+                        elem.hide();
+                    }
+                }
+            });
+            this.input_id.keyup(function () {
+                var st = $(this).val().trim();
+                var _this = this;
+                var L = $("span", $("#" + div_id + ' .input_div')).size();
+
+                if (st == '') {
+                    $("span", $("#" + div_id + ' .input_div')).show();
+                    $("#" + div_id + ' .input_div').show();
+                    var selval = 0;
+                    $(".savedata", $("#" + div_id)).val(selval);
+
+                    for (var i = 0; i < L; i++) {
+                        var elem = $("span", $("#" + div_id + ' .input_div')).eq(i);
+                        var html = $("span", $("#" + div_id + ' .input_div')).eq(i).attr("data-val");
+                        if (i >= 10) {
+                            elem.hide();
+                        }
+                    }
+
+                    return false;
+                }
+                var showcount = 0;
+                for (var i = 0; i < L; i++) {
+                    var elem = $("span", $("#" + div_id + ' .input_div')).eq(i);
+                    var html = $("span", $("#" + div_id + ' .input_div')).eq(i).attr("data-val");
+                    if (html.match(st)) {
+                        showcount++;
+                        if (showcount >= 10) {
+                            elem.hide();
+                        }
+                        else {
+                            elem.show();
+                        }
+                    }
+                    else {
+                        elem.hide();
+                    }
+                }
+                var selval = -1;
+                if ($("span:visible", $("#" + div_id + ' .input_div')).length == 1 || $("span:visible", $("#" + div_id + ' .input_div')).eq(0).html() == st) {
+                    selval = $("span:visible", $("#" + div_id + ' .input_div')).eq(0).attr('data-val');
+                }
+                else {
+                    selval = 99999;
+                }
+                $(".savedata", $("#" + div_id)).val(selval);
+                $("#" + div_id + ' .input_div').show();
+            });
+            this.input_id.blur(function () {
+                $("#" + div_id + ' .input_div').slideUp(50);
+            });
+            $("span", $("#" + div_id + ' .input_div')).mousedown(function () {
+                var val = $(this).data('val');
+                val = $(this).html();
+                $("#" + div_id + ' .newinput').val($(this).html());
+                $(".savedata", $("#" + div_id)).val(val);
+            })
+        }
+
+        var basePath = /*[[${#httpServletRequest.getContextPath()}]]*/"/demo";
+        var isFirst = true;
+        /*]]>*/
+        $(function () {
+            //连接身份证阅读器
+            connect();
+
+            $(".father>a").click(function () {
+                if ($(".child").css("display") == "none") {
+                    $(".child").show();
+                } else {
+                    $(".child").hide();
+                }
+            });
+
+            //$(".info-progress ul li").click(
+            //    function () {
+            //        if ($(".info-progress ul li").hasClass(
+            //            "active")) {
+            //            $(this).find(".img2").show();
+            //            $(this).find(".img1").hide();
+            //        } else {
+            //            $(this).find(".img1").show();
+            //            $(this).find(".img2").hide();
+            //        }
+            //        $(".tab-contents .tab1")
+            //            .eq($(this).index()).show().find(
+            //            ".fade").show();
+
+            //        $(".tab-contents .tab1")
+            //            .eq($(this).index()).siblings()
+            //            .hide();
+
+            //        if ($(this).index() == 1 && isFirst) {
+            //            InitNetSsVerify();
+            //            isFirst = false;
+            //        }
+            //    });
+
+
+            toTab = function (index) {
+                var $this = $(".tab-contents .tab1").eq(index);
+                //if ($(".info-progress ul li").hasClass(
+                //    "active")) {
+                //    $this.find(".img2").show();
+                //    $this.find(".img1").hide();
+                //} else {
+                //    $this.find(".img1").show();
+                //    $this.find(".img2").hide();
+                //}
+
+                $(".info-progress ul li").eq(index).find(".img2").show();
+                $(".info-progress ul li").eq(index).find(".img1").hide();
+
+                $this.show().find(".fade").show();
+
+                $this.siblings().hide();
+
+                if (index == 1 && isFirst) {
+                    InitNetSsVerify();
+                    isFirst = false;
+                }
+            }
+
+            $(".edit").click(function () {
+                $(this).hide();
+                $(this).next(".info-btn").show();
+                $(".disable").removeAttr("disabled");
+            });
+
+            $(".info-btn .cancel").click(function () {
+                $(this).parents(".fade").hide();
+                $(this).parent(".info-btn").prev(".edit").show();
+                $(".disable").attr("disabled", true);
+            });
+        });
+
+        //提交数据
+        function ensureSubmit() {
+            var errorstring = "";
+            var name = $('#name').val();//姓名
+            var sex = $('#sex').val();//性别1-男 0-女
+            var sex_value = $('#sex_value').val().trim();//性别 男 、女
+            if (sex_value == "男") {
+                sex = 1;
+            }
+            else if (sex_value == "女") {
+                sex = 0;
+            }
+            else {
+                errorstring += "性别只能是男或者女;"
+            }
+
+            var nation = $('#nation').val().trim();//民族
+            if (nation == "") {
+                errorstring += "民族不能为空;"
+            }
+            else if (nation.length > 20) {
+                errorstring += "民族字符太长;"
+            }
+
+            var birth_day = $('#birth_day').val().trim();//出生
+            if (birth_day == "") {
+                errorstring += "出生不能为空;"
+            }
+            else if (birth_day.length != 8) {
+                errorstring += "出生只能为8位;"
+            }
+            else {
+                if (isNaN(birth_day) || birth_day < 0) {
+                    errorstring += "出生输入有误;"
+                }
+                else {
+                    var year = birth_day.substr(0, 4);
+                    var month = birth_day.substr(4, 2);
+                    var day = birth_day.substr(6, 2);
+                    if (year < 1900 || year > 2018 || month > 12 || day > 31) {
+                        errorstring += "出生输入有误;"
+                    }
+                }
+            }
+
+            var register_address = $('#register_address').val();//地址
+            if (register_address == "") {
+                errorstring += "地址不能为空;"
+            }
+            else if (register_address.length > 50) {
+                errorstring += "地址输入太长;"
+            }
+            var certificate_code = $('#certificate_code').val();//身份证号
+            if (certificate_code == "") {
+                errorstring += "身份证不能为空;"
+            }
+            else if (certificate_code.length > 18) {
+                errorstring += "身份证格式不正确;"
+            }
+            else {
+                // 身份证号码为15位或者18位，15位时全为数字，18位前17位为数字，最后一位是校验位，可能为数字或字符X
+                var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+                if (reg.test(certificate_code) === false) {
+                    errorstring += "身份证格式不正确;"
+                }
+            }
+            var certificate_type = $('#certificate').val();//证件类型
+            var country_code = $('#country').val();//国家编号
+            var country = $('#country').find("option:selected")
+                .text();//国家名称
+            var carmodel_code = $('#carmodel').val();//车型编号
+            var carmodel = $('#carmodel').find("option:selected")
+                .text();//车型
+            var driving_school_id = $('#driving_school_id').val();//驾校id
+            var driving_school = $('#driving_school').val();//驾校名称
+            var register_area = $('#register_area').val();//登记住所行政区域
+            var register_address = $('#register_address').val();//登记住所详细地址
+            var source = $('#source').val();//来源
+            var temporary_residence_code = $(
+                '#temporary_residence_code').val();//暂住证编号
+            var contact_area = $('#contact_area').val();//联系住所行政区域
+            var contact_address = $('#contact_address').val();//联系住所详细地址
+            var contact_jurisdiction = $('#contact_jurisdiction')
+                .val();//联系住所所属辖区
+            var contact_zip = $('#contact_zip').val().trim();//联系住所邮政编码
+            var phone = $('#phone').val().trim();//固定电话
+            var mobile1 = $('#mobile1').val().trim();//移动电话1
+            var mobile2 = $('#mobile2').val().trim();//移动电话2
+
+            if (contact_zip != "") {
+                var reg = new RegExp(/^\d{6}$/);
+                if (!reg.test(contact_zip)) {
+                    errorstring += "联系住所邮政编码格式不正确;"
+                }
+            }
+
+            var regTel1 = /^(([0\+]\d{2,3}-)?(0\d{2,3})-)(\d{7,8})(-(\d{3,}))?$/.test(phone);//带区号的固定电话
+            var regTel2 = /^(\d{7,8})(-(\d{3,}))?$/.test(phone);//不带区号的固定电话
+            if (phone != "") {
+                if (!regTel1 && !regTel2) {
+                    errorstring += "电话号码输入有误;"
+                }
+            }
+            else {
+                errorstring += "请输入电话号码;"
+            }
+
+            if (mobile1.length == 0) {
+                errorstring += "请输入手机号码;"
+            }
+            else if (mobile1.length != 11) {
+                errorstring += "请输入有效的手机号码;"
+            }
+            else {
+                var myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/;
+                if (!myreg.test(mobile)) {
+                    errorstring += "请输入有效的手机号码;"
+                }
+            }
+
+            if (mobile2 != "") {
+                //对电子邮件的验证
+                var myreg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+                if (!myreg.test(mobile2)) {
+                    errorstring += "请输入有效的电子邮件;"
+                }
+            }
+
+            if (errorstring != "") {
+                $("#errormessage").html(errorstring);
+                return false;
+            }
+
+            var fingerprint = $('#fingerprint').val();//指纹
+
+            $.ajaxSetup({
+                contentType: "application/json;charset=UTF-8"
+            });
+            $.post(basePath + "/addStudent", JSON.stringify({
+                name: name,
+                sex: sex,
+                nation: nation,
+                certificateType: certificate_type,
+                certificateCode: certificate_code,
+                birthDay: birth_day.substr(0, 4) + "-"
+                + birth_day.substr(4, 2) + "-"
+                + birth_day.substr(6, 2),
+                countryCode: country_code,
+                country: country,
+                carModelCode: carmodel_code,
+                carModel: carmodel,
+                drivingSchoolId: driving_school_id,
+                drivingSchool: driving_school,
+                registerArea: register_area,
+                registerAddress: register_address,
+                source: source,
+                temporaryResidenceCode: temporary_residence_code,
+                contactArea: contact_area,
+                contactAddress: contact_address,
+                contactJurisdiction: contact_jurisdiction,
+                contactZip: contact_zip,
+                phone: phone,
+                mobile1: mobile1,
+                mobile2: mobile2,
+                fingerprint: fingerprint
+            }), function (data) {
+                console.log(data);
+            }, "JSON");
+        }
+    </script>
+    <!-- 	//身份证 -->
+    <script>
+        ////禁止按键F5
+        //document.onkeydown = function (e) {
+        //    e = window.event || e;
+        //    var keycode = e.keyCode || e.which;
+        //    if (keycode = 116) {
+        //        if (window.event) {// ie
+        //            try {
+        //                e.keyCode = 0;
+        //            } catch (e) {
+        //            }
+        //            e.returnValue = false;
+        //        } else {// ff
+        //            e.preventDefault();
+        //        }
+        //    }
+        //}
+
+        document.oncontextmenu = function (e) {
+            return false;
+        }
+
+        function a() {
+            var d = document.createElement("CertCtl");
+            if (d != null) {
+                alert(d);
+            } else {
+                alert("未加载");
+            }
+        }
+
+        function connect() {
+            clearForm();
+            var ret = CertCtl.connect();
+            //document.all['ret'].innerHTML = ret;
+            ret = JStrToObj(ret);
+            DisplayInfo(ret);
+            return;
+        }
+
+        function getStatus() {
+            clearForm();
+            var ret = CertCtl.getStatus();
+            //document.all['ret'].innerHTML = ret;
+            ret = JStrToObj(ret);
+            DisplayInfo(ret);
+            return;
+        }
+
+        function readCert() {
+            clearForm();
+            var ret = CertCtl.readCert();
+            //document.all['ret'].innerHTML = ret;
+            ret = JStrToObj(ret);
+            if (ret.resultFlag == -1) {
+                DisplayInfo(ret);
+            } else {
+                fillForm(ret);
+            }
+        }
+
+        function disconnect() {
+            clearForm();
+            var ret = CertCtl.disconnect();
+            //document.all['ret'].innerHTML = ret;
+            ret = JStrToObj(ret);
+            DisplayInfo(ret);
+            return;
+        }
+
+        function ReadIDCard() {
+            var ret = JStrToObj(CertCtl.connect());
+
+            if (ret.resultFlag == -1) {
+                clearForm();
+                DisplayInfo(ret);
+                return;
+            }
+
+            ret = JStrToObj(CertCtl.readCert());
+            if (ret.resultFlag == -1) {
+                clearForm();
+                DisplayInfo(ret);
+            } else {
+                fillForm(ret);
+            }
+
+            ret = JStrToObj(CertCtl.disconnect());
+            if (ret.resultFlag == -1) {
+                DisplayInfo(ret);
+                return;
+            }
+
+        }
+
+        function JStrToObj(str) {
+            return eval("(" + str + ")");
+        }
+
+        function DisplayInfo(ret) {
+            //if (ret.resultFlag == 0) {
+            //    document.all['errorMsg'].style.color = 'Green';
+            //} else {
+            //    document.all['errorMsg'].style.color = 'Red';
+            //}
+
+            //document.all['errorMsg'].innerHTML = ret.errorMsg;
+
+            //if (ret.status != null)
+            //    document.all['status'].innerHTML = ret.status
+            //else
+            //    document.all['status'].innerHTML = "";
+        }
+
+        function fillForm(ret) {
+            DisplayInfo(ret);
+            var pName = ret.resultContent.partyName;//姓名
+            var pSex = ret.resultContent.gender;//性别 1-男 0-女
+            var pNation = ret.resultContent.nation; //民族
+            var pBorn = ret.resultContent.bornDay;//出生
+            var pAddress = ret.resultContent.certAddress; //地址
+            var pCardNo = ret.resultContent.certNumber;//身份证号
+            var pPolice = ret.resultContent.certOrg;//签发机关
+            var pActivityLFrom = ret.resultContent.effDate;//期限起始
+            var pActivityLTo = ret.resultContent.expDate;//期限失效
+
+            $('#name').val(pName);
+            $('#sex').val(pSex);
+            $('#sex_value').val(pSex == "1" ? "男" : "女");
+            $('#nation').val(pNation);
+            $('#birth_day').val(pBorn);
+            $('#register_address').val(pAddress);
+            $('#certificate_code').val(pCardNo);
+
+            $(".upload.cameraimg.cert").html("<img src='" + "data:image/jpg;base64," + ret.resultContent.cardHimg + "' style='width:100%;height:100%;margin-top:0;'/>");
+
+
+            //$('#Police').val(pPolice);
+            //$('#ActivityLFrom').val(pActivityLFrom);
+            //$('#ActivityLTo').val(pActivityLTo);
+
+            //document.all['errorMsg'].innerHTML = ret.errorMsg;
+            //if (ret.status != null)
+            //    document.all['status'].innerHTML = ret.status
+            //else
+            //    document.all['status'].innerHTML = "";
+
+            //document.all['pic1'].src = "data:image/jpg;base64,"
+            //    + ret.resultContent.identityPic;
+            //document.all['pic2'].src = "data:image/jpg;base64,"
+            //    + ret.resultContent.cardHimg;
+            //document.all['pic3'].src = "data:image/jpg;base64,"
+            //    + ret.resultContent.cardFimg;
+            //document.all['pic4'].src = "data:image/jpg;base64,"
+            //    + ret.resultContent.cardBimg;
+            //document.all['pic5'].src = "data:image/jpg;base64,"
+            //    + ret.resultContent.cardAimg;
+        }
+
+        function clearForm() {
+            $('#name').val("");
+            $('#sex').val("");
+            $('#sex_value').val("");
+            $('#nation').val("");
+            $('#birth_day').val("");
+            $('#register_address').val("");
+            $('#certificate_code').val("");
+
+            //document.all['pic1'].src = "";
+            //document.all['pic2'].src = "";
+            //document.all['pic3'].src = "";
+            //document.all['pic4'].src = "";
+            //document.all['pic5'].src = "";
+        }
+    </script>
+
+    <script>
+        $(".cameraimg").click(function () {
+            showCamera();
+            $cameraimgcontainer = $(this);
+        });
+
+        function showCamera() {
+            $(".tab1").last().show();
+            $("#camera").show();
+        }
+        
+/*         打印 */
+ function printStudent(){
+	var url="";
+	var name = $('#name').val();//姓名
+	url += ("name=" + name);
+    var sex = $('#sex').val();//性别1-男 0-女
+    var sex_value = $('#sex_value').val().trim();//性别 男 、女
+    if (sex_value == "男") {
+        sex = 1;
+    }
+    else if(sex_value == "女") {
+        sex = 0;
+    }
+    url += ("&sex=" + sex);
+    var nation = $('#nation').val().trim();//民族  
+    url += ("&nation=" + nation);
+    var birth_day = $('#birth_day').val().trim();//出生
+    url += ("&birthDay=" + birth_day);
+    var register_address = $('#register_address').val();//地址  
+    url += ("&registerAddress=" + register_address);
+    var certificate_code = $('#certificate_code').val();//身份证号
+    url += ("&certificateCode=" + certificate_code);
+    var certificate_type = $('#certificate').val();//证件类型
+    
+    var country = $('#country').find("option:selected")
+        .text();//国家名称
+    url += ("&country=" + country);    
+    var carmodel_code = $('#carmodel').val();//车型编号
+    url += ("&carModelCode=" + carmodel_code); 
+    var register_area = $('#register_area').val();//登记住所行政区域
+    var register_address = $('#register_address').val();//登记住所详细地址
+    var source = $('#source').val();//来源
+    var temporary_residence_code = $(
+        '#temporary_residence_code').val();//暂住证编号
+    var contact_area = $('#contact_area').val();//联系住所行政区域
+    var contact_address = $('#contact_address').val();//联系住所详细地址
+    var contact_jurisdiction = $('#contact_jurisdiction')
+        .val();//联系住所所属辖区
+    var contact_zip = $('#contact_zip').val().trim();//联系住所邮政编码
+    url += ("&contactZip=" + contact_zip); 
+    var phone = $('#phone').val().trim();//固定电话
+    url += ("&phone=" + phone); 
+    var mobile1 = $('#mobile1').val().trim();//移动电话
+    url += ("&mobile=" + mobile1);
+    var mobile2 = $('#mobile2').val().trim();//电子邮箱
+    url += ("&email=" + mobile2);
+    
+	window.location.href="printStudent?" + url;
+	
+	
+}
+    </script>
+</body>
+</html>

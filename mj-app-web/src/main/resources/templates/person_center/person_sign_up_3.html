@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="head_center">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+	content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>个人中心</title>
+</head>
+<body>
+
+	<!--驾校详情-->
+	<div class="tab" th:fragment="content">
+	 	<div class="plat-title">
+             <h2>驾校报名</h2>
+        </div>
+	  <form id="driving_school_form" th:action="@{${baseUrl} + 'user/signDriving'}" method="post">
+	  	 <input type="hidden" id="driving_relocation_url" th:value="@{${ctx} + 'person_center/person_sign_up_1'}">
+	  	 <input type="hidden" id="relocationUrl2" th:value="@{${baseUrl} + 'api/pay/web/payChoose'}">
+	  	 
+	    <input type="hidden" name="courseId" th:value="${courseId}">
+		<div class="fill-info clear">
+			<div class="sign-up clear">
+                 <div class="order-pic fl">
+                     <img th:src="@{${imageUrl} + ${school.imagePath}}" alt="">
+                 </div>
+                 <div class="order-name fl" style="width: 480px;">
+                     <p><b th:text="${school.nameS}"></b></p>
+                     <p th:text="@{'驾照类型：'+ ${schoolLesson.licence}}"></p>
+                     <p th:text="@{'开班时间：'+ ${#dates.format(schoolLesson.startTime, 'yyyy-MM-dd')}}">
+                     </p>
+                 </div>
+                 <p class="fr"><b style="color:#fd9938;font-size: 20px;" th:text="@{'￥'+ ${schoolLesson.price}}"></b></p>
+            </div>
+            <div class="plat-title">
+                 <h2>驾校培训课程</h2>
+            </div>
+			<ul>
+				<li class="clear">
+					<div class="fill-name fl">
+						<p>
+							<b>填写姓名</b><b class="required">*</b>
+						</p>
+						<input type="text" placeholder="请输入姓名" name="userName" id="userName" maxlength="20">
+						<div class="mark"></div>
+					</div>
+					<div class="fill-name fr">
+						<p>
+							<b>填写手机号码</b><b class="required">*</b>
+						</p>
+						<input type="text" placeholder="请输入手机号码" name="telNo" id="telNo" maxlength="11">
+						<div class="mark"></div>
+					</div>
+				</li>
+				<li class="clear">
+					<div class="fill-name fl">
+						<p>
+							<b>填写身份证号码</b><b class="required">*</b>
+						</p>
+						<input type="text" placeholder="请输入身份证号码" name="idNo" id="idNo" maxlength="18">
+						<div class="mark"></div>
+					</div>
+				
+					<div class="fill-name fr" id="sex_div">
+						<p>
+							<b>选择性别</b>
+						</p>
+						<button class="choose-btn" type="button" value="0">男</button>
+						<button value="1" type="button">女</button>
+						<input type="hidden" name="sex" id="sex">
+						
+					</div>
+					
+				</li>
+				<li class="clear">
+					<div class="fill-name fl" id="firstApply_div">
+						<p>
+							<b>是否是初次申领？</b>
+						</p>
+						<button class="choose-btn" type="button" value="1">是</button>
+						<button type="button" value="0">否</button>
+						<input type="hidden" name="firstApply" id="firstApply">						
+					</div>
+					<div class="fill-name fr" id="payType_div">
+						<p>
+							<b>付费方式</b>
+						</p>
+						<button class="choose-btn" value="0" type="button">在线支付</button>
+						<button value="1" type="button">线下支付</button>
+						<input type="hidden" name="payType" id="payType" >												
+					</div>
+				</li>
+				<li class="clear">
+					<p>
+						<b>上传身份证照片</b>
+					</p>
+					<div class="fill-pic fl">
+						<p>请上传身份证正面照片</p>
+						<img class="show tximg" id="facade" src="" alt="" /> <img
+							class="img1" th:src="@{/img/my-pic3.png}" alt="" /> <input
+							id="facade_card" type="file" name="file" accept="image/*" />
+					</div>
+					<div class="fill-pic fr">
+						<p>请上传身份证背面照片</p>
+						<img class="show tximg" id="identity" src="" alt="" /> <img
+							class="img2" th:src="@{/img/my-pic3.png}" alt="" /> <input
+							id="identity_card" type="file" name="file" accept="image/*" />
+					</div>
+						<input type="hidden" name="idUp" id="idUp">												
+						<input type="hidden" name="idDown" id="idDown">												
+					
+				</li>
+			</ul>
+			<input class="submit-btn" type="button" id="driving_school_submit" value="提交">
+		</div>
+		</form>
+	</div>
+</html>

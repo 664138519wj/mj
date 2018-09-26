@@ -1,0 +1,146 @@
+.title{
+	font-size: .15rem;
+	text-align: center;
+	padding:.2rem 0;
+}
+.main{
+	padding-bottom:.3rem;
+}
+.policy-detail img{
+	width: 3.45rem;
+	height:2.3rem;
+	margin-bottom:.2rem;
+}
+.app_pic {
+	margin-top:.25rem;
+}
+.app_pic img{
+	width:3.43rem;
+	height: .7rem;
+}
+.app_desc p{
+	padding:.3rem 0;
+	line-height: .18rem;
+	text-indent: 2em;
+}
+.app_line img{
+	width:3.45rem;
+	height:.03rem;
+}
+.app_main{
+	padding-top:.17rem;
+}
+.app_main p{
+	padding-left: .35rem;
+}
+.app_main>p{
+	padding-bottom:.17rem;
+	padding-left: .24rem;
+}
+.app_main .app_title{
+	position: relative;
+	margin-bottom:.2rem;
+}
+.app_main .app_title img{
+	width:.3rem;
+	height: .26rem;
+	margin-right:.06rem;
+}
+.app_main .app_title span{
+	position: absolute;
+	top: .06rem;
+	left: .05rem;
+	color:#fff;
+}
+.app_main .app_title b,
+.app_main .app_title a{
+	color:#fd9938;
+}
+.app_main .app_title p{
+	padding-top:.06rem;
+	line-height: .18rem;
+}
+/* 学前指导 */
+.guide-content .xc-guide-step{
+    padding-top:.2rem;
+}
+.guide-content .xc-guide-step .first-step{
+	margin:0 auto;
+    padding-left: .1rem;
+    height: .25rem;
+    line-height: .25rem;
+    color: #fff;
+}
+.guide-content .xc-guide-step .step-img{
+    margin: .1rem auto;
+}
+.step-1 .step-img,
+.step-1 .step-img img{
+    width: 3.45rem;
+    height: 1.58rem;
+}
+.guide-content .xc-guide-step .step-desc p{
+	font-size: .12rem;
+    line-height: .2rem;
+}
+.guide-content .xc-guide-step .step-desc p span{
+    color: #ff0000;
+}
+.guide-content .xc-guide-step .step-desc p img{
+	width: .1rem;
+	height: .08rem;
+}
+.step-2 .step-img,
+.step-2 .step-img img{
+    width: 2rem;
+    height: 2.8rem;
+}
+.step-3 .step-img,
+.step-4 .step-img,
+.step-3 .step-img img,
+.step-4 .step-img img{
+    width: 3.45rem;
+    height: 2.12rem;
+}
+.step-5 .step-img,
+.step-5 .step-img img{
+    width: 3.45rem;
+    height: 2.12rem;
+}
+.step-6 .step-img,
+.step-6 .step-img img{
+    width: 2.99rem;
+    height: 1.87rem;
+}
+.step-7 .step-img,
+.step-7 .step-img img{
+    width: 2.85rem;
+    height: 2.13rem;
+}
+.guide-content .step-1 .first-step,
+.guide-content .step-2 .first-step{
+	width: .9rem;
+    background: url('../img/xc-shape1.png') no-repeat;
+    background-size: 100% 100%;
+}
+.guide-content .step-3 .first-step{
+	width: 1.45rem;
+    background: url('../img/xc-shape2.png') no-repeat;
+    background-size: 100% 100%;
+}
+.guide-content .step-4 .first-step,
+.guide-content .step-5 .first-step{
+	width: 1.04rem;
+    background: url('../img/xc-shape3.png') no-repeat;
+    background-size: 100% 100%;
+}
+.guide-content .step-6 .first-step{
+	width: 1.62rem;
+    background: url('../img/xc-shape4.png') no-repeat;
+    background-size: 100% 100%;
+}
+.guide-content .step-7 .first-step{
+	width: 1.15rem;
+    background: url('../img/xc-shape5.png') no-repeat;
+    background-size: 100% 100%;
+}

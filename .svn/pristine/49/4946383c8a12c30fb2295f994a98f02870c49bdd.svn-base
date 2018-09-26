@@ -1,0 +1,317 @@
+package com.migu.online.service.pay;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import com.github.wxpay.sdk.WXPay;
+import com.github.wxpay.sdk.WXPayUtil;
+
+@Service
+public class WXPayService {
+	
+	private Logger log = LoggerFactory.getLogger(WXPayService.class);
+
+	private WXPay wxpay;
+    private WXPayConfigImpl config;
+    @Value("${wx.notify.url}")
+    private String wx_notify_url;
+
+
+    public WXPayService() throws Exception {
+        config = WXPayConfigImpl.getInstance();
+        wxpay = new WXPay(config);
+    }
+
+    /**
+     * app统一下单
+     */
+    public Map<String, String> doAppUnifiedOrder(String out_trade_no, String totalFee, String ip, 
+    		String courseId, String body) {
+        HashMap<String, String> data = new HashMap<String, String>();
+        data.put("body", body);
+        data.put("out_trade_no", out_trade_no);
+        data.put("device_info", "");
+        data.put("fee_type", "CNY");
+        data.put("total_fee", totalFee);
+        data.put("spbill_create_ip", ip);
+        data.put("notify_url", wx_notify_url);
+        data.put("trade_type", "APP");
+        data.put("product_id", courseId);
+        try {
+            Map<String, String> result = wxpay.unifiedOrder(data);
+            return result;
+        } catch (Exception e) {
+        	log.error(e.toString());
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
+    /**
+     * web统一下单
+     */
+    public Map<String, String> doWebUnifiedOrder(String out_trade_no, String totalFee, String ip, 
+    		String courseId, String body) {
+        HashMap<String, String> data = new HashMap<String, String>();
+        data.put("body", body);
+        data.put("out_trade_no", out_trade_no);
+        data.put("device_info", "");
+        data.put("fee_type", "CNY");
+        data.put("total_fee", totalFee);
+        data.put("spbill_create_ip", ip);
+        data.put("notify_url", wx_notify_url);
+        data.put("trade_type", "NATIVE");
+        data.put("product_id", courseId);
+        // data.put("time_expire", "20170112104120");
+        try {
+            Map<String, String> result = wxpay.unifiedOrder(data);
+            return result;
+        } catch (Exception e) {
+        	log.error(e.toString());
+            e.printStackTrace();
+            
+        }
+        return null;
+    }
+
+
+    public void doOrderClose(String out_trade_no) {
+        System.out.println("关闭订单");
+        HashMap<String, String> data = new HashMap<String, String>();
+        data.put("out_trade_no", out_trade_no);
+        try {
+            Map<String, String> r = wxpay.closeOrder(data);
+            System.out.println(r);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 订单查询
+     */
+    public Map<String, String> doOrderQuery(String outTradeNo) {
+        HashMap<String, String> data = new HashMap<String, String>();
+        data.put("out_trade_no", outTradeNo);
+        try {
+            Map<String, String> result = wxpay.orderQuery(data);
+            return result;           		 
+        } catch (Exception e) {
+        	log.error(e.toString());
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void doOrderReverse(String out_trade_no) {
+        System.out.println("撤销");
+        HashMap<String, String> data = new HashMap<String, String>();
+        data.put("out_trade_no", out_trade_no);
+//        data.put("transaction_id", "4008852001201608221962061594");
+        try {
+            Map<String, String> r = wxpay.reverse(data);
+            System.out.println(r);
+        } catch (Exception e) {
+        	log.error(e.toString());
+            e.printStackTrace();
+        }
+    }
+
+
+
+    /**
+     * 长链接转短链接
+     * 测试成功
+     */
+    public void doShortUrl() {
+        String long_url = "weixin://wxpay/bizpayurl?pr=etxB4DY";
+        HashMap<String, String> data = new HashMap<String, String>();
+        data.put("long_url", long_url);
+        try {
+            Map<String, String> r = wxpay.shortUrl(data);
+            System.out.println(r);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 退款
+     * 已测试
+     */
+    public void doRefund(String outTradeNo, String totalFee) {
+        HashMap<String, String> data = new HashMap<String, String>();
+        data.put("out_trade_no", outTradeNo);
+        data.put("out_refund_no", "R-" + outTradeNo);
+        data.put("total_fee", totalFee);
+        data.put("refund_fee", totalFee);
+        data.put("refund_fee_type", "CNY");
+        data.put("op_user_id", config.getMchID());
+
+        try {
+            Map<String, String> r = wxpay.refund(data);
+            System.out.println(r);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * 查询退款
+     * 已经测试
+     */
+    public void doRefundQuery(String out_trade_no) {
+        HashMap<String, String> data = new HashMap<String, String>();
+        data.put("out_refund_no", out_trade_no);
+        try {
+            Map<String, String> r = wxpay.refundQuery(data);
+            System.out.println(r);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 对账单下载
+     * 已测试
+     */
+    public void doDownloadBill() {
+        HashMap<String, String> data = new HashMap<String, String>();
+        data.put("bill_date", "20161102");
+        data.put("bill_type", "ALL");
+        try {
+            Map<String, String> r = wxpay.downloadBill(data);
+            System.out.println(r);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void doGetSandboxSignKey() throws Exception {
+        WXPayConfigImpl config = WXPayConfigImpl.getInstance();
+        HashMap<String, String> data = new HashMap<String, String>();
+        data.put("mch_id", config.getMchID());
+        data.put("nonce_str", WXPayUtil.generateNonceStr());
+        String sign = WXPayUtil.generateSignature(data, config.getKey());
+        data.put("sign", sign);
+        WXPay wxPay = new WXPay(config);
+        String result = wxPay.requestWithoutCert("https://api.mch.weixin.qq.com/sandbox/pay/getsignkey", data, 10000, 10000);
+        System.out.println(result);
+    }
+
+
+//    public void doReport() {
+//        HashMap<String, String> data = new HashMap<String, String>();
+//        data.put("interface_url", "20160822");
+//        data.put("bill_type", "ALL");
+//    }
+
+    /**
+     * 小测试
+     */
+    public void test001() {
+        String xmlStr="<xml><return_code><![CDATA[SUCCESS]]></return_code>\n" +
+                "<return_msg><![CDATA[OK]]></return_msg>\n" +
+                "<appid><![CDATA[wx273fe72f2db863ed]]></appid>\n" +
+                "<mch_id><![CDATA[1228845802]]></mch_id>\n" +
+                "<nonce_str><![CDATA[lCXjx3wNx45HfTV2]]></nonce_str>\n" +
+                "<sign><![CDATA[68D7573E006F0661FD2A77BA59124E87]]></sign>\n" +
+                "<result_code><![CDATA[SUCCESS]]></result_code>\n" +
+                "<openid><![CDATA[oZyc_uPx_oed7b4q1yKmj_3M2fTU]]></openid>\n" +
+                "<is_subscribe><![CDATA[N]]></is_subscribe>\n" +
+                "<trade_type><![CDATA[NATIVE]]></trade_type>\n" +
+                "<bank_type><![CDATA[CFT]]></bank_type>\n" +
+                "<total_fee>1</total_fee>\n" +
+                "<fee_type><![CDATA[CNY]]></fee_type>\n" +
+                "<transaction_id><![CDATA[4008852001201608221983528929]]></transaction_id>\n" +
+                "<out_trade_no><![CDATA[20160822162018]]></out_trade_no>\n" +
+                "<attach><![CDATA[]]></attach>\n" +
+                "<time_end><![CDATA[20160822202556]]></time_end>\n" +
+                "<trade_state><![CDATA[SUCCESS]]></trade_state>\n" +
+                "<cash_fee>1</cash_fee>\n" +
+                "</xml>";
+        try {
+            System.out.println(xmlStr);
+            System.out.println("+++++++++++++++++");
+            System.out.println(WXPayUtil.isSignatureValid(xmlStr, config.getKey()));
+            Map<String, String> hm = WXPayUtil.xmlToMap(xmlStr);
+            System.out.println("+++++++++++++++++");
+            System.out.println(hm);
+            System.out.println(hm.get("attach").length());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+     
+    /**
+     * 微信回调参数解析
+     * @return
+     */
+    public Map<String, String> getNotifyMap(String xmlStr) {
+    	try {
+			WXPayUtil.isSignatureValid(xmlStr, config.getKey());
+			return WXPayUtil.xmlToMap(xmlStr);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        return null;
+    }
+    
+    /**
+     * 微信回调参数解析
+     * @return
+     */
+    public String mapToXml(Map<String, String> xmlStr) {
+        try {
+			return WXPayUtil.mapToXml(xmlStr);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        return null;
+    }
+
+   
+    public static void main(String[] args) throws Exception {
+        System.out.println("--------------->");
+        WXPayService dodo = new WXPayService();
+        // dodo.doGetSandboxSignKey();
+//        Map aa = dodo.doAppUnifiedOrder("O10001211", "1", "127.0.0.1", "1", "手动掉起测试");
+//        System.out.println(dodo.mapToXml(aa));
+//        Map<String, String> result = dodo.doWebUnifiedOrder("O100013", "1", "127.0.0.1", "1", "手动掉起测试");
+//        System.out.println(result); 
+//        String codeUrl= result.get("code_url");
+//        QRCodeUtil util = new QRCodeUtil();
+//        util.encode(codeUrl, "/Users/fanyunlong/Downloads/1.png", "/Users/fanyunlong/Downloads/1-1.png", true);
+        //dodo.doOrderQuery();
+        // dodo.doDownloadBill();
+        // dodo.doShortUrl();
+        // dodo.test001();
+        // dodo.doOrderQuery();
+        // dodo.doOrderClose();
+         dodo.doRefund("A132303785000", "1");
+        // dodo.doRefundQuery();
+        // dodo.doOrderReverse();
+        // dodo.test001();
+        // dodo.testUnifiedOrderSpeed();
+
+//        dodo.doOrderQuery();
+//        dodo.doOrderReverse();
+//        dodo.doOrderQuery();
+//        dodo.doOrderReverse();
+//        dodo.doOrderQuery();
+
+
+
+        System.out.println("<---------------"); // wx2016112510573077
+    }
+}

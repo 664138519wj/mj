@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" th:href="@{/lib/lui/css/layui.css}">
+    <link rel="stylesheet" th:href="@{/js/uploadify/uploadify.css}">
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+</head>
+<body>
+
+<fieldset class="layui-elem-field" style="margin-top: 30px;">
+    <legend>个人信息</legend>
+    <div class="layui-field-box">
+        <form id="teacherForm" class="layui-form">
+            <div class="layui-form-item">
+                <img th:src="@{${baseUrl} + ${teacher.avator}}"/>
+            </div>
+            <div class="layui-form-item">
+				<label class="layui-form-label">姓名</label>
+				<div class="layui-form-mid" th:text="${teacher.name}"></div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label">身份证号</label>
+				<div class="layui-form-mid" th:text="${teacher.idNo}"></div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label">教练员证件号</label>
+				<div class="layui-form-mid" 
+					 th:text="${teacher.teacherNo}"></div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label">联系方式</label>
+				<div class="layui-form-mid" 
+					 th:text="${teacher.mobile}"></div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">教龄</label>
+				<div class="layui-form-mid"
+					th:text="${teacher.teachingAge}"></div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">驾龄</label>
+				<div class="layui-form-mid"
+					th:text="${teacher.drivingAge}"></div>
+			</div>
+			
+			<div class="layui-form-item">
+				<label class="layui-form-label">住址地址</label>				
+				<div class="layui-form-mid" 
+					th:text="${teacher.address}"></div>
+			</div>
+			
+           <div class="layui-form-item">
+				<label class="layui-form-label">照片</label>				
+				<div class="layui-input-block">
+					 <img th:src="@{${baseUrl} + ${teacher.photo}}"/>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">教练证件照片</label>				
+				<div class="layui-input-block">
+					 <img th:src="@{${baseUrl} + ${teacher.coachPhoto}}"/>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">身份证正面</label>				
+				<div class="layui-input-block">
+					 <img th:src="@{${baseUrl} + ${teacher.idUp}}"/>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">身份证反面</label>				
+				<div class="layui-input-block">
+					 <img th:src="@{${baseUrl} + ${teacher.idDown}}"/>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">驾校名字</label>				
+				<div class="layui-form-mid" th:text="${teacher.schoolName}"></div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">登录名字</label>				
+				<div class="layui-form-mid" th:text="${teacher.loginName}"></div>
+			</div>
+			<!-- 以上是注册页提交信息 -->
+			<div class="layui-form-item">
+				<label class="layui-form-label">视频课程分润比例</label>				
+				<div class="layui-form-mid"
+					 th:text="${teacher.onlineBenefitShare}"></div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label">网点课程分润比例</label>
+				
+				<div class="layui-form-mid" 
+					 th:text="${teacher.offlineBenefitShare}"></div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label">标签</label>
+				
+				<div class="layui-form-mid" 
+					th:text="${teacher.tags}"></div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label">教学地址</label>				
+				<div class="layui-form-mid" 
+					th:text="${teacher.teachingAddress}"></div>
+			</div>
+			
+			<div class="layui-form-item">
+				<label class="layui-form-label">是否首页推荐</label>
+				<div class="layui-form-mid" 
+					th:if="${teacher.recommand == 1}" th:text="是"></div>
+				<div class="layui-form-mid" 
+					th:if="${teacher.recommand == 0}" th:text="否"></div>
+			</div>
+
+			<div class="layui-form-item layui-form-text">
+				<label class="layui-form-label">简介</label>
+				<div class="layui-form-mid" 
+					th:text="${teacher.introduce}"></div>
+			</div>
+        </form>
+        <a class="layui-btn" onclick="openWin('修改', false)">修改</a>
+    </div>
+
+
+</fieldset>
+
+<script>
+
+    function openWin(title, isShow, id) {
+        var url = 'tch/myinfo/edit';
+        var option = {
+            type: 2,
+            title: [title, "color:green"],
+            success: function (layero, index) {
+                iframeWin = parent.window[layero.find('iframe')[0]['name']];
+            },
+            content: url,
+            area: ['800px', '600px']
+        };
+        var btn = ['保存', '关闭'];
+        var okFun = function () {
+            parent.layer.close(index);
+        };
+
+        okFun = function () {
+            if (iframeWin != null) {
+                iframeWin.doSave(function () {
+                    parent.layer.close(index);
+                    // 刷新table数据
+                    location.reload();
+                });
+            }
+        };
+        option['btn2'] = function () {
+            parent.layer.close(index);
+        };
+        option['btn'] = btn;
+        option['yes'] = okFun;
+        var index = parent.layer.open(option);
+    }
+
+</script>
+
+<!--<p th:text="${teacher.teachingAge}"></p>-->
+<!--<p th:text="${teacher.introduce}"></p>-->
+<!--<p th:text="${name}"></p>-->
+</body>
+</html>

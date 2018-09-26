@@ -1,0 +1,534 @@
+package com.migu.online.controller.web;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.github.pagehelper.Page;
+import com.migu.online.controller.BaseController;
+import com.migu.online.model.PlatformNotice;
+import com.migu.online.model.Teacher;
+import com.migu.online.model.User;
+import com.migu.online.param.QuerySchoolParam;
+import com.migu.online.service.AppointmentManageService;
+import com.migu.online.service.CourseOfflineService;
+import com.migu.online.service.CourseOnlineService;
+import com.migu.online.service.DrivingPolicyService;
+import com.migu.online.service.DrivingSchoolService;
+import com.migu.online.service.PlatformNetworkService;
+import com.migu.online.service.PlatformNoticeService;
+import com.migu.online.service.ShufflingService;
+import com.migu.online.service.TeacherService;
+import com.migu.online.service.TrafficLawService;
+import com.migu.online.vo.CourseOfflineVo;
+import com.migu.online.vo.DrivingPolicyVo;
+import com.migu.online.vo.PlatformNetworkVo;
+import com.migu.online.vo.TrafficLawVo;
+import com.migu.online.vo.UserCourseOnlineVo;
+
+/**
+ * web 首页
+ * @author fanyunlong
+ *
+ */
+@Controller
+@RequestMapping("/home")
+public class IndexController extends BaseController {
+
+	private static final long serialVersionUID = 2931428145753112856L;
+
+	private Logger log = LoggerFactory.getLogger(IndexController.class);
+	
+	@Autowired
+	private TeacherService teacherService;
+	@Autowired
+	private CourseOfflineService courseOfflineService;
+	@Autowired
+	private ShufflingService shufflingService;	
+	@Autowired
+	private CourseOnlineService courseOnlineService;
+	@Autowired
+	private PlatformNetworkService platformNetworkService;
+	@Autowired
+	private DrivingPolicyService drivingPolicyService;
+	@Autowired
+	private PlatformNoticeService platformNoticeService;
+	@Autowired
+	private TrafficLawService trafficLawService;
+	@Autowired
+	private DrivingSchoolService drivingSchoolService;
+	@Autowired
+	private AppointmentManageService appointmentManageService;
+
+	/**
+	 * 首页加载
+	 * @return
+	 */
+	@GetMapping("index")
+	public String index(ModelMap modelMap) {
+		User user = super.getCurrentUser();
+		modelMap.put("isLogin", user == null ? false:true);
+		try {
+			modelMap.put("offlineCourseList", courseOfflineService.selectHomePageAll());
+			modelMap.put("shufflingList", shufflingService.selectAll());
+			modelMap.put("teacherList", teacherService.selectHomePageAll());
+			modelMap.put("onlineCourseList", courseOnlineService.selectHomePageAll());
+		} catch (Exception e) {
+			log.error(e.toString());
+			e.printStackTrace();
+		}
+		return "index";
+	}
+	
+	/**
+	 * 网点分布
+	 * @return
+	 */
+	@GetMapping("platform_info")
+	public String platformInfo(ModelMap modelMap,
+			@RequestParam(value="pageIndex", required=false) Integer pageIndex,
+			@RequestParam(value="pageSize", required=false) Integer pageSize) {
+		User user = super.getCurrentUser();
+		modelMap.put("isLogin", user == null ? false:true);
+		if (null == pageIndex) {
+			pageIndex = super.pageIndex;
+		}
+		if (null == pageSize) {
+			pageSize = super.pageSize;
+		}
+		try {
+			Page<PlatformNetworkVo> page = platformNetworkService.selectWebByPage(pageIndex, pageSize);
+			if (null != page) {
+				modelMap.put("platList", page.getResult());
+				modelMap.put("pageIndex", pageIndex);
+				modelMap.put("pageSize", pageSize);
+				modelMap.put("total", page.getTotal());
+				int totalPage = (Integer.parseInt(page.getTotal() + "") + pageSize - 1) / pageSize;
+				modelMap.put("totalPage", totalPage);
+			}
+		} catch (Exception e) {
+			log.error(e.toString());
+			e.printStackTrace();
+		}
+		return "platform_info";
+	}
+	
+	/**
+	 * 网点分布
+	 * @return
+	 */
+	@GetMapping("platform_info_detail")
+	public String platformInfoDetail(ModelMap modelMap, @RequestParam("id") Long id) {
+		User user = super.getCurrentUser();
+		modelMap.put("isLogin", user == null ? false:true);
+		try {
+			modelMap.put("platDetail", platformNetworkService.selectOne(id));		
+			modelMap.put("offlineList", courseOfflineService.selectPlatCourseByPage(super.pageIndex, super.pageSize, id));			
+		} catch (Exception e) {
+			log.error(e.toString());
+			e.printStackTrace();
+		}
+		return "platform_info_detail";
+	}
+	
+	/**
+	 * 网点课程
+	 * @return
+	 */
+	@GetMapping("platform_course")
+	public String platformCourse(ModelMap modelMap, 
+			@RequestParam(value="pageIndex", required=false) Integer pageIndex,
+			@RequestParam(value="pageSize", required=false) Integer pageSize) {
+		User user = super.getCurrentUser();
+		modelMap.put("isLogin", user == null ? false:true);
+		if (null == pageIndex) {
+			pageIndex = super.pageIndex;
+		}
+		if (null == pageSize) {
+			pageSize = super.pageSize;
+		}
+		try {
+			Page<CourseOfflineVo> page = courseOfflineService.selectWebByPage(pageIndex, pageSize);
+			if (null != page) {
+				modelMap.put("offlineCourseList", page.getResult());
+				modelMap.put("pageIndex", pageIndex);
+				modelMap.put("pageSize", pageSize);
+				modelMap.put("total", page.getTotal());
+				int totalPage = (Integer.parseInt(page.getTotal() + "") + pageSize - 1) / pageSize;
+				modelMap.put("totalPage", totalPage);
+			}
+		} catch (Exception e) {
+			log.error(e.toString());
+			e.printStackTrace();
+		}
+		return "platform_course";
+	}
+	
+	/**
+	 * 网点课程详情
+	 * @return
+	 */
+	@GetMapping("platform_course_detail")
+	public String platformCourse(ModelMap modelMap, @RequestParam(value="id") Long id) {
+		User user = super.getCurrentUser();
+		modelMap.put("isLogin", user == null ? false:true);
+		try {
+			modelMap.put("offlineDetail", courseOfflineService.selectOneByUser(id, super.getCurrentUserId()));		
+			modelMap.put("offlineRecommandList", courseOfflineService.selectHomePageAll());
+		} catch (Exception e) {
+			log.error(e.toString());
+			e.printStackTrace();
+		}
+		return "platform_course_detail";
+	}
+	
+	/**
+	 * 网点课程
+	 * @return
+	 */
+	@GetMapping("platform_teacher")
+	public String platformTeacher(ModelMap modelMap, 
+			@RequestParam(value="pageIndex", required=false) Integer pageIndex,
+			@RequestParam(value="pageSize", required=false) Integer pageSize) {
+		User user = super.getCurrentUser();
+		modelMap.put("isLogin", user == null ? false:true);
+		if (null == pageIndex) {
+			pageIndex = super.pageIndex;
+		}
+		if (null == pageSize) {
+			pageSize = super.pageSize;
+		}
+		try {
+			Page<Teacher> page = teacherService.selectWebByPage(pageIndex, pageSize);
+			if (null != page) {
+				modelMap.put("teacherList", page.getResult());
+				modelMap.put("pageIndex", pageIndex);
+				modelMap.put("pageSize", pageSize);
+				modelMap.put("total", page.getTotal());
+				int totalPage = (Integer.parseInt(page.getTotal() + "") + pageSize - 1) / pageSize;
+				modelMap.put("totalPage", totalPage);
+			}
+		} catch (Exception e) {
+			log.error(e.toString());
+			e.printStackTrace();
+		}
+		return "platform_teacher";
+	}
+	
+	/**
+	 * 网点课程详情
+	 * @return
+	 */
+	@GetMapping("platform_teacher_detail")
+	public String platformTeacherDetail(ModelMap modelMap, @RequestParam(value="id") Long id,
+			@RequestParam(value="pageIndex", required=false) Integer pageIndex,
+			@RequestParam(value="pageSize", required=false) Integer pageSize) {
+		User user = super.getCurrentUser();
+		modelMap.put("isLogin", user == null ? false:true);
+		if (null == pageIndex) {
+			pageIndex = super.pageIndex;
+		}
+		if (null == pageSize) {
+			pageSize = super.pageSize;
+		}
+		try {
+			modelMap.put("teacherDetail", teacherService.selectDetailOne(id));		
+			modelMap.put("onlineCourseList", courseOnlineService.selectPageByTeacher(id, pageIndex, pageSize));
+		} catch (Exception e) {
+			log.error(e.toString());
+			e.printStackTrace();
+		}
+		return "platform_teacher_detail";
+	}
+	
+	/**
+	 * 视频列表
+	 * @return
+	 */
+	@GetMapping("platform_video")
+	public String platformVideo(ModelMap modelMap,
+			@RequestParam(value="pageIndex", required=false) Integer pageIndex,
+			@RequestParam(value="pageSize", required=false) Integer pageSize) {
+		Long userId = super.getCurrentUserId();
+		modelMap.put("isLogin", userId == 0 ? false:true);
+		if (null == pageIndex) {
+			pageIndex = super.pageIndex;
+		}
+		if (null == pageSize) {
+			pageSize = super.pageSize;
+		}
+		try {
+			modelMap.put("onlineCourseList", courseOnlineService.selectByPage(null, null, pageIndex, pageSize));			
+		} catch (Exception e) {
+			log.error(e.toString());
+			e.printStackTrace();
+		}
+		return "platform_video";
+	}
+	
+	/**
+	 * 视频详情
+	 * @return
+	 */
+	@GetMapping("platform_video_detail")
+	public String platformvideoDetail(HttpServletRequest request, ModelMap modelMap, @RequestParam(value="id") Long id) {
+		Long userId = super.getCurrentUserId();
+		modelMap.put("isLogin", userId == 0 ? false:true);
+		try {
+			UserCourseOnlineVo course = courseOnlineService.selectUserOne(id, userId);
+			course.setPlayNumber(courseOnlineService.getVideoPlayNumber(id));
+			modelMap.put("onlineCourse", course);
+			// 推荐视频
+			modelMap.put("onlineCourseList", courseOnlineService.selectHomePageAll());			
+			// 视频播放记录
+			if (null != course) {
+				courseOnlineService.videoPlayRecord(id, super.getCurrentUser(), CourseOnlineService.getIpAddress(request));
+				// 视频目录权限控制 付费视频 在购买后才放开权限
+				if (course.getIsPay() == 2) {
+					// 付费视频 用户未支付
+					return "platform_video_detail_2";
+				} 
+			}
+		} catch (Exception e) {
+			log.error(e.toString());
+			e.printStackTrace();
+		}
+		return "platform_video_detail_1";
+	}
+	
+	/**
+	 * 驾考政策
+	 * @return
+	 */
+	@GetMapping("policy_regulations")
+	public String policyRegulations(ModelMap modelMap,
+			@RequestParam(value="pageIndex", required=false) Integer pageIndex,
+			@RequestParam(value="pageSize", required=false) Integer pageSize) {
+		Long userId = super.getCurrentUserId();
+		modelMap.put("isLogin", userId == 0 ? false:true);
+		if (null == pageIndex) {
+			pageIndex = super.pageIndex;
+		}
+		if (null == pageSize) {
+			pageSize = super.pageSize;
+		}
+		try {
+			Page<DrivingPolicyVo> page = drivingPolicyService.selectWebByPage(pageIndex, pageSize);
+			if (null != page) {
+				modelMap.put("policyList", page.getResult());
+				modelMap.put("pageIndex", pageIndex);
+				modelMap.put("pageSize", pageSize);
+				modelMap.put("total", page.getTotal());
+				int totalPage = (Integer.parseInt(page.getTotal() + "") + pageSize - 1) / pageSize;
+				modelMap.put("totalPage", totalPage);
+			}
+		} catch (Exception e) {
+			log.error(e.toString());
+			e.printStackTrace();
+		}
+		return "policy_regulations";
+	}
+	
+	/**
+	 * 政策详情
+	 * @return
+	 */
+	@GetMapping("policy_regulations_detail")
+	public String policRegulationsDetail(ModelMap modelMap, @RequestParam(value="id") Long id) {
+		Long userId = super.getCurrentUserId();
+		modelMap.put("isLogin", userId == 0 ? false:true);
+		try {
+			modelMap.put("policyDetail", drivingPolicyService.selectWebOne(id));
+			// 相关政策
+			modelMap.put("policyList", drivingPolicyService.selectByPage(1, 10));			
+		} catch (Exception e) {
+			log.error(e.toString());
+			e.printStackTrace();
+		}
+		return "policy_regulations_detail";
+	}
+	
+	/**
+	 * 法律法规
+	 * @return
+	 */
+	@GetMapping("traffic_regulations")
+	public String trafficRegulations(ModelMap modelMap,
+			@RequestParam(value="pageIndex", required=false) Integer pageIndex,
+			@RequestParam(value="pageSize", required=false) Integer pageSize) {
+		Long userId = super.getCurrentUserId();
+		modelMap.put("isLogin", userId == 0 ? false:true);	
+		if (null == pageIndex) {
+			pageIndex = super.pageIndex;
+		}
+		if (null == pageSize) {
+			pageSize = super.pageSize;
+		}
+		try {
+			Page<TrafficLawVo> page = trafficLawService.selectWebByPage(pageIndex, pageSize);
+			if (null != page) {
+				modelMap.put("lawList", page.getResult());
+				modelMap.put("pageIndex", pageIndex);
+				modelMap.put("pageSize", pageSize);
+				modelMap.put("total", page.getTotal());
+				int totalPage = (Integer.parseInt(page.getTotal() + "") + pageSize - 1) / pageSize;
+				modelMap.put("totalPage", totalPage);
+			}
+		} catch (Exception e) {
+			log.error(e.toString());
+			e.printStackTrace();
+		}
+		return "traffic_regulations";
+	}
+	
+	/**
+	 * 法律法规详情
+	 * @return
+	 */
+	@GetMapping("traffic_regulations_detail")
+	public String trafficRegulationsDetail(ModelMap modelMap, @RequestParam(value="id") Long id) {
+		Long userId = super.getCurrentUserId();
+		modelMap.put("isLogin", userId == 0 ? false:true);	
+		try {
+			modelMap.put("lawDetail", trafficLawService.selectWebOne(id));	
+			// 相关政策
+			modelMap.put("lawList", trafficLawService.selectByPage(1, 5));	
+		} catch (Exception e) {
+			log.error(e.toString());
+			e.printStackTrace();
+		}
+		return "traffic_regulations_detail";
+	}
+	
+	/**
+	 * 平台通知列表
+	 * @return
+	 */
+	@GetMapping("platform_notice")
+	public String platformNotice(ModelMap modelMap,
+			@RequestParam(value="pageIndex", required=false) Integer pageIndex,
+			@RequestParam(value="pageSize", required=false) Integer pageSize) {
+		Long userId = super.getCurrentUserId();
+		modelMap.put("isLogin", userId == 0 ? false:true);
+		if (null == pageIndex) {
+			pageIndex = super.pageIndex;
+		}
+		if (null == pageSize) {
+			pageSize = super.pageSize;
+		}
+		try {
+			Page<PlatformNotice> page = platformNoticeService.selectByPage(pageIndex, pageSize);
+			if (null != page) {
+				modelMap.put("platformNoticeList", page.getResult());
+				modelMap.put("pageIndex", pageIndex);
+				modelMap.put("pageSize", pageSize);
+				modelMap.put("total", page.getTotal());
+				int totalPage = (Integer.parseInt(page.getTotal() + "") + pageSize - 1) / pageSize;
+				modelMap.put("totalPage", totalPage);
+
+			}
+		} catch (Exception e) {
+			log.error(e.toString());
+			e.printStackTrace();
+		}
+		return "platform_notice";
+	}
+	
+	/**
+	 * 平台通知详情
+	 * @return
+	 */
+	@GetMapping("platform_notice_detail")
+	public String platformNoticeDetail(ModelMap modelMap, @RequestParam(value="id") Long id) {
+		Long userId = super.getCurrentUserId();
+		modelMap.put("isLogin", userId == 0 ? false:true);
+		try {
+			modelMap.put("platformNoticeDetail", platformNoticeService.selectOne(id));
+					
+		} catch (Exception e) {
+			log.error(e.toString());
+			e.printStackTrace();
+		}
+		return "platform_notice_detail";
+	}
+	
+	/**
+	 * app下载
+	 * @return
+	 */
+	@GetMapping("app_download")
+	public String appDownload(ModelMap modelMap) {
+		User user = super.getCurrentUser();
+		modelMap.put("isLogin", user == null ? false:true);
+		return "app_download";
+	}
+	
+	/**
+	 * 报名驾校
+	 * @return
+	 */	
+	@RequestMapping("school_sign_up")
+	public String personSignUp(ModelMap modelMap, @RequestParam(value = "areaId", required = false) Integer areaId,
+			@RequestParam(value = "priceFrom", required = false) Integer priceFrom, @RequestParam(value = "priceTo", required = false) Integer priceTo,
+			@RequestParam(value = "licence", required = false) String licence, @RequestParam(value = "pageIndex", required = false) Integer pageIndex,
+			@RequestParam(value = "pageSize", required = false) Integer pageSize, @RequestParam(value = "areaName", required = false) String areaName,
+			@RequestParam(value = "priceStr", required = false) String priceStr, @RequestParam(value = "licenceName", required = false) String licenceName) {
+		User user = super.getCurrentUser();
+		modelMap.put("isLogin", user == null ? false:true);		
+		if (null == pageIndex) {
+			pageIndex = super.pageIndex;
+		}
+		if (null == pageSize) {
+			pageSize = super.pageSize;
+		}
+		try {
+			modelMap.put("areaList", drivingSchoolService.selectAreaList());		
+			modelMap.put("licenceList", drivingSchoolService.selectLicenceList());
+			modelMap.put("schoolList", drivingSchoolService.selectConditionByPage(areaId, priceFrom, priceTo, licence, pageIndex,
+					pageSize));
+			
+			modelMap.put("param", new QuerySchoolParam(areaId, priceFrom, priceTo, licence
+					, pageIndex, pageSize, areaName, priceStr, licenceName));
+		} catch (Exception e) {
+			log.info("query:" + e.toString());
+		}
+
+		return "school_sign_up";
+	}
+	
+	/**
+	 * 预约考试查询
+	 * @return
+	 */
+	@GetMapping("test_plan")
+	public String personOrderTest(ModelMap modelMap, 
+			@RequestParam(value = "licence", required = false) String licence, @RequestParam(value = "pageIndex", required = false) Integer pageIndex,
+			@RequestParam(value = "pageSize", required = false) Integer pageSize,
+			@RequestParam(value = "kemu", required = false) Integer kemu, @RequestParam(value = "kemuStr", required = false) String kemuStr,
+			@RequestParam(value = "licenceName", required = false) String licenceName) {
+		User user = super.getCurrentUser();
+		modelMap.put("isLogin", user == null ? false:true);			
+		try {
+			QuerySchoolParam param = new QuerySchoolParam();
+			param.setKemu(kemu);			
+			param.setKemuStr(kemuStr);
+			param.setLicence(licence);
+			param.setLicenceName(licenceName);
+			modelMap.put("licenceList", drivingSchoolService.selectLicenceList());
+			modelMap.put("param", param);
+			modelMap.put("appointList", appointmentManageService.selectByCondition(kemu, licence, super.getCurrentUserId()));
+			
+		} catch (Exception e) {
+			log.error(e.toString());
+			e.printStackTrace();
+		}
+		return "test_plan";
+	}
+}

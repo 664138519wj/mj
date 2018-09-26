@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+<head>
+    <title>平台培训计划课程</title>
+</head>
+<body th:fragment="content">
+        <!--content-->
+        <div class="content index-course">
+            <div class="plat-title">
+                <h2>平台培训计划课程</h2>
+                <b>A training course</b>
+                <p>—</p>
+            </div>
+            <div class="course-box com-width">
+                <ul>               
+                    <li th:each="offlineCourse:${offlineCourseList}">
+                        <a th:href="@{${ctx} + 'platform_course_detail?id=' + ${offlineCourse.id}}">
+                            <div class="course-left fl">
+                                <h2><span th:text="${offlineCourse.title}"></span></h2>
+                                <div class="figcaption">
+                                    <p th:text="${offlineCourse.content}"></p>
+                                </div>
+                                <p>授课地点：<span th:text="${offlineCourse.address}"></span></p>
+                                <div class="price clear">
+                                        <p style="float:left;">授课时间：<span th:text="${#dates.format(offlineCourse.startTime, 'yyyy-MM-dd')}"></span></p>
+                                    	<p style="float:right;">
+	                                        <span>价格:</span>
+	                                        <b>¥<b th:text="${offlineCourse.price}"></b></b>
+                                        </p>
+                                    </div>
+                            </div>
+                            <div class="course-right fr">
+                                <img th:src="${imageUrl} + ${offlineCourse.imagePath}" alt="">
+                            </div>
+                        </a>
+                    </li>                   
+                </ul>
+                 <div class="box clear">
+                  <div id="pagination_platformcourse" class="page"></div>
+            </div>
+            </div>
+        </div>
+           <!-- --------------分页------------------- -->
+<script> 
+$("#pagination_platformcourse").pagination({
+    currentPage: [[${pageIndex}]],
+    totalPage: [[${totalPage}]],
+    isShow: false,
+    count: [[${total}]],
+    prevPageText: "<",
+    nextPageText: ">",
+    callback: function(current) {
+        this.location.href ="[[${ctx}]]platform_course?pageIndex=" + current;
+    }
+});
+
+</script>
+</html>

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" th:href="@{/lib/lui/css/layui.css}">
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+</head>
+<body>
+<fieldset class="layui-elem-field">
+    <div class="site-text site-block">
+        <div class="layui-row">
+            <div class="layui-col-xs8">
+                <div class="grid-demo grid-demo-bg1">
+                    <form class="layui-form" action="">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">手机号</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="mobile" id="mobile" placeholder="查询内容"
+                                       class="layui-input">
+                            </div>
+                            <label class="layui-form-label">成绩录入</label>
+                            <div class="layui-input-block">
+                                <select name="scoreStatus" id="scoreStatus">
+                                  <option value="">ALL</option>
+                                  <option value="0">未录入</option>
+                                  <option value="1">已录入</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="layui-col-xs4">
+                <div class="grid-demo">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" onclick="filter()">查询</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</fieldset>
+<table id="userappointmentTable" class="layui-table" lay-data="{cellMinWidth: 80, page: true, limit:10, url:'data'}" lay-filter="courseTable">
+    <thead>
+    <tr>
+        <th lay-data="{field:'id',type:'checkbox'}">ID</th>
+        <th lay-data="{field:'userName', minWidth:120, sort: true}">手机号</th>
+        <th lay-data="{field:'score', minWidth:80, sort: true,templet:'#Tscore'}">编辑状态</th>   
+        <th lay-data="{field:'score', minWidth:50, sort: true}">分数</th>               
+        <th lay-data="{field:'licenceType', minWidth:80, sort: true}">驾照类型</th>
+        <th lay-data="{field:'kemu', minWidth:50, sort: true,templet:'#Tkemu'}">科目</th>
+        <th lay-data="{field:'price', minWidth:50, sort: true}">价格</th>
+<!--         <th lay-data="{field:'payType', minWidth:50, sort: true,templet:'#TpayType'}">支付类型</th> -->
+<!--         <th lay-data="{field:'payStatus', minWidth:50, sort: true,templet:'#TpayStatus'}">支付状态</th>        -->
+<!--         <th lay-data="{field:'status', minWidth:50, sort: true,templet:'#Tstatus'}">状态</th>    -->
+        <th lay-data="{field:'updateTime', width: 200 ,templet:'#dateTpl'}">操作时间</th>       
+        <th lay-data="{fixed: 'right', width:150, align:'center', toolbar: '#operation'}"></th>
+    </tr>
+    </thead>
+</table>
+<script id="Tscore" type="text/html">
+				{{#  
+			if(d.score >= 0){ }}
+			     <span>已录入</span>
+ 				 {{#   }
+           else { }}
+			    <span>未录入</span>
+ 				 {{#   }
+				}}
+</script>
+<script id="Tkemu" type="text/html">
+				{{#  
+			if(d.kemu == 1){ }}
+			     <span>科目一</span>
+ 				 {{#   }
+			else if(d.kemu == 2){ }}
+			     <span>科目二</span>
+ 				 {{#   }
+			else if(d.kemu== 3){ }}
+			     <span>科目三</span>
+ 				 {{#   }
+            else if(d.kemu== 4){ }}
+			     <span>科目四</span>
+ 				 {{#   }
+				}}
+</script>
+<script id="TpayType" type="text/html">
+				{{#  
+			if(d.payType == 0){ }}
+			     <span>在线支付</span>
+ 				 {{#   }
+			else if(d.payType == 1){ }}
+			     <span>线下支付</span>
+ 				 {{#   }       
+				}}
+</script>
+<script id="TpayStatus" type="text/html">
+				{{#  
+			if(d.payStatus == 0){ }}
+			     <span>未支付</span>
+ 				 {{#   }
+			else if(d.payStatus == 1){ }}
+			     <span>已付款</span>
+ 				 {{#   }       
+				}}
+</script>
+<script id="Tstatus" type="text/html">
+				{{#  
+			if(d.status == 0){ }}
+			     <span>预约中</span>
+ 				 {{#   }
+			else if(d.status == 1){ }}
+			     <span>预约成功</span>
+ 				 {{#   }     
+            else if(d.status == 2){ }}
+			     <span>预约失败</span>
+ 				 {{#   }      
+				}}
+</script>
+<script id="dateTpl" type="text/html">
+    {{# var date = layui.util.toDateString(d.updateTime, 'yyyy-MM-dd HH:mm:ss') }}
+    <span>{{date}}</span>
+</script>
+
+<script id="operation" type="text/html">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+   <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">编辑</a> 
+                 
+</script>
+ 
+<script th:src="@{/lib/jquery/jquery.js}"></script>
+<script th:src="@{/lib/lui/layui.all.js}"></script>
+
+<script type="text/javascript">
+    var table = layui.table;
+    var layer = layui.layer;
+
+    var iframeWin = null;
+
+    function openWin(title,isShow,id){
+        var url = 'ops/userappointment/score_edit';
+        if(!!id){
+            url += "?id="+id;
+            if(isShow){
+                url += "&flag=2";
+            }else{
+                url += "&flag=1";
+            }
+        }else{
+            url += "?flag=0";
+        }
+        var option = {
+            type: 2,
+            title:[title,"color:green"],
+            success: function(layero, index){
+                iframeWin = parent.window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+            },
+            content: url,
+            area:['300px','200px']
+        };
+        var btn = ['保存','关闭'];
+        var okFun = function(){
+            parent.layer.close(index);
+        } ;
+        if(isShow){
+            btn = ['关闭']
+        }
+        if(btn.length > 1){
+            okFun = function(){
+                if(iframeWin != null){
+                    iframeWin.doSave(function(){
+                        parent.layer.close(index);
+                        // 刷新table数据
+                        table.reload("userappointmentTable");
+                    });
+                }
+            };
+            option['btn2'] = function(){parent.layer.close(index);}
+        }
+        option['btn'] = btn;
+        option['yes'] = okFun ;
+        var index = parent.layer.open(option);
+    }
+    
+    function openShowWin(title,isShow,id){
+        var url = 'ops/userappointment/edit';
+
+        if(!!id){
+            url += "?id="+id;
+            if(isShow){
+                url += "&flag=2";
+            }else{
+                url += "&flag=1";
+            }
+        }else{
+            url += "?flag=0";
+        }
+        var option = {
+            type: 2,
+            title:[title,"color:green"],
+            success: function(layero, index){
+                iframeWin = parent.window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+            },
+            content: url,
+            area:['850px','650px']
+        };
+        var btn = ['保存','关闭'];
+        var okFun = function(){
+            parent.layer.close(index);
+        } ;
+        if(isShow){
+            btn = ['关闭']
+        }
+        if(btn.length > 1){
+            okFun = function(){
+                if(iframeWin != null){
+                    iframeWin.doSave(function(){
+                        parent.layer.close(index);
+                        // 刷新table数据
+                        table.reload("userappointmentTable");
+                    });
+                }
+            };
+            option['btn2'] = function(){parent.layer.close(index);}
+        }
+        option['btn'] = btn;
+        option['yes'] = okFun ;
+        var index = parent.layer.open(option);
+    }
+
+    function add(){
+        openWin("新增",false);
+    }
+    //table点击事件
+    table.on("tool(courseTable)",function(obj){
+        var data = obj.data;
+        if(obj.event === 'detail'){
+        	openShowWin("详细",true,data.id);
+        } else if(obj.event === 'del'){
+            parent.layer.confirm('确定删除？', function(index){
+                parent.layer.close(index);
+                $.ajax("del?id="+data.id,{
+                    method:"delete",
+                   contentType:"application/json;charset=utf-8",
+                   success:function(data){
+                        if(data){
+                            parent.tips(1, "删除成功！");
+                            table.reload("userappointmentTable");
+
+                        }else{
+                            parent.tips(0, "删除失败！");
+                        }
+                   },
+                    error:function(e){
+                        parent.tips(0, "删除失败！");
+                    }
+                });
+
+            });
+        } else if(obj.event === 'edit'){
+            openWin("编辑",false,data.id);
+        } 
+    });
+
+    function filter(){
+        var mobile = $("#mobile").val();
+        var scoreStatus = $("#scoreStatus").val();
+        table.reload("userappointmentTable",{
+            where:{mobile:mobile,scoreStatus:scoreStatus}
+        })
+    }
+</script>
+
+</body>
+</html>

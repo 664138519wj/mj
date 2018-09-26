@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" th:href="@{/lib/lui/css/layui.css}">
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+</head>
+<body>
+<div class="layui-container">
+<div th:html="${id}"></div>
+</div>
+<form id="schoolForm" class="layui-form" action="deny" method="post">
+    <input type="hidden" name="id" id="id" th:value="${id}"/>
+    
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">理由</label>
+        <div class="layui-input-block">
+            <div id="div"></div>
+            <textarea class="layui-textarea" name="reason" id="reason"></textarea>
+        </div>
+    </div>
+    
+</form>
+<script th:src="@{/lib/jquery/jquery.js}"></script>
+<script th:src="@{/lib/jquery/jquery.forms.js}"></script>
+<script th:src="@{/lib/lui/layui.all.js}"></script>
+<script type="text/javascript">
+    $.fn.serializeObject = function()
+    {
+        var o = {};
+        var a = this.serializeArray();
+        $.each(a, function() {
+            if (o[this.name] !== undefined) {
+                if (!o[this.name].push) {
+                    o[this.name] = [o[this.name]];
+                }
+                o[this.name].push(this.value || '');
+            } else {
+                o[this.name] = this.value || '';
+            }
+        });
+        return o;
+    };
+    
+</script>
+<script type="text/javascript">
+     function checkForm(arr){
+	  for(var i=0;i<arr.length;i++){
+	  if($("#"+arr[i][0]).val()==''){
+	    alert(arr[i][1]);
+	    $("#"+arr[i][0]).focus();
+	    return false;
+	  }
+	  }
+	  return true;
+	};
+	//调用方式
+	var arr=new Array(
+	  new Array('reason','拒绝理由不可为空!')
+	);
+	
+    function doSave(fn){
+        if(!checkForm(arr)){
+  		  return false;
+       } 
+        var dataParam = $("#schoolForm").serialize();
+
+        jQuery.ajax({
+            type:"post",
+            url: 'deny',
+            data: dataParam,
+            success:function(data){
+         	    if(data) {
+                    parent.tips(1, "保存成功！");
+                    fn.call();
+                }else{
+                    parent.tips(0, "保存信息失败！");
+                }  
+            }   
+         })  
+
+    }
+
+</script>
+</body>
+</html>

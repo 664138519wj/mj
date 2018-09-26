@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.migu.online.mapper.DrivingSchoolLessonMapper">
+
+	
+	  <resultMap id="resultOfInteger" type="java.lang.Integer">
+		<id column="cnt" property="cnt" />
+	</resultMap>
+	
+	<resultMap id="resultOfBigDecimal" type="java.math.BigDecimal">
+		<id column="amount" property="amount" />
+	</resultMap>
+	
+	
+	<resultMap id="drivingSchoolLessonResult" type="com.migu.online.ops.vo.SchoolLessonVo">
+		<id column="id" property="id" />
+	    <id column="school_id" property="schoolId" />
+		<id column="name" property="name" />
+	    <id column="licence" property="licence" />
+	    <id column="price" property="price" />
+	    <id column="is_delete" property="isDelete" />
+	    <id column="start_time" property="startTime" />
+	    <id column="update_time" property="updateTime" />
+	    <id column="limit_num" property="limitNum" />
+	    <id column="create_time" property="createTime" />
+	    <id column="school_name" property="schoolName" />
+	    <id column="create_time" property="createTime" />
+	    <id column="update_time" property="updateTime" />
+	    <id column="refund_status" property="refundStatus" />
+	    <id column="school_id" property="schoolId" />
+	     <id column="school_name" property="schoolName" />
+	    <id column="class_name" property="className" />
+	    <id column="class_no" property="classNo" />
+	</resultMap>
+	
+	
+    <select id="selectAllSchoolLessionCnt" parameterType="java.util.Map" resultMap="resultOfInteger">
+       SELECT
+			count(*) cnt
+		FROM
+			driving_school_lesson t1
+		LEFT JOIN driving_school t2 ON t1.school_id = t2.id
+		WHERE
+			t1.is_delete = 0
+		AND t2.is_delete = 0
+	  <if test="lessonId!=null and lessonId!=''">
+	 	and t1.id=#{lessonId}
+	 </if>
+	 <if test="schoolName!=null and schoolName!=''">
+	 	and t2.name_s like'%${schoolName}%'
+	 </if>
+	 <if test="licence!=null and licence!=''">
+	 	and t1.licence=#{licence}
+	 </if>
+	  <if test="classNo!=null and classNo!=''">
+	 	and t1.class_no like '%${classNo}%'
+	 </if>
+	  <if test="className!=null and className!=''">
+	 	and t1.class_name like '%${className}%'
+	 </if>
+	  <if test="startTime!=null and startTime!=''">
+	 	and date_format(t1.start_time, '%Y-%m-%d')=#{startTime}
+	 </if>
+	 </select>
+	 
+	 
+	 <select id="selectAllSchoolLessionByPage" parameterType="java.util.Map" resultMap="drivingSchoolLessonResult">
+       SELECT
+			t1.*, t2.name_s school_name
+		FROM
+			driving_school_lesson t1
+		LEFT JOIN driving_school t2 ON t1.school_id = t2.id
+		WHERE
+			t1.is_delete = 0
+		AND t2.is_delete = 0
+	  <if test="lessonId!=null and lessonId!=''">
+	 	and t1.id=#{lessonId}
+	 </if>
+	 <if test="schoolName!=null and schoolName!=''">
+	 	and t2.name_s like'%${schoolName}%'
+	 </if>
+	 <if test="licence!=null and licence!=''">
+	 	and t1.licence=#{licence}
+	 </if>
+	  <if test="classNo!=null and classNo!=''">
+	 	and t1.class_no like '%${classNo}%'
+	 </if>
+	  <if test="className!=null and className!=''">
+	 	and t1.class_name like '%${className}%'
+	 </if>
+	  <if test="startTime!=null and startTime!=''">
+	 	and date_format(t1.start_time, '%Y-%m-%d')=#{startTime}
+	 </if>
+	 
+	  <if test="startIndex!=null and startIndex!=''">
+	 	limit #{startIndex},#{endIndex}
+	 </if>
+	
+    </select>
+    
+
+</mapper>

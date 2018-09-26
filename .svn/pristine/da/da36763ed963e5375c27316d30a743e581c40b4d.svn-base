@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" th:href="@{/lib/lui/css/layui.css}">
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+</head>
+<body>
+<fieldset class="layui-elem-field">
+    <div class="site-text site-block">
+        <div class="layui-row">
+            <div class="layui-col-xs8">
+                <div class="grid-demo grid-demo-bg1">
+                    <form class="layui-form" action="">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">查询</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="filter" id="filter" placeholder="查询内容"
+                                       class="layui-input">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="layui-col-xs4">
+                <div class="grid-demo">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" onclick="filter()">查询</button>
+                        <!-- <button class="layui-btn" onclick="add()">新增</button> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</fieldset>
+<table id="studentTable" class="layui-table" lay-data="{cellMinWidth: 80, page: true, limit:10, url:'data'}" lay-filter="courseTable">
+    <thead>
+    <tr>
+        <th lay-data="{field:'id',type:'checkbox'}">ID</th>
+        <th lay-data="{field:'name', width:150, sort: true}">姓名</th>
+        <th lay-data="{field:'sex', width: 60,templet:'#Tlsex'}">性别</th>
+        <th lay-data="{field:'nation', width: 100}">民族</th>
+        <th lay-data="{field:'carModel', width: 130}">驾照</th>
+        <th lay-data="{field:'registerAddress', minWidth: 300}">住址</th>
+        <th lay-data="{fixed: 'right', width:178, align:'center', toolbar: '#operation'}"></th>
+    </tr>
+    </thead>
+</table>
+
+<script id="operation" type="text/html">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+</script>
+
+<script id="Tlsex" type="text/html">
+				{{#  
+			if(d.sex == 1){ }}
+			     <span>男</span>
+ 				 {{#   }
+			else if(d.isHotAndCharge == 0){ }}
+			     <span>女</span>
+ 				 {{#   }
+				}}
+	</script>
+
+<script th:src="@{/lib/jquery/jquery.js}"></script>
+<script th:src="@{/lib/lui/layui.all.js}"></script>
+
+<script type="text/javascript">
+    var table = layui.table;
+    var layer = layui.layer;
+
+    var iframeWin = null;
+
+    function openWin(title,isShow,id){
+        var url = 'sch/student/edit';
+        if(!!id){
+            url += "?id="+id;
+            if(isShow){
+                url += "&flag=2";
+            }else{
+                url += "&flag=1";
+            }
+        }else{
+            url += "?flag=0";
+        }
+        var option = {
+            type: 2,
+            title:[title,"color:green"],
+            success: function(layero, index){
+                iframeWin = parent.window[layero.find('iframe')[0]['name']]; 
+            },
+            content: url,
+            area:['800px','600px']
+        };
+        var btn = ['保存','关闭'];
+        var okFun = function(){
+            parent.layer.close(index);
+        } ;
+        if(isShow){
+            btn = ['关闭']
+        }
+        if(btn.length > 1){
+            okFun = function(){
+                if(iframeWin != null){
+                    iframeWin.doSave(function(){
+                        parent.layer.close(index);
+                        // 刷新table数据
+                        table.reload("studentTable");
+                    });
+                }
+            };
+            option['btn2'] = function(){parent.layer.close(index);}
+        }
+        option['btn'] = btn;
+        option['yes'] = okFun ;
+        var index = parent.layer.open(option);
+    }
+
+    function add(){
+        openWin("新增",false);
+    }
+    //table点击事件
+    table.on("tool(courseTable)",function(obj){
+        var data = obj.data;
+        if(obj.event === 'detail'){
+            openWin("详细",true,data.id);
+        } else if(obj.event === 'del'){
+            parent.layer.confirm('确定删除？', function(index){
+                parent.layer.close(index);
+                $.ajax("del?id="+data.id,{
+                    method:"delete",
+                   contentType:"application/json;charset=utf-8",
+                   success:function(data){
+                        if(data){
+                            parent.tips(1, "删除成功！");
+                            table.reload("studentTable");
+
+                        }else{
+                            parent.tips(0, "删除失败！");
+                        }
+                   },
+                    error:function(e){
+                        parent.tips(0, "删除失败！");
+                    }
+                });
+
+            });
+        } else if(obj.event === 'edit'){
+            openWin("编辑",false,data.id);
+        }
+    });
+
+    function filter(){
+        var val = $("#filter").val();
+        if($.trim(val) != ""){
+            table.reload("studentTable",{
+                where:{filter:val}
+            })
+        }
+    }
+</script>
+
+</body>
+</html>

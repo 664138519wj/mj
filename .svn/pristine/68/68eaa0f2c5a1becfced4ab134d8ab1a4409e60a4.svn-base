@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="head_center"><head>
+<head>
+<title>个人中心</title>
+</head>
+<body>
+	<!--购买练习卡-->
+	<div class="tab" th:fragment="content">
+		<div class="plat-title">
+			<h2>练习卡</h2>
+		</div>
+		<!-- 已购买联系卡 -->
+     <div class="buy-card-box pay" th:if="${vip==true}">
+	     <div class="purchased">
+	     	<img class="fork" th:src="@{/img/app-pic1.png}" alt="">
+	     	<img th:src="@{/img/success-2.png}" alt="" style="width:150px;height:150px;margin-top:20px;">
+	     	<p style="line-height:1.5;">您已是VIP会员无需购买理论练习卡！</p>
+	     </div>
+     </div>
+     <div th:if="${vip==false}">
+			<!--支付-->
+	     <div class="buy-card-box pay" th:if="${data.isBuyCard==0}">
+	      <form method="post" id="pay_form" th:action="@{${baseUrl} + 'api/pay/web/order'}">
+	        <div class="pay-fade buy-method">
+	            <p>购买练习卡</p>
+	            <div class="pay-box">
+	                <p><b th:text="@{'￥' + ${card.price}}"></b></p>
+	                <ul class="pay-head">
+	                    <li>
+	                        <img th:src="@{/img/pay-apliy.png}" alt="">
+	                        <span>支付宝支付</span>
+	                        <input type="radio" name="payType" value="2" checked="checked">
+	                    </li>
+	                    <li>
+	                        <img th:src="@{/img/pay-weChat.png}" alt="">
+	                        <span>微信支付</span>
+	                        <input type="radio" name="payType" value="1">
+	                    </li>
+	                </ul>
+	            </div>
+	            <input type="hidden" name="courseType" value="4"/>
+	            <input type="hidden" name="courseId" th:value="${card.id}"/>
+	            <div class="pay-btn clear">
+	                <button class="cancel" type="button">取消</button>
+	                <button class="sure" type="submit">确认选择</button>
+	            </div>
+	        </div>
+	        </form>
+	     </div>
+	     <!-- 已购买练习卡 -->
+	     <div class="buy-card-box pay" th:if="${data.isBuyCard==1 && vip == false}">
+		     <div class="purchased">
+		     	<img class="fork" th:src="@{/img/app-pic1.png}" alt="">
+		     	<img th:src="@{/img/success-2.png}" alt="" style="width:150px;height:150px;margin-top:20px;">
+		     	<p style="line-height:1.5;">您已购买练习卡！</p>
+		     	<p>总时长60h,剩余练习时间为<text id="time-1"></text></p>
+		     </div>
+	     </div>
+     </div>
+     <script type="text/javascript">
+		$('.fork').click(function(){
+			$('.buy-card-box').hide();
+		});
+		// 倒计时
+		var h = 59;
+		var m = 59;
+	    var s = 59;
+	    //var seconds =[[${expired}]];
+	    var seconds =3600;
+	    console.log(seconds);
+	    if (seconds != undefined && seconds > 0) {
+	    	m = parseInt(seconds/60);
+	    	s = seconds%60;
+	    }
+	    
+	    function testTime(){
+	    	if(s<10){
+	            $('#time-1').html(m+':0'+s);
+	        }else{
+	            $('#time-1').html(m+':'+s);
+	        }
+	        s--;
+	        if(s<0){
+	            s=59;
+	            m--;
+	        }
+	        if($('#time-1').html() == "0:00"){
+    	    	clearInterval(timer);
+    	    	return false;
+    	    }
+	    }
+	    var timer = setInterval('testTime()',1000);
+	</script>
+	</div>
+	
+</html>

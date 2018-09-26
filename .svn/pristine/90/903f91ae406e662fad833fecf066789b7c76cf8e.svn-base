@@ -1,0 +1,121 @@
+package com.migu.online.controller.ops;
+
+import java.util.Date;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.github.pagehelper.Page;
+import com.migu.online.common.Constants;
+import com.migu.online.controller.BaseController;
+import com.migu.online.controller.response.ResponsePageData;
+import com.migu.online.model.DrivingSchool;
+import com.migu.online.model.system.SysUser;
+import com.migu.online.ops.vo.SysUserOpsVo;
+import com.migu.online.service.DrivingSchoolService;
+import com.migu.online.service.SysUserManageService;
+
+@Controller
+@RequestMapping("/ops/school/")
+public class SchoolOpsController extends BaseController{
+    
+    @Autowired
+    private DrivingSchoolService drivingSchoolService;
+    
+    @Autowired
+    private SysUserManageService sysUserService;
+    
+    
+    /**
+     *  ------页面跳转 start-----
+     */
+    @GetMapping("index")
+    public String index(ModelMap modelMap){
+        return "ops/school/index";
+    }
+
+    /**
+     * 编辑，新增，查看 方法，。
+     * @param modelMap
+     * @param id
+     * @param editFlag edit = 1, new = 0 , show = 2
+     * @return
+     * @throws Exception 
+     */
+    @GetMapping("edit")
+    public String edit(ModelMap modelMap,@RequestParam(value = "id",required = false) Integer id,
+                       @RequestParam(value = "flag",defaultValue = "1") Integer editFlag) throws Exception{
+    	if (null != id && editFlag == 2) {
+    		// 详情
+            modelMap.put("school", drivingSchoolService.selectOpsOne(id));
+    	} else if (null != id && editFlag == 1) {    		
+            modelMap.put("school", drivingSchoolService.selectById(id));
+    	} else {
+            modelMap.put("school", new DrivingSchool());
+    	}        
+        modelMap.put("areaList",drivingSchoolService.selectAreaList());
+        modelMap.put("edit",editFlag != 2);
+        return "ops/school/edit";
+    }
+    /**
+     * 数据处理
+     * @throws Exception 
+     */
+    @SuppressWarnings("rawtypes")
+	@GetMapping("data")
+    @ResponseBody
+    public ResponsePageData data(@RequestParam(value = "page",defaultValue = "0") Integer pageIndex,
+                                    @RequestParam(value = "limit",defaultValue = "10") Integer limit,
+                                 @RequestParam(value = "filter",required = false) String filter) throws Exception{
+    	Page<DrivingSchool> page = (Page<DrivingSchool>)drivingSchoolService.selectByPage(pageIndex, limit, filter);
+        return new ResponsePageData<DrivingSchool>(page.getTotal(), page);
+    }
+
+    @PostMapping("save")
+    @ResponseBody
+    public String save(DrivingSchool model){
+    	if (null == model) {
+    		return "error";
+    	}
+    	if (StringUtils.isEmpty(model.getImagePath())) {
+    		model.setImagePath(Constants.USER_DEFAULT_AVATAR);
+    	}
+    	if (model.getId() != null && model.getId() > 0) {
+    		// 更新
+    		DrivingSchool record = drivingSchoolService.selectById(model.getId());
+    		if (null == record) {
+    		  return "error";	
+    		}
+    		record.setNameL(model.getNameL());
+    		record.setNameS(model.getNameS());
+    		record.setAddress(model.getAddress());
+    		record.setTel(model.getTel());
+    		record.setImagePath(model.getImagePath());
+    		record.setShufflingImage(model.getShufflingImage());
+    		record.setLicence(model.getLicence());
+    		record.setAreaId(model.getAreaId());
+    		record.setPrice(model.getPrice());
+    		record.setUpdateTime(new Date());
+            return drivingSchoolService.createOrUpdate(record) >= 1 ? "success" : "error";
+    	} else {
+        	model.setCreateTime(new Date());
+        	model.setUpdateTime(new Date());
+        	model.setIsDelete(0);
+    	}   	
+        return drivingSchoolService.createOrUpdate(model) >= 1 ? "success" : "error";
+    }
+
+    @DeleteMapping("del")
+    @ResponseBody
+    public int del(@RequestParam("id") Integer id){
+        return drivingSchoolService.deleteById(id);
+    }
+}

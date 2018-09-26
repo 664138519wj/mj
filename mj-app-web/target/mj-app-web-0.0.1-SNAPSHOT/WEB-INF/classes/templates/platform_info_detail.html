@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+<head>
+    <title>服务网点详情</title>
+</head>
+<body th:fragment="content" >
+        <!--content-->
+        <div class="content detail-box">
+            <!--detail-->
+            <div class="com-width">
+                <div class="info-detail clear">
+                    <div class="info-img fl">
+                        <img th:src="${imageUrl} + ${platDetail.imagePath}" alt="">
+                    </div>
+                    <div class="info-desc fl">
+                        <p><b><span th:text="${platDetail.name}"></span></b></p>
+                        <p>网点地址：<span th:text="${platDetail.address}"></span></p>
+                        <p>联系电话：<span th:text="${platDetail.tel}"></span></p>
+                    </div>
+                    <div class="info-tell fr">
+                        <p><span>联系电话：</span><b><span th:text="${platDetail.tel}"></span></b></p>
+                    </div>
+                </div>
+            </div>
+            <!--A training course-->
+            <div class="index-course">
+                <div class="plat-title">
+                    <h2>网点培训计划课程</h2>
+                    <b>A training course</b>
+                    <p>—</p>
+                </div>
+                <div class="course-box com-width">
+                    <ul>                    
+                        <li th:unless="${#lists.isEmpty(offlineList)}" th:each="offline:${offlineList}">
+                            <a th:href="@{${ctx} + 'platform_course_detail?id=' + ${offline.id}}">
+                                <div class="course-left fl">
+                                    <h2><span th:text="${offline.title}"></span></h2>
+                                    <p class="course-desc"><span th:text="${offline.content}"></span></p>
+                                    <p>授课地点：<span th:text="${offline.address}"></span></p>
+                                    <div class="price clear">
+                                        <p style="float:left;">授课时间：<span th:text="${offline.startTime}"></span></p>
+                                    	<p style="float:right;">
+	                                        <span>价格:</span>
+	                                        <b>¥<b th:text="${offline.price}"></b></b>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="course-right fr">
+                                    <img th:src="${imageUrl} + ${offline.imagePath}" alt="">
+                                </div>
+                            </a>
+                        </li>                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" th:href="@{/lib/lui/css/layui.css}">
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+    <style type="text/css">
+        .layui-table-box {
+            min-height: 450px;
+        }
+    </style>
+</head>
+<body>
+<div class="layui-container">
+<div th:html="${data.xyid}"></div>
+<div th:if="${edit}">
+</div>
+<form id="schoolForm" class="layui-form" action="edit" method="post">
+    <input type="hidden" name="id" id="school_id" th:value="${data.xyid}"/>
+    
+    <div class="layui-form-item">
+        <label class="layui-form-label">姓名</label>
+        <div class="layui-form-mid" th:text="${data.xm}"></div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">身份证号</label>
+        <div class="layui-form-mid" th:text="${data.sfzmhm}"></div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">联系电话</label>
+        <div class="layui-form-mid" th:text="${data.lxdh}"></div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">性别</label>
+        <div class="layui-form-mid" th:text="${data.xb}"></div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">出生日期</label>
+        <div class="layui-form-mid" th:if="${data.csrq}" th:text="${#dates.format(data.csrq,'yyyy-MM-dd')}"></div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">国籍</label>
+        <div class="layui-form-mid" th:text="${data.gj}"></div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">登记住所行政区划</label>
+        <div class="layui-form-mid" th:text="${data.djzsxzqh}"></div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">登记住所详细地址</label>
+        <div class="layui-form-mid" th:text="${data.djzsxxdz}"></div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">联系住所行政区划</label>
+        <div class="layui-form-mid" th:text="${data.lxzsxzqh}"></div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">联系住所详细地址</label>
+        <div class="layui-form-mid" th:text="${data.lxzsxxdz}"></div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">联系住所邮政编码</label>
+        <div class="layui-form-mid" th:text="${data.lxzsyzbm}"></div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">准考车型</label>
+        <div class="layui-form-mid" th:text="${data.zkcx}"></div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">体检日期</label>
+        <div class="layui-form-mid" th:text="${#dates.format(data.tjrq,'yyyy-MM-dd')}"></div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">体检医院名称</label>
+        <div class="layui-form-mid" th:text="${data.tjyymc}"></div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">报名日期</label>
+        <div class="layui-form-mid"  th:text="${#dates.format(data.bmrq,'yyyy-MM-dd')}"></div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">备注</label>
+        <div class="layui-form-mid" th:text="${data.gdbz}"></div>
+    </div>
+    
+</form>
+</div>
+<script th:src="@{/lib/jquery/jquery.js}"></script>
+<script th:src="@{/lib/jquery/jquery.forms.js}"></script>
+<script th:src="@{/lib/lui/layui.all.js}"></script>
+</body>
+</html>

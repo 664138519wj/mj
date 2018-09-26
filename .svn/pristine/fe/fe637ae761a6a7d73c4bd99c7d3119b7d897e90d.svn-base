@@ -1,0 +1,435 @@
+package com.migu.online.service;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSON;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.migu.online.common.FilterString;
+import com.migu.online.mapper.UserNoticeMapper;
+import com.migu.online.model.CourseOffline;
+import com.migu.online.model.CourseOnline;
+import com.migu.online.model.DrivingSchool;
+import com.migu.online.model.PrivateTutor;
+import com.migu.online.model.SendMsgRecord;
+import com.migu.online.model.Teacher;
+import com.migu.online.model.User;
+import com.migu.online.model.UserAppointment;
+import com.migu.online.model.UserCourse;
+import com.migu.online.model.UserCourseInfo;
+import com.migu.online.model.UserCourseVip;
+import com.migu.online.model.UserNotice;
+
+import tk.mybatis.mapper.entity.Example;
+import tk.mybatis.mapper.entity.Example.Criteria;
+
+@Service
+public class UserNoticeService {
+
+	@Autowired
+	private UserNoticeMapper userNoticeMapper;
+	@Autowired
+	private SendMsgRecordService sendMsgRecordService;
+	@Autowired
+	private CourseOnlineService courseOnlineService;
+	@Autowired
+	private CourseOfflineService courseOfflineService;
+	@Autowired
+	private UserAppointmentService userAppointmentService;
+	@Autowired
+	private PrivateTutorService privateTutorService;
+	@Autowired
+	private UserCourseVipService userCourseVipService;
+	@Autowired
+	private UserCourseInfoService userCourseInfoService;
+	@Autowired
+	private DrivingSchoolService drivingSchoolService;
+	@Autowired
+	private UserService userService;
+
+	@Value("${online.redirect.url}")
+	private String ONLINE_REDIRECT_URL;
+	@Value("${offline.redirect.url}")
+	private String OFFLINE_REDIRECT_URL;
+	@Value("${sign.redirect.url}")
+	private String SIGN_REDIRECT_URL;
+	@Value("${card.redirect.url}")
+	private String CARD_REDIRECT_URL;
+	@Value("${appointment.redirect.url}")
+	private String APPOINTMENT_REDIRECT_URL;
+	@Value("${tutor.redirect.url}")
+	private String PRIVATE_TUTOR_REDIRECT_URL;
+	@Value("${vip.redirect.url}")
+	private String VIP_COURSE_REDIRECT_URL;
+
+	/**
+	 * 分页查询
+	 * 
+	 * @param pageIndex
+	 * @param pageSize
+	 * @return
+	 * @throws Exception
+	 */
+	public Page<UserNotice> selectPageByUserId(Long userId, Integer pageIndex, Integer pageSize) throws Exception {
+		// 单表分页
+		PageHelper.startPage(pageIndex, pageSize, false);
+		// 单表自定义查询
+		Example example = new Example(UserNotice.class);
+		Criteria criteria = example.createCriteria();
+		criteria.andCondition("user_id = ", userId);
+		example.setOrderByClause("create_time desc");
+		Page<UserNotice> pageList = (Page<UserNotice>) userNoticeMapper.selectByExample(example);
+		return pageList;
+	}
+
+	/**
+	 * 删除
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public int deleteById(Long id) {
+		UserNotice record = userNoticeMapper.selectByPrimaryKey(id);
+		if (null != record) {
+			return userNoticeMapper.updateByPrimaryKey(record);
+		}
+		return 0;
+	}
+
+	/**
+	 * 查
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public UserNotice selectById(Long id) {
+		return userNoticeMapper.selectByPrimaryKey(id);
+	}
+
+	/**
+	 * 改&插
+	 * 
+	 * @param model
+	 * @return
+	 */
+	public int createOrUpdate(UserNotice model) {
+		if (null != model.getId() && model.getId() > 0) {
+			// update
+			return userNoticeMapper.updateByPrimaryKey(model);
+		} else {
+			return userNoticeMapper.insert(model);
+		}
+	}
+
+	/**
+	 * 消息统一处理逻辑
+	 */
+	public void dealMessage(UserCourse course) {
+		if (null == course) {
+			return;
+		}
+		User user = userService.selectById(course.getUserId());
+		String phoneNum = user.getMobile();
+		UserNotice notice = new UserNotice();
+		notice.setUserId(course.getUserId());
+		String content = "";
+		String redirectUrl = "";
+		Map<String, String> param = new HashMap<>();
+		String msgContent = "";
+		String template = "";
+		switch (course.getCourseType()) {
+		case 1:
+			CourseOnline data = courseOnlineService.selectById(course.getCourseId());
+			content = "您已成功购买在线课程-" + data.getTitle();
+			redirectUrl = ONLINE_REDIRECT_URL + course.getCourseId();
+			// 短信
+			param.put("name", user.getUserName());
+			param.put("content", FilterString.filterString(data.getTitle()));
+			msgContent = JSON.toJSONString(param);
+			// 亲爱的${name}用户，您已成功购买在线课程${content}，祝您早日通过考试
+			template = "SMS_136381277";
+			break;
+		case 2:
+			CourseOffline data2 = courseOfflineService.selectById(course.getCourseId());
+			content = "您已成功购买线下课程-" + data2.getTitle();
+			redirectUrl = OFFLINE_REDIRECT_URL + course.getCourseId();
+			// 短信
+			param.put("name", user.getUserName());
+			param.put("content", FilterString.filterString(data2.getTitle()));
+			msgContent = JSON.toJSONString(param);
+			// 亲爱的${name}用户，您已成功购买线下课程${content}，祝您早日通过考试
+			template = "SMS_136381280";
+			break;
+		case 3:
+			UserCourseInfo info = userCourseInfoService.selectByCourseId(course.getId());
+			DrivingSchool school = drivingSchoolService.selectById(info.getSchoolId());
+			content = "您已成功支付驾校课程:" + school.getNameS() + ", 班级：" + info.getSchoolInfo();
+			redirectUrl = SIGN_REDIRECT_URL;
+			// 短信
+			param.put("name", user.getUserName());
+			param.put("schoolName", FilterString.filterString(school.getNameS()));
+			param.put("className", info.getSchoolInfo());
+			msgContent = JSON.toJSONString(param);
+			// 亲爱的${name}用户，您已成功支付驾校课程:${schoolName}, 班级：${className}，祝您早日通过考试
+			template = "SMS_136386303";
+			break;
+		case 4:
+			content = "您已成功购买练习卡，您现在可以进行模拟考试了";
+			redirectUrl = CARD_REDIRECT_URL;
+			// 短信
+			param.put("name", user.getUserName());
+			msgContent = JSON.toJSONString(param);
+			// 亲爱的${name}用户，您已成功购买练习卡。
+			template = "SMS_136391197";
+			break;
+		case 5:
+			UserAppointment data4 = userAppointmentService.selectById(course.getCourseId());
+			content = "您成功支付了科目" + data4.getKemu() + "-驾照" + data4.getLicenceType() + "的预约，我们会尽快和您取得联系";
+			redirectUrl = APPOINTMENT_REDIRECT_URL;
+			// 短信
+			param.put("name", user.getUserName());
+			param.put("content", "科目" + data4.getKemu() + "-驾照" + data4.getLicenceType());
+			msgContent = JSON.toJSONString(param);
+			// 亲爱的${name}用户，您成功支付了${content}的预约，我们会尽快和您取得联系
+			template = "SMS_136386267";
+			break;
+		case 6:
+			PrivateTutor data5 = privateTutorService.selectById(course.getCourseId());
+			content = "您已成功购买私教课程-" + FilterString.filterString(data5.getTitle()) + "";
+			redirectUrl = PRIVATE_TUTOR_REDIRECT_URL;
+			// 短信
+			param.put("name", user.getUserName());
+			param.put("content", FilterString.filterString(data5.getTitle()));
+			msgContent = JSON.toJSONString(param);
+			// 亲爱的${name}用户，您已成功购买${content}私教课程，祝您早日通过考试
+			template = "SMS_136381287";
+			break;
+		case 7:
+			UserCourseVip data6 = userCourseVipService.selectById(course.getCourseId());
+			String kemuStr = data6.getKemuStr(data6.getKemus());
+			content = "您已成功购买VIP课程" + kemuStr + ",后台会尽快为您安排对应教练，同时您可以免费观看在线视频和进行模拟考试";
+			redirectUrl = VIP_COURSE_REDIRECT_URL;
+			// 短信
+			param.put("name", user.getUserName());
+			param.put("content", kemuStr);
+			msgContent = JSON.toJSONString(param);
+			// 亲爱的${name}用户，您已成功购买${content}VIP课程。后台会为您安排对应的教练，请您耐心等待
+			template = "SMS_136396274";
+			break;
+		}
+		notice.setContent(content);
+		notice.setStatus(0);
+		notice.setType(course.getCourseType());
+		notice.setUpdateTime(new Date());
+		notice.setCreateTime(new Date());
+		notice.setUrl(redirectUrl);
+		notice.setIsDelete(0);
+		// user 通知记录
+		userNoticeMapper.insert(notice);
+		// 插入短信记录
+		SendMsgRecord model = new SendMsgRecord();
+		model.setContent(msgContent);
+		model.setUserId(0L);
+		model.setIsDelete(0);
+		model.setCreateTime(new Date());
+		model.setStatus(0);
+		model.setMobile(phoneNum);
+		model.setTemplate(template);
+		model.setUpdateTime(new Date());
+		sendMsgRecordService.insert(model);
+
+	}
+	
+	/**
+	 * 预约消息
+	 */
+	public void dealAppointMessage(Long userId, Integer kemu, String licenceType) {
+		UserNotice notice = new UserNotice();
+		String content = "您完成了科目" + kemu + "-驾照" + licenceType + "的预约，我们会尽快和您取得联系";
+		notice.setUserId(userId);
+		notice.setContent(content);
+		notice.setStatus(0);
+		notice.setType(5);
+		notice.setUpdateTime(new Date());
+		notice.setCreateTime(new Date());
+		notice.setUrl(APPOINTMENT_REDIRECT_URL);
+		notice.setIsDelete(0);
+		// user 通知记录
+		userNoticeMapper.insert(notice);
+	}
+	
+	/**
+	 * 预约消息2
+	 */
+	public void dealAppointMessage2(int flag, UserAppointment data) {
+		if (data == null) {
+			return;
+		}
+		User user = userService.selectById(data.getUserId());
+		UserNotice notice = new UserNotice();
+		String content = "";
+		Map<String, String> param = new HashMap<>();
+		String msgContent = "";
+		String template = "";
+		String mobile = user.getMobile();
+		if (flag == 1) {
+			// 预约通过
+			content = "后台已审核通过，" + data.getKemu() + "-驾照" + data.getLicenceType() + "的预约课程";
+			param.put("name", user.getUserName());
+			param.put("content", data.getKemu() + "-驾照" + data.getLicenceType());
+			msgContent = JSON.toJSONString(param);
+			// 亲爱的${name}, 您预约的${content}课程，已审核通过。
+			template = "SMS_136386238";
+		} else {
+			// 预约失败
+			content = "后台审核失败，" + data.getKemu() + "-驾照" + data.getLicenceType() + "的预约课程";
+			param.put("name", user.getUserName());
+			param.put("content", data.getKemu() + "-驾照" + data.getLicenceType());
+			msgContent = JSON.toJSONString(param);
+			// 亲爱的${name}, 您预约的${content}课程，审核失败。
+			template = "SMS_136396297";
+		}		
+		notice.setUserId(data.getUserId());
+		notice.setContent(content);
+		notice.setStatus(0);
+		notice.setType(5);
+		notice.setUpdateTime(new Date());
+		notice.setCreateTime(new Date());
+		notice.setUrl(APPOINTMENT_REDIRECT_URL);
+		notice.setIsDelete(0);
+		// user 通知记录
+		userNoticeMapper.insert(notice);
+		// 插入短信记录
+		SendMsgRecord model = new SendMsgRecord();
+		model.setContent(msgContent);
+		model.setUserId(0L);
+		model.setIsDelete(0);
+		model.setCreateTime(new Date());
+		model.setStatus(0);
+		model.setMobile(mobile);
+		model.setTemplate(template);
+		model.setUpdateTime(new Date());
+		sendMsgRecordService.insert(model);
+
+	}
+	
+	
+	/**
+	 * 驾校消息
+	 */
+	public void dealSchoolMessage(Long userId, String schoolName, String schoolInfo) {
+		UserNotice notice = new UserNotice();
+		String content = "您已成功报名驾校课程:" + schoolName + ", 班级：" + schoolInfo;
+		notice.setUserId(userId);
+		notice.setContent(content);
+		notice.setStatus(0);
+		notice.setType(5);
+		notice.setUpdateTime(new Date());
+		notice.setCreateTime(new Date());
+		notice.setUrl(APPOINTMENT_REDIRECT_URL);
+		notice.setIsDelete(0);
+		// user 通知记录
+		userNoticeMapper.insert(notice);
+	}
+	
+	/**
+	 * 驾校消息2
+	 */
+	public void dealSchoolMessage2(int flag, UserCourse data) {
+		if (data == null) {
+			return;
+		}
+		User user = userService.selectById(data.getUserId());
+		UserCourseInfo info = userCourseInfoService.selectByCourseId(data.getId());
+		DrivingSchool school = drivingSchoolService.selectById(info.getSchoolId());
+		UserNotice notice = new UserNotice();
+		String content = "";
+		Map<String, String> param = new HashMap<>();
+		String msgContent = "";
+		String template = "";
+		String mobile = user.getMobile();
+		if (flag == 1) {
+			// 预约通过			
+			content = "后台审核通过，驾校课程:" + school.getNameS() + ", 班级：" + info.getSchoolInfo();
+			// 短信
+			param.put("name", user.getUserName());
+			param.put("schoolName", FilterString.filterString(school.getNameS()));
+			param.put("className", info.getSchoolInfo());
+			msgContent = JSON.toJSONString(param);
+			// 亲爱的${name}用户，您报名的驾校课程:${schoolName}, 班级：${className}，审核成功
+			template = "SMS_136396303";
+		} else {
+			// 预约失败
+			content = "后台审核失败，驾校课程:" + school.getNameS() + ", 班级：" + info.getSchoolInfo();
+			param.put("name", user.getUserName());
+			param.put("schoolName", FilterString.filterString(school.getNameS()));
+			param.put("className", info.getSchoolInfo());
+			msgContent = JSON.toJSONString(param);
+			// 亲爱的${name}用户，您报名的驾校课程:${schoolName}, 班级：${className}，审核失败
+			template = "SMS_136391270";
+		}
+		notice.setUserId(data.getUserId());
+		notice.setContent(content);
+		notice.setStatus(0);
+		notice.setType(3);
+		notice.setUpdateTime(new Date());
+		notice.setCreateTime(new Date());
+		notice.setUrl(SIGN_REDIRECT_URL);
+		notice.setIsDelete(0);
+		// user 通知记录
+		userNoticeMapper.insert(notice);
+		// 插入短信记录
+		SendMsgRecord model = new SendMsgRecord();
+		model.setContent(msgContent);
+		model.setUserId(0L);
+		model.setIsDelete(0);
+		model.setCreateTime(new Date());
+		model.setStatus(0);
+		model.setMobile(mobile);
+		model.setTemplate(template);
+		model.setUpdateTime(new Date());
+		sendMsgRecordService.insert(model);
+
+	}
+	
+	/**
+	 * 教师审核
+	 */
+	public void dealTeacherRegisterMessage(Teacher data, boolean isApprove, String denyReason) {
+		Map<String, String> param = new HashMap<>();
+		String msgContent = "";
+		String template = "";
+		String mobile = data.getMobile();
+		if (isApprove) {
+			// 尊敬的${name}，您注册成为我平台教练/陪练的申请已通过审核，登录名${userName}，请及时登录发布您的课程信息。合作愉快！
+			param.put("name", FilterString.filterString(data.getName(), 20));
+			param.put("userName", data.getLoginName());
+			msgContent = JSON.toJSONString(param);
+			template = "SMS_136391178";
+		} else {
+			// 尊敬的${name}，您注册成为我平台教练/陪练的申请未通过审核，原因为${reason}。您可在资料齐备后重新提交申请
+			param.put("name", FilterString.filterString(data.getName(), 20));
+			param.put("reason", FilterString.filterString(denyReason));
+			msgContent = JSON.toJSONString(param);
+			template = "SMS_136381266";
+		}		
+		// 插入短信记录
+		SendMsgRecord model = new SendMsgRecord();
+		model.setContent(msgContent);
+		model.setUserId(0L);
+		model.setIsDelete(0);
+		model.setCreateTime(new Date());
+		model.setStatus(0);
+		model.setMobile(mobile);
+		model.setTemplate(template);
+		model.setUpdateTime(new Date());
+		sendMsgRecordService.insert(model);
+	}
+
+}

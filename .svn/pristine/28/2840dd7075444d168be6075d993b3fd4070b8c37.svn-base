@@ -1,0 +1,76 @@
+package com.migu.online.service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.util.StringUtil;
+import com.migu.online.mapper.ExamPlaceMapper;
+import com.migu.online.model.ExamPlace;
+
+import tk.mybatis.mapper.entity.Example;
+import tk.mybatis.mapper.entity.Example.Criteria;
+
+@Service
+public class ExamPlaceService {
+
+    @Autowired
+    private ExamPlaceMapper examPlaceMapper;
+      
+   
+    public ExamPlace selectById(Integer id) {
+        return examPlaceMapper.selectByPrimaryKey(id);
+    }
+    
+    public List<ExamPlace> selectAll() {
+        return examPlaceMapper.selectAll();
+    }
+    
+    public Map<Integer, ExamPlace> selectAllMap() {
+    	List<ExamPlace> all = examPlaceMapper.selectAll();
+    	Map<Integer, ExamPlace> map = new HashMap<>();
+    	for (ExamPlace data : all) {
+    		map.put(data.getId(), data);	
+    	}
+    	return map;
+    }
+
+    /**
+     * 改&插
+     * @param model
+     * @return
+     */
+    public int createOrUpdate(ExamPlace model) {
+    	if (null != model.getId() && model.getId() > 0) {
+    		// update
+    		return examPlaceMapper.updateByPrimaryKey(model);
+    	} else {
+    		// add
+    		return examPlaceMapper.insert(model);
+    	}
+    }
+    
+    /**
+     * 分页条件查找
+     * @param filter
+     * @param pageIndex
+     * @param pageSize
+     * @return
+     */
+    public List<ExamPlace> selectConditonByPage(String filter, Integer pageIndex, Integer pageSize){
+        // 单表分页
+        PageHelper.startPage(pageIndex, pageSize, true);
+        Example example = new Example(ExamPlace.class);
+        Criteria criteria = example.createCriteria();
+        if(StringUtil.isNotEmpty(filter)) {
+            filter = "%" + filter + "%";
+            criteria.andLike("name", filter);
+        }
+		example.setOrderByClause("id desc");
+        return examPlaceMapper.selectByExample(example);
+    }
+}

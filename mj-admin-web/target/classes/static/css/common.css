@@ -1,0 +1,68 @@
+*{
+	padding: 0;
+	margin: 0;
+}
+@media screen and (min-width: 800px) and (max-width: 1280px){
+	html,body{
+		font-size: 16px;
+	}
+	.tab1 .info-box .flex-box{
+		width:33% !important;
+	}
+	.tab1 .info-box .selfhelp{
+		width: 50% !important;
+	}
+	.tab1 .info-box .flex-box div .card-name{
+		width: 96%;
+	}
+	.tab1 .info-box .flex-box div>input{
+		width: 92%;
+	}
+	.tab1 .info-box .flex-box div.search input{
+		width: 78%;
+	}
+}
+ul li {
+	list-style: none;
+}
+a{
+	text-decoration: none;
+	color:#666;
+}
+html,body{
+	font-family: arial,"microsoft yahei";
+	font-size:18px;
+	color:#666;
+	background:#ededed;
+}
+img{
+	border:0;
+	vertical-align: middle;
+}
+input,textarea{
+	border:0;
+	outline: none;
+	background: none;
+}
+textarea{
+	resize: none;
+}
+button{
+	border:0;
+	background:none;
+}
+.fl{
+	float: left;
+}
+.fr{
+	float: right;
+}
+.clear{
+	zoom: 1;
+}
+.clear:after{
+	content: '';
+	display: block;
+	height: 0;
+	clear: both;
+}

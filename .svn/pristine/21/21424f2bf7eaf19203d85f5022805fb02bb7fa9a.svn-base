@@ -1,0 +1,163 @@
+package com.migu.online.controller.ops;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.github.pagehelper.Page;
+import com.google.common.collect.Maps;
+import com.migu.online.controller.BaseController;
+import com.migu.online.controller.response.ResponsePageData;
+import com.migu.online.model.SchoolWithdraw;
+import com.migu.online.model.system.SysUser;
+import com.migu.online.ops.vo.UserSchoolCourseVo;
+import com.migu.online.service.SchoolWithdrawService;
+import com.migu.online.service.UserCourseService;
+import com.migu.online.vo.SchoolWithdrawVo;
+
+
+@Controller
+@RequestMapping("/ops/schoolIncome")
+public class SchoolIncomeController extends BaseController {
+    @Autowired
+    private UserCourseService userCourseService;
+
+    @Autowired
+    private SchoolWithdrawService schoolWithdrawService;
+
+    /**
+     *  ------页面跳转 start-----
+     */
+    @GetMapping("index")
+    public String studentRefund(ModelMap modelMap){
+    	  BigDecimal income = getTotalIncome();
+          BigDecimal withdraw = getTotalWithdraw();
+          BigDecimal remain = income.subtract(withdraw);
+          modelMap.put("income", income);
+          modelMap.put("withdraw", withdraw);
+          modelMap.put("remain", remain);
+        return "ops/school/school_income";
+    }
+    
+    /**
+     *  ------页面跳转 start-----
+     */
+    @GetMapping("schoolWithdraw")
+    public String schoolWithdraw(ModelMap modelMap){
+        return "ops/school/school_withdraw";
+    }
+    
+    @GetMapping("schoolWithdrawEdit")
+    public String schoolWithdrawEdit(ModelMap modelMap){
+        return "ops/school/school_withdraw_edit";
+    }
+
+    private BigDecimal getTotalIncome() {
+        BigDecimal total = new BigDecimal(0);
+    	SysUser currentUser = getCurrentUser();
+    	Long schoolId = null;
+    	if (currentUser.getRelateId() != null) {
+    		 schoolId = currentUser.getRelateId();
+    	}
+    	total = userCourseService.selectSchoolTotalIncome(schoolId);
+
+        return total==null? BigDecimal.valueOf(0):total;
+    }
+
+
+    
+    private BigDecimal getTotalWithdraw() {
+        BigDecimal total = new BigDecimal(0);
+        HashMap<String, String> filters = Maps.newHashMap();
+        filters.put("school_id", getCurrentUser().getRelateId()+"");
+        filters.put("status_in", "0,1,2");
+        filters.put("by_page", "false");
+        Page<SchoolWithdrawVo> allPages = (Page<SchoolWithdrawVo>) schoolWithdrawService.selectByFilter(filters);
+        for (SchoolWithdrawVo withdrawVo : allPages) {
+            total = total.add(withdrawVo.getAmount());
+        }
+        return total;
+    }
+
+    
+    /**
+     * 数据处理
+     * @throws Exception 
+     */
+    @SuppressWarnings("rawtypes")
+	@GetMapping("detailData")
+    @ResponseBody
+    public ResponsePageData detailData(@RequestParam(value = "page",defaultValue = "0") Integer pageIndex,
+                                    @RequestParam(value = "limit",defaultValue = "10") Integer limit,
+                                    @RequestParam(value = "licence",required = false) String licence,
+                                    @RequestParam(value = "startTime",required = false) String startTime,
+                                    @RequestParam(value = "payStatus",required = false) String payStatus) throws Exception{
+    	SysUser currentUser = getCurrentUser();
+    	Long schoolId = null;
+    	if (currentUser.getRelateId() != null) {
+    		//SysUserOpsVo sysUserOpsVo =sysUserService.selectOpsById(currentUser.getId());
+    		 schoolId = currentUser.getRelateId();
+    	}
+    	Map<String,Object> params = new HashMap<String, Object>();
+    	params.put("schoolId", schoolId);
+    	params.put("licence", licence);
+    	params.put("startTime", startTime);
+    	params.put("payStatus", payStatus);
+    	params.put("startIndex", (pageIndex-1)*10);
+		params.put("endIndex", pageIndex*limit);
+    	int cnt = userCourseService.selectSchoolStudentCourseCnt(params);
+    	List<UserSchoolCourseVo> result = userCourseService.selectSchoolStudentCourse(params);
+    	return new ResponsePageData<UserSchoolCourseVo>(cnt, result);
+    	
+    }
+    
+    @SuppressWarnings("rawtypes")
+    @GetMapping("withdrawData")
+    @ResponseBody
+    public ResponsePageData withdrawData(@RequestParam(value = "page", defaultValue = "0") Integer offset,
+                                 @RequestParam(value = "limit", defaultValue = "10") Integer limit) {
+        HashMap<String, String> filters = Maps.newHashMap();
+        SysUser currentUser = getCurrentUser();
+    	Long schoolId = null;
+    	if (currentUser.getRelateId() != null) {
+    		 schoolId = currentUser.getRelateId();
+    		 filters.put("teacher_id", schoolId+"");
+    	}
+        
+        filters.put("page_index", offset.toString());
+        filters.put("page_size", limit.toString());
+        Page<SchoolWithdrawVo> page = (Page<SchoolWithdrawVo>) schoolWithdrawService.selectByFilter(filters);
+        return new ResponsePageData<SchoolWithdrawVo>(page.getTotal(), page);
+    }
+    
+    @GetMapping("edit")
+    public String edit(ModelMap modelMap, @RequestParam(value = "id", required = false) Long id,
+                       @RequestParam(value = "flag", defaultValue = "1") Integer editFlag) throws Exception {
+        return "ops/school/school_withdraw_edit";
+    }
+
+    @PostMapping("saveSchoolWithdraw")
+    @ResponseBody
+    public String save(SchoolWithdraw model) {
+        if (null == model) {
+            return "error";
+        }
+        model.setSchoolId(getCurrentUser().getRelateId());
+        model.setStatus(0);
+        model.setCreateTime(new Date());
+        model.setUpdateTime(new Date());
+        return schoolWithdrawService.createOrUpdate(model) >= 1 ? "success" : "error";
+    }
+
+}

@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+<head>
+    <title>自由练习</title>
+</head>
+<body th:fragment="content">
+   <form id="free_practice_form" method="post" th:action="${ctx} + 'free_practice_2'">
+        <div class="choose-type choose com-width" style="min-height:83vh">
+            <div class="plat-title">
+                <h2 th:if="${language == 0}">自由练习</h2>
+				<h2 th:if="${language == 1}">ᠴᠢᠯᠥᠭᠡᠲᠦ ᠪᠣᠯᠪᠠᠰᠤᠷᠠᠯᠲᠠ </h2>
+				<h2 th:if="${language == 2}">ەركىن جاتتىعۋ </h2>
+				<h2 th:if="${language == 3}">ئەركىن مەشىق قىلساڭلار </h2>
+                <p>—</p>
+            </div>
+            <span th:if="${data == null}">没找到相应条件试题</span>
+      	<div th:if="${data != null}" style="margin-left:30px;">
+            <!-- 增加不同语言的翻译 0:中文 1：蒙语 2：哈语 3：维语 -->
+            <p th:if="${data.quesType == 1}">
+			   <span th:if="${data.language==0}">试题类型：判断题，请选择正确答案</span>
+			   <span th:if="${data.language==1}">ᠰᠢᠯᠭᠠᠯᠲᠠ ᠶᠢᠨ ᠰᠡᠳᠦᠪ ᠦᠨ ᠲᠥᠷᠥᠯ ᠳᠦ ᠬᠤᠪᠢᠶᠠᠨ᠎ᠠ ᠄ ᠮᠠᠭᠠᠳᠯᠠᠬᠤ ᠰᠡᠳᠦᠪ ᠂ ᠵᠥᠪ ᠬᠠᠷᠢᠭᠤᠯᠲᠠ ᠶᠢ </span>
+			   <span th:if="${data.language==2}">ەمتيحان سۇراۋى : دەگەن تۇجىرىم جاساۋ ، دۇرىس تاڭداۋى كەرەك جاۋاپ </span>
+			   <span th:if="${data.language==3}">ئىمتىھان سوئاللىرىنى ： ھۆكۈم قىلىش سوئالى ، توغرا جاۋاپنى تاللاڭ</span>
+			</p>
+            <p th:if="${data.quesType != 1}">
+            	<span th:if="${data.language==0}">试题类型：选择题，请选择正确答案</span>
+            	<span th:if="${data.language==1}">ᠰᠢᠯᠭᠠᠬᠤ ᠲᠥᠷᠥᠯ ᠵᠦᠶᠯ ᠢ ᠰᠣᠩᠭᠣᠵᠤ ᠬᠠᠷᠢᠭᠤᠯᠬᠤ ᠰᠡᠳᠦᠪ ᠂ ᠵᠥᠪ ᠬᠠᠷᠢᠭᠤᠯᠲᠠ ᠶᠢ </span>
+            	<span th:if="${data.language==2}">ەمتيحان سۇراۋى : ، جاۋاپتاردىڭ ، دۇرىس تاڭداۋى كەرەك جاۋاپ </span>
+            	<span th:if="${data.language==3}">ئىمتىھان سوئالى تۈرى : تاللاش سوئالى ، توغرا جاۋاپنى تاللاڭ </span>
+            </p> 
+            <!-- <p th:if="${data.language == 0}">试题类型：请选择正确的答案</p>             
+			<p th:if="${data.language == 1}">ᠰᠢᠯᠭᠠᠯᠲᠠ ᠶᠢᠨ ᠰᠡᠳᠦᠪ ᠦᠨ ᠲᠥᠷᠥᠯ ᠳᠦ ᠬᠤᠪᠢᠶᠠᠨ᠎ᠠ ᠄ ᠮᠠᠭᠠᠳᠯᠠᠬᠤ ᠰᠡᠳᠦᠪ ᠂ ᠵᠥᠪ ᠬᠠᠷᠢᠭᠤᠯᠲᠠ ᠶᠢ </p>             
+            <p th:if="${data.language == 2}">ەمتيحان سۇراۋى : دەگەن تۇجىرىم جاساۋ ، دۇرىس تاڭداۋى كەرەك جاۋاپ</p>  
+            <p th:if="${data.language == 3}">ئىمتىھان سوئاللىرىنى ： ھۆكۈم قىلىش سوئالى ، توغرا جاۋاپنى تاللاڭ</p>  --> 
+            <!-- <p th:if="${data.quesType == 1}" style="padding:0 30px;">ᠰᠢᠯᠭᠠᠯᠲᠠ ᠶᠢᠨ ᠰᠡᠳᠦᠪ ᠦᠨ ᠲᠥᠷᠥᠯ ᠳᠦ ᠬᠤᠪᠢᠶᠠᠨ᠎ᠠ ᠄ ᠮᠠᠭᠠᠳᠯᠠᠬᠤ ᠰᠡᠳᠦᠪ ᠂ ᠵᠥᠪ ᠬᠠᠷᠢᠭᠤᠯᠲᠠ ᠶᠢ </p> -->
+            <!-- 蒙语 -->
+            <!-- <p th:if="${data.quesType == 2}" style="padding:0 30px;">ەمتيحان سۇراۋى : دەگەن تۇجىرىم جاساۋ ، دۇرىس تاڭداۋى كەرەك جاۋاپ</p> -->
+            <!-- 哈语 -->
+            <!-- <p th:if="${data.quesType == 3}" style="padding:0 30px;">ئىمتىھان سوئاللىرىنى ： ھۆكۈم قىلىش سوئالى ، توغرا جاۋاپنى تاللاڭ</p> -->  
+            <!-- 维语 -->
+            <div class="subject-box clear">
+                <div class="subject-detail fl">
+                    <p th:text="${data.question}"></p>
+                    <!-- 判断题 -->
+                    <ul class="topic" th:if="${data.quesType == 1}">
+                        <li>
+                        	<img th:src="@{/img/right.png}" alt="" class="an-right">
+                        	<img th:src="@{/img/error1.png}" alt="" class="an-error">
+                            <input class="optionA" type="radio" name="radio" value="Y">
+                            <span th:if="${data.language == 0}">对</span>
+							<span th:if="${data.language == 1}">ᠲᠡᠢ᠌ᠮᠦ </span>
+							<span th:if="${data.language == 2}">دۇرىس </span>
+							<span th:if="${data.language == 3}">سېل </span>
+                        </li>
+                        <li>
+                        	<img th:src="@{/img/right.png}" alt="" class="an-right">
+                        	<img th:src="@{/img/error1.png}" alt="" class="an-error">
+                            <input class="optionB" type="radio" name="radio" value="N">
+                            <span th:if="${data.language == 0}">错</span>
+							<span th:if="${data.language == 1}">ᠪᠤᠷᠤᠭᠤ </span>
+							<span th:if="${data.language == 2}">قاتە </span>
+							<span th:if="${data.language == 3}">خاتا </span>
+                        </li>
+                    </ul>
+                    <!-- 单选题 -->
+                    <ul class="topic" th:if="${data.quesType == 2}">
+                        <li>
+                        	<img th:src="@{/img/right.png}" alt="" class="an-right">
+                        	<img th:src="@{/img/error1.png}" alt="" class="an-error">
+                            <input class="optionA" type="radio" name="radio" value="A">
+                            <span th:text="@{'A、' + ${data.answer1}}"></span>
+                        </li>
+                        <li>
+                        	<img th:src="@{/img/right.png}" alt="" class="an-right">
+                        	<img th:src="@{/img/error1.png}" alt="" class="an-error">
+                            <input class="optionB" type="radio" name="radio" value="B">
+                            <span th:text="@{'B、' + ${data.answer2}}"></span>
+                        </li>
+                        <li>
+                        	<img th:src="@{/img/right.png}" alt="" class="an-right">
+                        	<img th:src="@{/img/error1.png}" alt="" class="an-error">
+                            <input class="optionC" type="radio" name="radio" value="C">
+                            <span th:text="@{'C、' + ${data.answer3}}"></span>
+                        </li>
+                        <li>
+                        	<img th:src="@{/img/right.png}" alt="" class="an-right">
+                        	<img th:src="@{/img/error1.png}" alt="" class="an-error">
+                            <input class="optionD" type="radio" name="radio" value="D">
+                            <span th:text="@{'D、' + ${data.answer4}}"></span>
+                        </li>
+                    </ul>
+                    <!-- 多选题 -->
+                     <ul class="topic" th:if="${data.quesType == 3}">
+                        <li>
+                        	<img th:src="@{/img/right.png}" alt="" class="an-right">
+                        	<img th:src="@{/img/error1.png}" alt="" class="an-error">
+                            <input class="optionA" type="checkbox" name="checkbox" value="A">
+                            <span th:text="@{'A、' + ${data.answer1}}"></span>
+                        </li>
+                        <li>
+                        	<img th:src="@{/img/right.png}" alt="" class="an-right">
+                        	<img th:src="@{/img/error1.png}" alt="" class="an-error">
+                            <input class="optionB" type="checkbox" name="checkbox" value="B">
+                            <span th:text="@{'B、' + ${data.answer2}}"></span>
+                        </li>
+                        <li>
+                        	<img th:src="@{/img/right.png}" alt="" class="an-right">
+                        	<img th:src="@{/img/error1.png}" alt="" class="an-error">
+                            <input class="optionC" type="checkbox" name="checkbox" value="C">
+                            <span th:text="@{'C、' + ${data.answer3}}"></span>
+                        </li>
+                        <li>
+                        	<img th:src="@{/img/right.png}" alt="" class="an-right">
+                        	<img th:src="@{/img/error1.png}" alt="" class="an-error">
+                            <input class="optionD" type="checkbox" name="checkbox" value="D">
+                            <span th:text="@{'D、' + ${data.answer4}}"></span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="subject-pic fr" th:if="${data.imageUrl}">
+				   <img th:src="@{${imageUrl} + ${data.imageUrl}}" alt="" style="max-width:290px;max-height:145px;">
+                </div>
+            </div>
+            <div class="btns clear">
+<!--                 <div class="car-btn fl"> -->
+<!--                     <a href=""> -->
+<!--                         <img th:src="@{/img/my-pic4.png}" alt=""> -->
+<!--                     </a> -->
+<!--                 </div> -->
+                <div class="car-btn fl">
+                    <a href="javascript:;" id="next_a" style="display:inline-block;width:60px;height:60px" onclick="goToNext()">
+                        <img th:src="@{/img/my-pic4.1.png}" alt="">
+                    </a>
+                </div>
+                <button class="see-btn fl" type="button" th:if="${data.language == 0}">查看答案</button>
+                <button class="see-btn fl" type="button" th:if="${data.language == 1}">ᠪᠠᠶᠢᠴᠠᠭᠠᠵᠤ ᠬᠠᠷᠢᠭᠤᠯᠲᠠ </button>
+                <button class="see-btn fl" type="button" th:if="${data.language == 2}">جاۋاپ تەكسەرىپ </button>
+                <button class="see-btn fl" type="button" th:if="${data.language == 3}">تەكشۈرۈش جاۋابى </button>
+            </div>
+            <div class="see-answer" style="display: none;">
+                <p>
+                	<span th:if="${data.language == 0}">正确答案</span>
+                	<span th:if="${data.language == 1}">ᠵᠥᠪ ᠬᠠᠷᠢᠭᠤᠯᠲᠠ ᠪᠣᠯᠤᠨ᠎ᠠ ᠄ </span>
+					<span th:if="${data.language == 2}">دۇرىس جاۋاپ : </span>
+					<span th:if="${data.language == 3}">توغرا جاۋابنى تاللاڭلار : </span>
+                	<span th:text="${data.corrAnswer}"></span>
+                </p>
+            </div>
+        </div>
+     <!-- @才华 加一下提示登录内容 -->
+     	<div th:if="${isLogin == false}" class="xc-practice">
+		     <p><b style="font-size:22px">温馨提示：</b>您还未登录！<a th:href="@{${ctx} + 'auth/toRegister'}">注册</a>或<a th:href="@{${ctx} + 'auth/toLogin'}">登录</a>后可以记录您的练习记录，便于后续复习~</p>
+		</div> 
+     </div>
+        <input type="hidden" name="kemu" th:value="${kemu}" id="kemu">
+        <input type="hidden" name="language" th:value="${language}" id="language">
+        <input type="hidden" name="licType" th:value="${licType}" id="licType">
+        <input type="hidden" name="examType" th:value="${examType}" id="examType">
+        <input type="hidden" name="qusType" th:value="${qusType}" id="qusType">
+        <input type="hidden" name="examCode" th:unless="${data == null}" th:value="${data.examCode}" id="examCode">
+        <input type="hidden" name="answerMap"  id="answerMap">
+        <input type="hidden" name="isCorrect" value="0" id="isCorrect">
+        </form>
+	<script th:unless="${data == null}">
+		$('.subject-detail ul li').click(function() {
+			$(this).addClass("active").siblings().removeClass("active");
+			$(this).find("input[type=radio]").prop("checked", true);
+		});
+		$('.see-btn').click(function() {
+			$('.see-answer').show();
+		})
+		
+		function goToNext() {			
+			// 分装答题数据
+			var answer = '';
+			var quesType = [[${data.quesType}]];
+			if (quesType == 3) {
+				// 多选题
+				$("input[name='checkbox']").each(function(){
+					if($(this).is(":checked")){
+					// 被选中
+					 answer = answer + $(this).val();
+					}
+				})
+			} else {
+				answer = $("input[name='radio']:checked").val();
+			}			
+			console.log(answer);
+			if (answer  == undefined || answer == '') {
+				alert("请选择答案");
+				return;
+			}
+			var corrAnswer = '[[${data.corrAnswer}]]';
+			var isCorrect = 0;
+			if (answer == corrAnswer) {
+			    isCorrect = 1;
+			} else {
+				isCorrect = 2;
+			}
+			$("#isCorrect").val(isCorrect);
+			var examCode = $("#examCode").val();
+			var param = {};
+			param['examCode']=examCode;
+			param['isCorrect']=isCorrect;
+			param['answer']=answer;
+			param['language']=$('#language').val();
+			param['index']=1;
+			var answerMap = JSON.stringify(param);
+			console.log(answerMap);
+		    $("#answerMap").val(answerMap);
+			$("#free_practice_form").submit();
+		}
+	</script>
+</body>
+
+</html>

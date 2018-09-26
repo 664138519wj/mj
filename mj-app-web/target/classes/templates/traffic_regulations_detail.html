@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+<head>
+    <title>交通安全法律法规</title>
+</head>
+<body th:fragment="content">
+        <!--content-->
+        <div class="content">
+            <div class="traffic-desc detail com-width">
+                <h3 th:text="@{${lawDetail.topicStr} + '  ' +${lawDetail.title}}"></h3>
+                <span th:utext="${lawDetail.content}"></span>
+            </div>
+            <div class="more-article com-width">
+                <ul>
+                    <li class="usable" th:if="${lawDetail.upId > 0}">
+                        <a th:href="@{${ctx} + 'traffic_regulations_detail?id=' + ${lawDetail.upId}}">
+                            <span>上一章</span>
+                            <span th:text="${lawDetail.upTitle}"></span>
+                        </a>
+                    </li>
+                    <li class="usable" th:if="${lawDetail.downId > 0}">
+                        <a th:href="@{${ctx} + 'traffic_regulations_detail?id=' + ${lawDetail.downId}}">
+                            <span>下一章</span>
+                            <span th:text="${lawDetail.downTitle}"></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="plat-title">
+                <h2>其他相关文章</h2>
+                <b>Other related articles</b>
+                <p>—</p>
+            </div>
+            <div class="traffic-main com-width">
+                <ul>
+                    <li class="clear" th:each="law:${lawList}">
+                        <a th:href="@{${ctx} + 'traffic_regulations_detail?id=' + ${law.id}}">
+                            <div class="traffic-img fl">
+                                <img th:src="${imageUrl} + ${law.imagePath}" alt="">
+                            </div>
+                            <div class="traffic-desc fr">
+	                                <h3 th:text="@{${law.topicStr} +' '+ ${law.title}}"></h3>
+                                	 <span th:utext="${law.content}"></span>
+                                
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+           
+        </div>
+</body>
+</html>

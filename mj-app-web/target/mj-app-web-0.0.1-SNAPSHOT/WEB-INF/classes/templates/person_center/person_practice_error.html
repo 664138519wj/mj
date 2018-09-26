@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="head_center">
+<head>
+<head>
+<title>个人中心</title>
+</head>
+<body th:fragment="content">
+	<!--查看错题-->
+	<div class="review-box">
+		<div class="plat-title">
+			<h2>查看错题</h2>
+		</div>
+		<span th:if="${msg}" th:text="${msg}"></span>
+		<div class="subject-detail" th:unless="${msg}">
+			<!-- 0中文 -->
+			<div th:if="${data.language==0}" class="subject-detail">
+				<p th:if="${data.quesType == 1}">
+				   <span >试题类型：判断题，请选择正确答案</span>
+				</p>
+	            <p th:if="${data.quesType != 1}">
+	            	<span>试题类型：选择题，请选择正确答案</span>
+	            </p> 
+				<p class="subject-title" th:text="${data.question}"></p>
+				<ul class="topic" th:if="${data.quesType == 1}" style="margin:0;">
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+	                    <img th:src="@{/img/error1.png}" alt="" class="an-error">
+	                    <input class="optionA" type="radio" name="radio" value="Y">
+	                    <span>对</span>
+					</li>
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+	                    <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionB" type="radio" name="radio" value="N">
+						<span>错</span>
+					</li>
+				</ul>
+				<ul class="topic" th:if="${data.quesType == 2}" style="margin:0;">
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+	                    <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionA" type="radio" name="radio" value="A">
+						<span th:text="@{'A、' + ${data.answer1}}"></span></li>
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+	                    <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionB" type="radio" name="radio" value="B">
+						<span th:text="@{'B、' + ${data.answer2}}"></span></li>
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+	                    <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionC" type="radio" name="radio" value="C">
+						<span th:text="@{'C、' + ${data.answer3}}"></span></li>
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+	                    <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionD" type="radio" name="radio" value="D">
+						<span th:text="@{'D、' + ${data.answer4}}"></span></li>
+				</ul>
+				<!--  多选题 -->
+				<ul class="topic" th:if="${data.quesType == 3}" style="margin:0;">
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+	                    <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionA" type="checkbox" name="radio" value="A">
+						<span th:text="@{'A、' + ${data.answer1}}"></span></li>
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+	                    <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionB" type="checkbox" name="radio" value="B">
+						<span th:text="@{'B、' + ${data.answer2}}"></span></li>
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+	                    <img th:src="@{/img/error1.png}" alt="" class="an-error">
+	                    <input class="optionC" type="checkbox" name="radio" value="C">
+						<span th:text="@{'C、' + ${data.answer3}}"></span></li>
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+	                    <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionD" type="checkbox" name="radio" value="D">
+						<span th:text="@{'D、' + ${data.answer4}}"></span></li>
+				</ul>
+				<div class="answer-box clear">
+					<div class="answer fl">
+						<p class="fl" th:if="${data.wrongAns != data.corrAnswer}" style="margin-right:70px;">
+							
+							<span>您的答案：</span>
+							<span th:if="${data.quesType == 1}" th:text="${data.wrongAns == 'Y'? 'Y':'N'}"></span>
+							<span th:unless="${data.quesType == 1}" th:text="${data.wrongAns}"></span>
+						</p>
+						<p class="fl">
+							
+							<span>正确答案：</span>
+							<span th:if="${data.quesType == 1}" th:text="${data.corrAnswer == 'Y'? 'Y':'N'}"></span>
+							<span th:unless="${data.quesType == 1}" th:text="${data.corrAnswer}"></span>
+						</p>
+					</div>
+				</div>
+			</div>
+
+			<!-- 1蒙语 -->
+			<div th:if="${data.language==1}" class="subject-detail m-box">
+				<p th:if="${data.quesType == 1}" class="writing-mode fl" style="padding:0;">
+				   <span>ᠰᠢᠯᠭᠠᠯᠲᠠ ᠶᠢᠨ ᠰᠡᠳᠦᠪ ᠦᠨ ᠲᠥᠷᠥᠯ ᠳᠦ ᠬᠤᠪᠢᠶᠠᠨ᠎ᠠ ᠄ ᠮᠠᠭᠠᠳᠯᠠᠬᠤ ᠰᠡᠳᠦᠪ ᠂ ᠵᠥᠪ ᠬᠠᠷᠢᠭᠤᠯᠲᠠ ᠶᠢ </span>
+				</p>
+	            <p th:if="${data.quesType != 1}" class="writing-mode fl" style="padding:0;">
+	            	<span>ᠰᠢᠯᠭᠠᠬᠤ ᠲᠥᠷᠥᠯ ᠵᠦᠶᠯ ᠢ ᠰᠣᠩᠭᠣᠵᠤ ᠬᠠᠷᠢᠭᠤᠯᠬᠤ ᠰᠡᠳᠦᠪ ᠂ ᠵᠥᠪ ᠬᠠᠷᠢᠭᠤᠯᠲᠠ ᠶᠢ </span>
+	            </p> 
+				<p class="subject-title writing-mode fl" th:text="${data.question}"></p>
+				<ul class="topic m-topic fl" th:if="${data.quesType == 1}" style="margin:0;">
+					<li class="writing-mode fl">
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+	                    <img th:src="@{/img/error1.png}" alt="" class="an-error">
+	                    <input class="optionA" type="radio" name="radio" value="Y">
+						<span>ᠲᠡᠢ᠌ᠮᠦ </span>
+					</li>
+					<li class="writing-mode fl">
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+	                    <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionB" type="radio" name="radio" value="N">
+						<span>ᠪᠤᠷᠤᠭᠤ </span>
+					</li>
+				</ul>
+				<ul class="topic m-topic fl" th:if="${data.quesType == 2}" style="margin:0;">
+					<li class="writing-mode fl">
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+	                    <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionA" type="radio" name="radio" value="A">
+						<span th:text="@{'A、' + ${data.answer1}}"></span></li>
+					<li class="writing-mode fl">
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+	                    <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionB" type="radio" name="radio" value="B">
+						<span th:text="@{'B、' + ${data.answer2}}"></span></li>
+					<li class="writing-mode fl">
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+	                    <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionC" type="radio" name="radio" value="C">
+						<span th:text="@{'C、' + ${data.answer3}}"></span></li>
+					<li class="writing-mode fl">
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+	                    <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionD" type="radio" name="radio" value="D">
+						<span th:text="@{'D、' + ${data.answer4}}"></span></li>
+				</ul>
+				<!--  多选题 -->
+				<ul class="topic m-topic fl" th:if="${data.quesType == 3}" style="margin:0;">
+					<li class="writing-mode fl">
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+	                    <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionA" type="checkbox" name="radio" value="A">
+						<span th:text="@{'A、' + ${data.answer1}}"></span></li>
+					<li class="writing-mode fl">
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+	                    <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionB" type="checkbox" name="radio" value="B">
+						<span th:text="@{'B、' + ${data.answer2}}"></span></li>
+					<li class="writing-mode fl">
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+	                    <img th:src="@{/img/error1.png}" alt="" class="an-error">
+	                    <input class="optionC" type="checkbox" name="radio" value="C">
+						<span th:text="@{'C、' + ${data.answer3}}"></span></li>
+					<li class="writing-mode fl">
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+	                    <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionD" type="checkbox" name="radio" value="D">
+						<span th:text="@{'D、' + ${data.answer4}}"></span></li>
+				</ul>
+				<div class="answer-box clear">
+					<div class="answer fl">
+						<p class="fl" th:if="${data.wrongAns != data.corrAnswer}" style="margin-right:70px;">
+							<span class="writing-mode">ᠲᠠᠨ ᠤ ᠬᠠᠷᠢᠭᠤᠯᠲᠠ ᠪᠣᠯᠤᠨ᠎ᠠ ᠄ </span>
+							<span th:if="${data.quesType == 1}" th:text="${data.wrongAns == 'Y'? 'Y':'N'}"></span>
+							<span th:unless="${data.quesType == 1}" th:text="${data.wrongAns}"></span>
+						</p>
+						<p class="fl">
+							<span class="writing-mode">ᠵᠥᠪ ᠬᠠᠷᠢᠭᠤᠯᠲᠠ ᠪᠣᠯᠤᠨ᠎ᠠ ᠄ </span>
+							<span th:if="${data.quesType == 1}" th:text="${data.corrAnswer == 'Y'? 'Y':'N'}"></span>
+							<span th:unless="${data.quesType == 1}" th:text="${data.corrAnswer}"></span>
+						</p>
+					</div>
+					
+				</div>
+			</div>
+
+			<!-- 2哈文 -->
+			<div th:if="${data.language==2}" class="subject-detail">
+				<p th:if="${data.quesType == 1}">
+				   <span>ەمتيحان سۇراۋى : دەگەن تۇجىرىم جاساۋ ، دۇرىس تاڭداۋى كەرەك جاۋاپ </span>
+				</p>
+	            <p th:if="${data.quesType != 1}">
+	            	<span>ەمتيحان سۇراۋى : ، جاۋاپتاردىڭ ، دۇرىس تاڭداۋى كەرەك جاۋاپ </span>
+	            </p> 
+				<p class="subject-title" th:text="${data.question}"></p>
+				<ul class="topic" th:if="${data.quesType == 1}" style="margin:0;">
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+	                    <img th:src="@{/img/error1.png}" alt="" class="an-error">
+	                    <input class="optionA" type="radio" name="radio" value="Y">
+						<span>دۇرىس </span>
+					</li>
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+	                    <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionB" type="radio" name="radio" value="N">
+						<span>قاتە </span>
+					</li>
+				</ul>
+				<ul class="topic" th:if="${data.quesType == 2}" style="margin:0;">
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+	                    <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionA" type="radio" name="radio" value="A">
+						<span th:text="@{'A、' + ${data.answer1}}"></span></li>
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+	                    <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionB" type="radio" name="radio" value="B">
+						<span th:text="@{'B、' + ${data.answer2}}"></span></li>
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+	                    <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionC" type="radio" name="radio" value="C">
+						<span th:text="@{'C、' + ${data.answer3}}"></span></li>
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+	                    <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionD" type="radio" name="radio" value="D">
+						<span th:text="@{'D、' + ${data.answer4}}"></span></li>
+				</ul>
+				<!--  多选题 -->
+				<ul class="topic" th:if="${data.quesType == 3}" style="margin:0;">
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+	                    <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionA" type="checkbox" name="radio" value="A">
+						<span th:text="@{'A、' + ${data.answer1}}"></span></li>
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+	                    <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionB" type="checkbox" name="radio" value="B">
+						<span th:text="@{'B、' + ${data.answer2}}"></span></li>
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+	                    <img th:src="@{/img/error1.png}" alt="" class="an-error">
+	                    <input class="optionC" type="checkbox" name="radio" value="C">
+						<span th:text="@{'C、' + ${data.answer3}}"></span></li>
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+	                    <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionD" type="checkbox" name="radio" value="D">
+						<span th:text="@{'D、' + ${data.answer4}}"></span></li>
+				</ul>
+				<div class="answer-box clear">
+					<div class="answer fl">
+						<p class="fl" th:if="${data.wrongAns != data.corrAnswer}" style="margin-right:70px;">
+							<span>ٴسىز بەرىلگەن جاۋابى : </span>
+							<span th:if="${data.quesType == 1}" th:text="${data.wrongAns == 'Y'? 'Y':'N'}"></span>
+							<span th:unless="${data.quesType == 1}" th:text="${data.wrongAns}"></span>
+						</p>
+						<p class="fl">
+							<span>دۇرىس جاۋاپ : </span>
+							<span th:if="${data.quesType == 1}" th:text="${data.corrAnswer == 'Y'? 'Y':'N'}"></span>
+							<span th:unless="${data.quesType == 1}" th:text="${data.corrAnswer}"></span>
+						</p>
+					</div>
+					
+				</div>
+			</div>
+
+			<!-- 3维语 -->
+			<div th:if="${data.language==3}" class="subject-detail">
+				<p th:if="${data.quesType == 1}">
+				   <span th:if="${data.language==3}">ئىمتىھان سوئاللىرىنى ： ھۆكۈم قىلىش سوئالى ، توغرا جاۋاپنى تاللاڭ</span>
+				</p>
+	            <p th:if="${data.quesType != 1}">
+	            	<span th:if="${data.language==3}">ئىمتىھان سوئالى تۈرى : تاللاش سوئالى ، توغرا جاۋاپنى تاللاڭ </span>
+	            </p> 
+				<p class="subject-title" th:text="${data.question}"></p>
+				<ul class="topic" th:if="${data.quesType == 1}" style="margin:0;">
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+	                    <img th:src="@{/img/error1.png}" alt="" class="an-error">
+	                    <input class="optionA" type="radio" name="radio" value="Y">
+						<span th:if="${data.language == 3}">سېل </span>
+					</li>
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+	                    <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionB" type="radio" name="radio" value="N">
+						<span th:if="${data.language == 3}">خاتا </span>
+					</li>
+				</ul>
+				<ul class="topic" th:if="${data.quesType == 2}" style="margin:0;">
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+	                    <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionA" type="radio" name="radio" value="A">
+						<span th:text="@{'A、' + ${data.answer1}}"></span></li>
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+	                    <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionB" type="radio" name="radio" value="B">
+						<span th:text="@{'B、' + ${data.answer2}}"></span></li>
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+	                    <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionC" type="radio" name="radio" value="C">
+						<span th:text="@{'C、' + ${data.answer3}}"></span></li>
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+	                    <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionD" type="radio" name="radio" value="D">
+						<span th:text="@{'D、' + ${data.answer4}}"></span></li>
+				</ul>
+				<!--  多选题 -->
+				<ul class="topic" th:if="${data.quesType == 3}" style="margin:0;">
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+	                    <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionA" type="checkbox" name="radio" value="A">
+						<span th:text="@{'A、' + ${data.answer1}}"></span></li>
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+	                    <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionB" type="checkbox" name="radio" value="B">
+						<span th:text="@{'B、' + ${data.answer2}}"></span></li>
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+	                    <img th:src="@{/img/error1.png}" alt="" class="an-error">
+	                    <input class="optionC" type="checkbox" name="radio" value="C">
+						<span th:text="@{'C、' + ${data.answer3}}"></span></li>
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+	                    <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionD" type="checkbox" name="radio" value="D">
+						<span th:text="@{'D、' + ${data.answer4}}"></span></li>
+				</ul>
+				<div class="answer-box clear">
+					<div class="answer fl">
+						<p class="fl" th:if="${data.wrongAns != data.corrAnswer}" style="margin-right:70px;">
+							<span th:if="${data.language == 3}">سىزنىڭ جاۋابىڭىز : </span>
+							<span th:if="${data.quesType == 1}" th:text="${data.wrongAns == 'Y'? 'Y':'N'}"></span>
+							<span th:unless="${data.quesType == 1}" th:text="${data.wrongAns}"></span>
+						</p>
+						<p class="fl">
+							<span th:if="${data.language == 3}">توغرا جاۋابنى تاللاڭلار : </span>
+							<span th:if="${data.quesType == 1}" th:text="${data.corrAnswer == 'Y'? 'Y':'N'}"></span>
+							<span th:unless="${data.quesType == 1}" th:text="${data.corrAnswer}"></span>
+						</p>
+					</div>
+					
+				</div>
+			</div>
+
+			<div class="clear">
+				<div class="btns clear fr" style="margin:0 100px 0 0;">
+					<div class="fl" th:unless="${data.index == 1}">
+						<a th:href="@{${ctx} + 'wrongAnsList?curIndex=' + ${data.index - 1} + '&examId=' + ${data.examId}}">
+							<div class="car-btn"><img th:src="@{/img/my-pic4.png}" alt=""></div>
+						</a>
+					</div>
+					<div class="car-btn fl" th:unless="${data.index == answerList.size()}">
+						<a th:href="@{${ctx} + 'wrongAnsList?curIndex=' + ${data.index + 1} + '&examId=' + ${data.examId}}">
+							<div class="car-btn"><img th:src="@{/img/my-pic4.1.png}" alt=""></div>
+						</a>
+					</div>
+				</div>
+			</div>
+			<div class="subject-pic" th:if="${data.imageUrl}" style="width:760px;margin-top:20px;">
+				<img th:src="@{${imageUrl} + ${data.imageUrl}}" alt=""  style="max-width:340px;max-height:170px;">
+			</div>
+			<div class="test-object">
+				<p th:if="${data.language == 0}">答题信息</p>
+				<p th:if="${data.language == 1}" class="writing-mode" style="height:140px;">ᠰᠡᠳᠦᠪ ᠬᠠᠷᠢᠭᠤᠯᠬᠤ ᠮᠡᠳᠡᠭᠡ ᠵᠠᠩᠭᠢ </p>
+				<p th:if="${data.language == 2}">جاۋاپ بەرۋ ينفورماتسيا </p>
+				<p th:if="${data.language == 3}">جاۋاب ئۇچۇر </p>
+				<p>
+					<b class="right"></b>
+					<span th:if="${data.language == 0}">正确</span>
+					<span th:if="${data.language == 1}" class="writing-mode">ᠵᠥᠪ </span>
+					<span th:if="${data.language == 2}">دۇرىس ، تۋرا</span>
+					<span th:if="${data.language == 3}">توغرا </span>
+					<b class="error"></b>
+					<span th:if="${data.language == 0}">错误</span>
+					<span th:if="${data.language == 1}" class="writing-mode">ᠪᠤᠷᠤᠭᠤ</span>
+					<span th:if="${data.language == 2}">قاتە ، اعات ، تەرىس </span>
+					<span th:if="${data.language == 3}">خاتا </span>
+					<b class="now"></b>
+					<span th:if="${data.language == 0}">当前</span>
+					<span th:if="${data.language == 1}" class="writing-mode">ᠣᠳᠣᠬᠢ </span>
+					<span th:if="${data.language == 2}">الدا</span>
+					<span th:if="${data.language == 3}">نۆۋەتتە </span>
+				</p>
+				<ul class="clear">
+					<li th:each="ansData:${answerList}"
+						th:class="${ansData.index == data.index}? 'now' : (${ansData.isCorrect == 0}? '':(${ansData.isCorrect == 1}? 'right':'error'))">
+						<a
+						th:href="${ansData.index == data.index}? '#': ${ctx} + 'wrongAnsList?curIndex=' + ${ansData.index} + '&examId=' + ${data.examId}"><span
+							th:text="${ansData.index}" style="color:#fff;"></span></a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<script th:unless="${msg}">		
+			//禁止答题
+	    	$("input[type=radio]").click(function(event){
+	    		$(this).parents('li').removeClass('active');
+	    		event.preventDefault();	    		
+		     });
+	    	$("input[type=checkbox]").click(function(event){
+	    		$(this).parents('li').removeClass('active');
+	    		event.preventDefault();	    		
+		     });
+	    	
+	    	// 初始化答案
+	    	var corrAnswer = '[[${data.corrAnswer}]]'; // 正确答案
+	    	var wrongAnswer = '[[${data.wrongAns}]]'; // 用户回答错误答案
+			if (corrAnswer.length == 1) {
+				// 判断或者单选题
+				$("input[type=radio]").each(function(){
+					   if($(this).val() == corrAnswer) {
+						   $(this).prop("checked", true);
+						   $(this).parents('li').addClass("active-right");
+						   $(this).prev('.an-error').prev('.an-right').show();
+					   } 
+					   if($(this).val() == wrongAnswer) {
+						   $(this).prop("checked", true); 
+						   $(this).parents('li').addClass("active-error");
+						   $(this).prev('.an-error').show();
+					   }
+			     });
+			} else {
+				// 多选题 只做正确答案显示，用户答错问题不管
+				$("input[type=checkbox]").each(function(){
+					  // 正确答案显示
+					   if(corrAnswer.lastIndexOf($(this).val()) != -1) {
+						   $(this).prop("checked", true);
+						   $(this).parents('li').addClass("active");
+					   }
+			     });
+			}
+	</script>
+</body>
+</html>

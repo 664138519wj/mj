@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+<head>
+    <title>驾考相关政策规定详情</title>
+</head>
+<body th:fragment="content">
+        <!--content-->
+        <div class="content">
+            <div class="detail-main com-width">
+                <p><b th:text="${policyDetail.title}"></b></p>
+                <p th:text="${policyDetail.updateTime}"></p>
+                <p th:utext="${policyDetail.content}"></p>              
+            </div>
+            <div class="more-article com-width">
+                <ul>
+                    <li class="usable" th:if="${policyDetail.upId > 0}">
+                        <a th:href="@{${ctx} + 'policy_regulations_detail?id=' + ${policyDetail.upId}}">
+                            <span>上一章</span>
+                            <span th:text="${policyDetail.upTitle}"></span>
+                        </a>
+                    </li>
+                    <li class="usable" th:if="${policyDetail.downId > 0}">
+                        <a th:href="@{${ctx} + 'policy_regulations_detail?id=' + ${policyDetail.downId}}">
+                            <span>下一章</span>
+                            <span th:text="${policyDetail.downTitle}"></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="plat-title">
+                <h2>其他相关文章</h2>
+                <b>Other related articles</b>
+                <p>—</p>
+            </div>
+            <ul class="policy-info com-width clear">
+                <li th:each="policy:${policyList}">
+                    <div class="plat-img">
+                        <img th:src="${imageUrl} + ${policy.imagePath}" alt="">
+                    </div>
+                    <div class="policy-desc">
+                        <p><b th:text="${policy.title}"></b></p>
+                        <div class="figcaption">
+                            <p th:text="${policy.content}"></p>
+                        </div>
+                        <a th:href="@{${ctx} + 'policy_regulations_detail?id=' + ${policy.id}}">查看更多</a>
+                    </div>
+                </li>                
+            </ul>
+        </div>
+</body>
+</html>

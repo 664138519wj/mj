@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+<head>
+    <title>平台公告详情</title>
+    <style type="text/css">
+    	.right-menu li .img-1{display:none;}
+    	.right-menu li .img-2{display:block!important;}
+    </style>
+</head>
+<body th:fragment="content">
+    <!--content-->
+    <div class="content">
+        <div class="detail-main com-width">
+            <p><b th:text="${platformNoticeDetail.title}"></b></p>
+            <p th:text="${platformNoticeDetail.updateTime}"></p>
+            <span th:utext="${platformNoticeDetail.content}"></span>
+        </div>
+    </div>
+
+</body>
+</html>

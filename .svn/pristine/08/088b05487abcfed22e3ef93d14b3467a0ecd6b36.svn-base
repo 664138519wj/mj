@@ -1,0 +1,2 @@
+update sys_permission t set t.`name`='班级管理' where id=48;
+update sys_permission t set t.`name`='学员统计' where id=49;

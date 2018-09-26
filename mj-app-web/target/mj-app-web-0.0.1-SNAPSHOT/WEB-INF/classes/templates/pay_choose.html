@@ -1,0 +1,59 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>支付订单</title>
+	<link rel="stylesheet" th:href="@{/css/common.css}">
+	<link rel="stylesheet" th:href="@{/css/style.css}">
+	<script type="text/javascript" th:src="@{/js/jquery-1.11.2.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/style.js}"></script>
+</head>
+<body>
+	<div class="container">
+		<!--支付-->
+		<span th:if="${error}" th:text="${error.msg}"></span>
+	  <div class="buy-card-box payment-banner" th:unless="${error}">
+		
+	   <form method="post" id="pay_form"  th:action=" ${courseType == 3? baseUrl+'api/pay/web/dsOrder':baseUrl+'api/pay/web/order'}">
+        <div class="pay-fade buy-method">
+            <p th:text="@{${body} + '支付'}"></p>
+            <div class="pay-box">
+                <p><b th:text="@{'￥' + ${price}}"></b></p>
+                <ul class="pay-head">
+                    <li>
+                        <img th:src="@{/img/pay-apliy.png}" alt="">
+                        <span>支付宝支付</span>
+                        <input type="radio" name="payType" value="2" checked="checked">
+                    </li>
+                    <li>
+                        <img th:src="@{/img/pay-weChat.png}" alt="">
+                        <span>微信支付</span>
+                        <input type="radio" name="payType" value="1">
+                    </li>
+                </ul>
+            </div>
+            <input type="hidden" name="courseType" th:value="${courseType}"/>
+            <input type="hidden" name="courseId" th:value="${courseId}"/>
+            <div class="pay-btn clear">
+                <button class="cancel" type="button">取消</button>
+                <button class="sure" type="button">确认选择</button>
+            </div>
+        </div>
+        </form>
+	</div>
+	</div>
+</body>
+<script type="text/javascript">
+    $(function(){    	
+    	$(".pay-btn .sure").click(function(){
+    		$("#pay_form").submit();
+    	});
+    	$('.pay-btn .cancel').click(function(){
+    		window.history.go(-1);
+    	})
+    })
+</script>
+</html>

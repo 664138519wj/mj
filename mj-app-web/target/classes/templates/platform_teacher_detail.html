@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+<head>
+    <title>师资配备详情</title>
+</head>
+<body th:fragment="content">
+        <div class="content">
+            <div class="com-width">
+                <div class="teacher-detail clear">
+                    <div class="teacher-pic fl">
+                        <img th:src="${imageUrl} + ${teacherDetail.avator}" alt="">
+                    </div>
+                    <div class="teacher-profile fl">
+                        <p><b th:text="${teacherDetail.name}"></b><span th:text="@{${teacherDetail.teachingAge} + '年教龄'}"></span></p>
+                        <p th:text="${teacherDetail.schoolName}"></p>
+                        <p th:text="${teacherDetail.tags}"></p>
+                        <p th:text="${teacherDetail.introduce}"></p>
+                        <p>授课地点：<span th:text="${teacherDetail.teachingAddress}"></span></p>
+                    </div>
+                    <div class="detail-label fr">
+                        <img th:src="@{/img/index-pic2.png}" alt="">
+                    </div>
+                </div>
+            </div>
+            <div class="index-video" style="padding: 60px 0 0;margin-top:0;background:none">
+                <div class="plat-title">
+                    <h2>教练上传视频</h2>
+                    <b>Upload video</b>
+                    <p>—</p>
+                </div>
+                <div class="video-box com-width clear">
+                    <div class="video fl" th:each="onlineCourse:${onlineCourseList}">
+                        <a th:href="@{${ctx} + 'platform_video_detail?id=' + ${onlineCourse.id}}">
+                            <div class="video-img">
+                                <img th:src="${imageUrl} + ${onlineCourse.imagePath}" alt="">
+                                <div class="video-label">
+                                    <img th:if="${onlineCourse.isHotAndCharge == 1 || onlineCourse.isHotAndCharge == 3}" th:src="@{/img/index-pic7.png}" alt="">
+                                    <img th:if="${onlineCourse.isHotAndCharge == 2 || onlineCourse.isHotAndCharge == 3}" th:src="@{/img/index-pic8.png}" alt="">  
+                                </div>
+                            </div>
+                            <div class="video-name">
+                                <h3><span th:text="${onlineCourse.title}"></span></h3>
+                                <p class="clear">
+                                    <span th:text="@{'上传时间：'+${onlineCourse.updateTime}}"></span>
+                                    <img class="video-pic1" th:src="@{/img/index-pic9.png}" alt="">
+                                    <img class="video-pic2" th:src="@{/img/index-pic9.1.png}" alt="">
+                                </p>
+                            </div>
+                        </a>
+                    </div>                  
+                </div>
+            </div>
+             
+            <div class="recommend-course" th:if="${privateTutorList != null && privateTutorList.size() > 0}">
+                <div class="plat-title">
+                    <h2>私教陪练服务课程</h2>
+                    <p>—</p>
+                </div>
+                <div class="xc-tutor-main com-width">
+                    <ul class="clear">
+	                   <li th:each="tutorData:${privateTutorList}">
+                        <a th:href="@{${ctx} + 'private_tutor_detail?id=' + ${tutorData.id}}">
+                            <div class="xc-tutor-course clear">
+                                <div class="xc-pic fl">
+                                    <img th:src="${imageUrl} + ${tutorData.imagePath}" alt="">
+                                </div>
+                                <div class="xc-tutor-desc fl">
+                                    <h3 th:text="${tutorData.title}"></h3>
+                                    <div class="xc-kemu clear">
+                                        <p class="xc-mr80">对应科目：<span th:text="${tutorData.kemu}"></span></p>
+                                        <p>授课老师：<span th:text="${tutorData.teacherName}"></span></p>
+                                        <ul class="xc-start xc-mr80 clear">
+                                            <li th:class="${tutorData.score >=1 ? 'xc-start-active':''}">★</li>
+				                            <li th:class="${tutorData.score >=2 ? 'xc-start-active':''}">★</li>
+				                            <li th:class="${tutorData.score >=3 ? 'xc-start-active':''}">★</li>
+				                            <li th:class="${tutorData.score >=4 ? 'xc-start-active':''}">★</li>
+				                            <li th:class="${tutorData.score >=5 ? 'xc-start-active':''}">★</li>
+                                        </ul>
+                                        <p>开课时间：<span th:text="${#dates.format(tutorData.beginTime, 'yyyy-MM-dd HH:mm:ss')}"></span></p>
+                                    </div>
+                                    <p th:text="@{'教学地址：' + ${tutorData.address}}"></p>
+                                    <p class="xc-price">价格：<span th:text="@{'￥' + ${tutorData.price}}"></span></p>
+                                </div>
+                            </div>
+                        </a>
+                       </li>
+	                </ul>
+                </div>
+            </div>
+            <div class="recommend-course" th:unless="${privateTutorList != null && privateTutorList.size() > 0}">
+                <div class="plat-title">
+                    <h2>平台推荐私教课程</h2>
+                    <p>—</p>
+                </div>
+                <div class="xc-tutor-main com-width">
+                    <ul class="clear">
+	                   <li th:each="reData:${recommandList}">
+                        <a th:href="@{${ctx} + 'private_tutor_detail?id=' + ${reData.id}}">
+                            <div class="xc-tutor-course clear">
+                                <div class="xc-pic fl">
+                                    <img th:src="${imageUrl} + ${reData.imagePath}" alt="">
+                                </div>
+                                <div class="xc-tutor-desc fl">
+                                    <h3 th:text="${reData.title}"></h3>
+                                    <div class="xc-kemu clear">
+                                        <p class="xc-mr80">对应科目：<span th:text="${reData.kemu}"></span></p>
+                                        <p>授课老师：<span th:text="${reData.teacherName}"></span></p>
+                                        <ul class="xc-start xc-mr80 clear">
+                                            <li th:class="${reData.score >=1 ? 'xc-start-active':''}">★</li>
+				                            <li th:class="${reData.score >=2 ? 'xc-start-active':''}">★</li>
+				                            <li th:class="${reData.score >=3 ? 'xc-start-active':''}">★</li>
+				                            <li th:class="${reData.score >=4 ? 'xc-start-active':''}">★</li>
+				                            <li th:class="${reData.score >=5 ? 'xc-start-active':''}">★</li>
+                                        </ul>
+                                        <p>开课时间：<span th:text="${#dates.format(reData.beginTime, 'yyyy-MM-dd HH:mm:ss')}"></span></p>
+                                    </div>
+                                    <p th:text="@{'教学地址：' + ${reData.address}}"></p>
+                                    <p class="xc-price">价格：<span th:text="@{'￥' + ${reData.price}}"></span></p>
+                                </div>
+                            </div>
+                        </a>
+                       </li>
+	                </ul>
+                </div>
+            </div>
+            
+            <div class="xc-evaluate com-width" id="_comment_teacher">
+                <div class="xc-evaluate-title">
+                    <h3>教练学员点评</h3>
+                </div>
+                <ul class="xc-comment" th:if="${commentList}">
+                    <li class="clear" th:each="comment:${commentList}">
+                        <div class="xc-eval-header fl">
+                            <img th:src="${imageUrl} + ${comment.userImage}" alt="">
+                        </div>
+                        <div class="xc-eval-info fl">
+                            <p><b th:text="${comment.userName}"></b><span th:text="${#dates.format(comment.updateTime, 'yyyy-MM-dd HH:mm:ss')}" ></span></p>
+                            <p th:text="${comment.content}"></p>
+                            <p>
+                                <img th:if="${comment.imageUrl1}" th:src="${imageUrl} + ${comment.imageUrl1}" alt="">
+                                <img th:if="${comment.imageUrl2}" th:src="${imageUrl} + ${comment.imageUrl2}" alt="">
+                                <img th:if="${comment.imageUrl3}" th:src="${imageUrl} + ${comment.imageUrl3}" alt="">
+                                <img th:if="${comment.imageUrl4}" th:src="${imageUrl} + ${comment.imageUrl4}" alt="">
+                                <img th:if="${comment.imageUrl5}" th:src="${imageUrl} + ${comment.imageUrl5}" alt="">
+                            </p>
+                        </div>
+                        <ul class="xc-start clear fr">
+                            <li th:class="${comment.score >=1 ? 'xc-start-active':''}">★</li>
+                            <li th:class="${comment.score >=2 ? 'xc-start-active':''}">★</li>
+                            <li th:class="${comment.score >=3 ? 'xc-start-active':''}">★</li>
+                            <li th:class="${comment.score >=4 ? 'xc-start-active':''}">★</li>
+                            <li th:class="${comment.score >=5 ? 'xc-start-active':''}">★</li>
+                        </ul>
+                    </li>
+                </ul>
+                <!-- 分页 -->
+                <div class="box clear" style="padding-bottom:0;">
+		           <div class="page" id="pagination_platform_teacher_comment"></div>
+		    	</div> 
+		    	<form th:action="${ctx} + 'teacherComment'" method="post" id="comment_form">
+                <div class="xc-publish clear" style="padding-bottom:50px;">
+                    <div class="xc-eval-box fl">
+                        <h3>我要点评</h3>
+                        <div class="xc-eval-text">
+                            <textarea cols="30" rows="10" placeholder="我要点评" name="comment" id="comment" style="font-size:20px;"></textarea>
+                        </div>
+                    </div>
+                    <div class="xc-eval-start fr">
+                        <p>点击小星星评价！</p>
+                        <ul class="xc-start clear">
+                            <li class="xc-start-active">★</li>
+                            <li class="xc-start-active">★</li>
+                            <li class="xc-start-active">★</li>
+                            <li class="xc-start-active">★</li>
+                            <li class="xc-start-active">★</li>
+                        </ul>
+                        <input type="hidden" value="5" id="score" name="score"/>
+                        <input type="hidden" th:value="${teacherDetail.id}" id="teacherId" name="teacherId"/>
+                        <div id="listPhoto" class="z_photo upimg-div clear" >
+	                         <section class="z_file fl">
+			               	 	<img th:src="@{/img/all.png}" class="add-img">
+			               	 	<input type="file" name="file" id="file" class="file" value="" accept="image/jpg,image/jpeg,image/png,image/bmp" multiple />
+			               	 </section>
+                        </div>
+                        <div class="xc-sub-btn fr" style="margin-top:20px;">
+                            <button type="button" id="subimt_comment" >提交评论</button>
+                        </div>
+                    </div>
+                </div>
+                </form>
+            </div>
+        </div>
+        <aside class="mask works-mask">
+	        <div class="mask-content">
+	            <p class="del-p">您确定要删除这张图片吗？</p>
+	            <p class="check-p"><span class="del-com wsdel-ok">确定</span><span class="wsdel-no">取消</span></p>
+	        </div>
+	    </aside>
+	    <script type="text/javascript">
+	    var duplicate = [[${duplicate}]];
+	    if (duplicate == 1 || duplicate == '1') {
+	    	alert("您未购买该老师的课程，不能评论哦！");
+	    } else if (duplicate == 2 || duplicate == '2') {
+	    	alert("您已经评论过了哦，不能重复评论！");
+	    }
+		    $(function(){
+		    	//点击小星星评价
+		        $('.xc-eval-start ul li').click(function(){
+		            if($(this).is('.xc-start-active')){
+		                $(this).removeClass('xc-start-active');
+		                $(this).nextAll('li').removeClass('xc-start-active');
+		            }else{
+		                $(this).addClass('xc-start-active');
+		                $(this).prevAll('li').addClass('xc-start-active');
+		            }
+		        })
+		        $('#subimt_comment').click(function(){
+		        	var isLogin = $('#isLoginFlag').val();
+		        	if (isLogin == 'false' || isLogin == false) {
+		        		alert("您还未登录，请您先登录");
+		        	    return;
+		        	}
+		            var comment = delHtmlTag($('#comment').val());
+		            var score = 0;
+		            $(".xc-eval-start ul li").each(function(){		            	
+						if($(this).is(".xc-start-active")){
+						// 被选中
+							score = score + 1;						
+						}						
+					})
+					$('#score').val(score);
+		            if (comment.length <= 0) {
+		            	alert("您还没有留下评论哦！");
+		            	return;
+		            }
+		            if (comment.length >= 300) {
+		            	alert("哇，您的评论太多啦，请保持在300字以内");
+		            	return;
+		            }
+		            $('#comment_form').submit();
+		        })
+		        function delHtmlTag(s){  
+		        	//去掉左边的空白  
+		        	    if(s == null) {  
+		        	        return "";  
+		        	    }  
+		        	    var whitespace = new String(" \t\n\r");  
+		        	    var str = new String(s);  
+		        	    if (whitespace.indexOf(str.charAt(0)) != -1) {  
+		        	        var j=0, i = str.length;  
+		        	        while (j < i && whitespace.indexOf(str.charAt(j)) != -1){  
+		        	            j++;  
+		        	        }  
+		        	        str = str.substring(j, i);  
+		        	    }  	
+		        	  //去掉所有的html标记  
+		        	  return str.replace(/<[^>]+>/g,"");
+		        }  
+		        $("#pagination_platform_teacher_comment").pagination({
+		            currentPage: [[${pageIndex}]],
+		            totalPage: [[${totalPage}]],
+		            isShow: false,
+		            count: [[${total}]],
+		            prevPageText: "<",
+		            nextPageText: ">",
+		            callback: function(current) {
+		                this.location.href ="[[${ctx}]]platform_teacher_detail?pageIndex=" + current + '&id=' + [[${teacherDetail.id}]];
+		            }
+		        });
+		    })
+	    </script>
+</body>
+</html>

@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.migu.online.mapper.UserCourseMapper">
+
+   <resultMap id="userCourse" type="java.lang.Long">
+		<id column="course_id" property="courseId" />
+	</resultMap>
+
+	<resultMap id="userCourseId" type="java.lang.Long">
+		<id column="id" property="id" />
+	</resultMap>
+	
+	  <resultMap id="resultOfInteger" type="java.lang.Integer">
+		<id column="cnt" property="cnt" />
+	</resultMap>
+	
+	<resultMap id="resultOfBigDecimal" type="java.math.BigDecimal">
+		<id column="amount" property="amount" />
+	</resultMap>
+	
+	<resultMap id="baseResult" type="user_course">
+		<id column="id" property="id" />
+	    <id column="course_id" property="courseId" />
+		<id column="pay_status" property="payStatus" />
+	    <id column="price" property="price" />
+	</resultMap>
+	
+	<resultMap id="userSchoolCourseResult" type="com.migu.online.ops.vo.UserSchoolCourseVo">
+		<id column="id" property="id" />
+	    <id column="user_id" property="userId" />
+		<id column="user_course_id" property="userCourseId" />
+	    <id column="user_name" property="userName" />
+	    <id column="sex" property="sex" />
+	    <id column="first_apply" property="firstApply" />
+	    <id column="pay_type" property="payType" />
+	    <id column="tel_no" property="telNo" />
+	    <id column="id_up" property="idUp" />
+	    <id column="id_down" property="idDown" />
+	    <id column="is_delete" property="isDelete" />
+	    <id column="create_time" property="createTime" />
+	    <id column="update_time" property="updateTime" />
+	    <id column="refund_status" property="refundStatus" />
+	    <id column="school_id" property="schoolId" />
+	     <id column="school_name" property="schoolName" />
+	    <id column="licence" property="licence" />
+	    <id column="licence_name" property="licenceName" />
+	    <id column="price" property="price" />
+	    <id column="start_time" property="startTime" />	   
+	    <id column="pay_status" property="payStatus" />	 
+	    <id column="status" property="status" /> 
+	    <id column="student_id" property="studentId" /> 
+	    
+	</resultMap>
+	
+	<resultMap id="userDrivingLessonVo" type="com.migu.online.vo.UserDrivingLessonVo">
+		<id column="id" property="id" />
+		<id column="licence" property="licence" />
+	    <id column="school_name" property="schoolName" />
+	    <id column="image_path" property="imagePath" />
+	    <id column="address" property="address" />
+	    <id column="price" property="price" />
+	    <id column="pay_status" property="payStatus" />
+	    <id column="status" property="status" />
+	    <id column="refund_status" property="refundStatus" /> 
+	    <id column="start_time" property="startTime" /> 	
+	    <id column="pay_type" property="payType" />     
+	    <id column="reason" property="reason" /> 
+	</resultMap>
+    
+    <select id="queryPayCourse" resultMap="userCourse">
+        select course_id from user_course 
+        where 1=1
+        and user_id = #{userId} 
+        and is_delete = 0 
+        and course_type = #{courseType}
+        and pay_status = 2
+        order by create_time desc;
+    </select>
+
+	<select id="queryOnlineCourseByTeacher" resultMap="userCourse">
+		select distinct uc.course_id
+		from user_course uc
+		join course_online co
+		on uc.course_id = co.id
+		and uc.is_delete = 0
+		and uc.course_type = 1
+		and co.teacher_id = #{teacherId}
+	</select>
+
+	<select id="queryOfflineCourseByTeacher" resultMap="userCourse">
+		select distinct uc.course_id
+		from user_course uc
+		join course_offline co
+		on uc.course_id = co.id
+		and uc.is_delete = 0
+		and uc.course_type = 2
+		and find_in_set(#{teacherId}, co.teachers) > 0
+	</select>
+	
+	<select id="queryPrivateTutorCourseByTeacher" resultMap="userCourse">
+		select distinct uc.course_id
+		from user_course uc
+		where 1=1
+		and uc.is_delete = 0
+		and uc.course_type = 6
+		and uc.publish_course_user_id = #{teacherId}
+	</select>
+
+	<select id="queryCourseByTeacher" resultMap="userCourseId">
+		select distinct uc.id
+		from user_course uc
+		join course_online co
+		on uc.course_id = co.id
+		and uc.is_delete = 0
+		and uc.course_type = 1
+		and co.teacher_id = #{teacherId}
+		union
+		select distinct uc.id
+		from user_course uc
+		join course_offline co
+		on uc.course_id = co.id
+		and uc.is_delete = 0
+		and uc.course_type = 2
+		and find_in_set(#{teacherId}, co.teachers) > 0
+		union
+		select distinct uc.id
+		from user_course uc
+		where 1=1
+		and uc.is_delete = 0
+		and uc.course_type = 6
+		and uc.publish_course_user_id = #{teacherId}
+	</select>
+
+
+
+	<select id="queryCourseByCourseIdAndType" resultMap="baseResult">
+		select * from user_course
+		where 1=1
+		and course_id = #{courseId}
+		and is_delete = 0
+		and course_type = #{courseType}
+		order by update_time desc;
+	</select>
+
+
+	<select id="queryCourseByUserIdAndType" resultMap="baseResult">
+        select * from user_course 
+        where 1=1
+        and user_id = #{userId} 
+        and is_delete = 0 
+        and course_type = #{courseType}
+        order by update_time desc;
+    </select>
+    
+    <insert id="insertAndGetId" useGeneratedKeys="true" keyProperty="id" parameterType="user_course">
+	    insert into user_course(user_id, course_id, course_type, price, 
+	    pay_status, pay_time, pay_code, is_delete, create_time, update_time)
+	    values(#{uc.userId},#{uc.courseId},#{uc.courseType},#{uc.price},#{uc.payStatus},#{uc.payTime},
+	    #{uc.payCode},#{uc.isDelete},#{uc.createTime},#{uc.updateTime})
+    </insert>
+    
+    
+    <select id="selectUserSchoolCourse" parameterType="java.util.Map" resultMap="userSchoolCourseResult">
+       SELECT
+		t3.school_id, 
+		t3.licence,
+		t3.name as licence_name,
+		t3.price,
+		t3.start_time,
+		t1.id,
+		t2.pay_status,
+		t1.*,
+		t2.pay_status
+		FROM
+			user_course_info t1
+		JOIN user_course t2
+		JOIN driving_school_lesson t3 ON t1.user_course_id = t2.id
+		AND t2.course_id = t3.id
+		WHERE
+	t2.course_type = 3
+	and t1.is_delete=0
+	and t2.is_delete=0
+	and t3.is_delete=0  
+	 <if test="schoolId!=null and schoolId!=''">
+	 	and t3.school_id=#{schoolId}
+	 </if>
+	  <if test="lessonId!=null and lessonId!=''">
+	 	and t3.id=#{lessonId}
+	 </if>
+	 <if test="startTime!=null and startTime!=''">
+	 	and date_format(t3.start_time, '%Y-%m-%d')=#{startTime}
+	 </if>
+	 <if test="payType!=null and payType!=''">
+	 	and t1.pay_type=#{payType}
+	 </if>
+	 <if test="licence!=null and licence!=''">
+	 	and t3.licence=#{licence}
+	 </if>
+	 order by t2.update_time desc
+	limit #{startIndex},#{endIndex}	
+    </select>
+    
+    
+    
+    <select id="selectUserSchoolCourseCnt" parameterType="java.util.Map" resultMap="resultOfInteger">
+       SELECT
+		count(*) cnt
+		FROM
+			user_course_info t1
+		JOIN user_course t2
+		JOIN driving_school_lesson t3 ON t1.user_course_id = t2.id
+		AND t2.course_id = t3.id
+		WHERE
+	t2.course_type = 3
+	and t1.is_delete=0
+	and t2.is_delete=0
+	and t3.is_delete=0
+	<if test="schoolId!=null and schoolId!=''">
+	 	and t3.school_id=#{schoolId}
+	 </if>
+	 
+	 <if test="lessonId!=null and lessonId!=''">
+	 	and t3.id=#{lessonId}
+	 </if>
+	 <if test="startTime!=null and startTime!=''">
+	 	and date_format(t3.start_time, '%Y-%m-%d')=#{startTime}
+	 </if>
+	 <if test="payType!=null and payType!=''">
+	 	and t1.pay_type=#{payType}
+	 </if>
+	 <if test="licence!=null and licence!=''">
+	 	and t3.licence=#{licence}
+	 </if>
+
+    </select>
+    
+    <select id="selectSchoolStudentCourseCnt" parameterType="java.util.Map" resultMap="resultOfInteger">
+       SELECT
+		count(*) cnt
+		FROM
+			user_course_info t1
+		JOIN user_course t2
+		JOIN driving_school_lesson t3
+		JOIN driving_school t4
+		 ON t1.user_course_id = t2.id
+		AND t2.course_id = t3.id
+		and t3.school_id = t4.id
+		WHERE
+	t2.course_type = 3
+	 <if test="schoolId!=null and schoolId!=''">
+	 	and t3.school_id=#{schoolId}
+	 </if>
+	 <if test="lessonId!=null and lessonId!=''">
+	 	and t3.id=#{lessonId}
+	 </if>
+	 <if test="schoolName!=null and schoolName!=''">
+	 	and t4.name_s like'%${schoolName}%'
+	 </if>
+	 <if test="userName!=null and userName!=''">
+	 	and t1.user_name like'%${userName}%'
+	 </if>
+	  <if test="telNo!=null and telNo!=''">
+	 	and t1.tel_no =#{telNo}
+	 </if>
+	 <if test="status!=null and status!=''">
+	 	and t1.status=#{status}
+	 </if>
+	 <if test="startTime!=null and startTime!=''">
+	 	and date_format(t3.start_time, '%Y-%m-%d')=#{startTime}
+	 </if>
+	  <if test="refundStatus!=null and refundStatus!=''">
+	  	and t2.refund_status in (${refundStatus})
+	  </if>
+	 <if test="payStatus!=null and payStatus!=''">
+	  	and t2.pay_status = #{payStatus}
+	  </if>
+	 <if test="licence!=null and licence!=''">
+	 	and t3.licence=#{licence}
+	 </if>
+	 <if test="noRefund!=null and norefund!=''">
+	  	and t2.refund_status != #{noRefund}
+	  </if>
+	 </select>
+	 
+	 
+	 <select id="selectSchoolStudentCourse" parameterType="java.util.Map" resultMap="userSchoolCourseResult">
+       select t6.* ,t5.id student_id from (
+       SELECT
+       t4.name_s school_name,
+		t3.school_id, 
+		t3.class_no,
+		t3.class_name,
+		t3.licence,
+		t3.name as licence_name,
+		t2.price,
+		t3.start_time,
+		t2.refund_status,
+		t1.id,
+		t1.user_id,
+		t1.user_name,
+		t1.sex,
+		t1.first_apply,
+		t1.pay_type,
+		t1.tel_no,
+		t1.id_up,
+		t1.id_down,
+		t1.is_delete,
+		t1.`status`,
+		t1.reason,
+		t2.pay_status
+		FROM
+			user_course_info t1
+		JOIN user_course t2
+		JOIN driving_school_lesson t3
+		JOIN driving_school t4
+		 ON t1.user_course_id = t2.id
+		AND t2.course_id = t3.id
+		and t3.school_id = t4.id
+		WHERE
+	t2.course_type = 3
+	 <if test="schoolId!=null and schoolId!=''">
+	 	and t3.school_id=#{schoolId}
+	 </if>
+	  <if test="lessonId!=null and lessonId!=''">
+	 	and t3.id=#{lessonId}
+	 </if>
+	 <if test="schoolName!=null and schoolName!=''">
+	 	and t4.name_s like'%${schoolName}%'
+	 </if>
+	 <if test="userName!=null and userName!=''">
+	 	and t1.user_name like'%${userName}%'
+	 </if>
+	  <if test="telNo!=null and telNo!=''">
+	 	and t1.tel_no =#{telNo}
+	 </if>
+	   <if test="payType!=null and payType!=''">
+	 	and t1.pay_type =#{payType}
+	 </if>
+	 <if test="startTime!=null and startTime!=''">
+	 	and date_format(t3.start_time, '%Y-%m-%d')=#{startTime}
+	 </if>
+	  <if test="refundStatus!=null and refundStatus!=''">
+	  	and t2.refund_status in (${refundStatus})
+	  </if>
+	 <if test="payStatus!=null and payStatus!=''">
+	  	and t2.pay_status = #{payStatus}
+	  </if>
+	  <if test="status!=null and status!=''">
+	  	and t1.status = #{status}
+	  </if>
+	 <if test="licence!=null and licence!=''">
+	 	and t3.licence=#{licence}
+	 </if>
+	  <if test="classNo!=null and classNo!=''">
+	 	and t3.class_no like '%${classNo}%'
+	 </if>
+	  <if test="className!=null and className!=''">
+	 	and t3.class_name like '%${className}%'
+	 </if>
+	 <if test="noRefund!=null and norefund!=''">
+	  	and t2.refund_status != #{noRefund}
+	  </if>
+	  order by t2.update_time desc
+	  ) t6 left join (select t1.* from student t1 join
+		(select max(id) id from student group by mobile1,name ) t2
+		on t1.id=t2.id) t5
+		on t6.tel_no = t5.mobile1
+		AND t6.user_name = t5.NAME
+	  <if test="startIndex!=null and startIndex!=''">
+	 	limit #{startIndex},#{endIndex}	 	
+	 </if>
+	
+    </select>
+    
+    
+        <select id="selectSchoolTotalIncome" parameterType="java.util.Map" resultMap="resultOfBigDecimal">
+		      
+		SELECT
+			sum(t1.price) amount
+		FROM
+			user_course t1
+		JOIN driving_school_lesson t2 ON t1.course_id = t2.id
+		WHERE
+			t2.school_id=#{schoolId}
+		AND course_type = 3
+		AND pay_status = 2
+		AND refund_status <![CDATA[ <> ]]> 2;
+	
+	 </select>
+	 
+	 <!-- 我的已报名驾校课程列表 -->
+	 <select id="selectSignUserSchoolCourse" parameterType="java.util.Map" resultMap="userDrivingLessonVo">
+       SELECT
+		t2.id as id,
+		t3.licence,
+		t4.name_s as school_name,
+		t4.image_path,
+		t4.address,
+		t3.price,
+		t2.pay_status,
+		t1.status,
+		t2.refund_status,
+		t3.start_time,
+		t1.pay_type,
+		t1.reason
+		FROM
+			user_course_info t1
+		JOIN user_course t2
+		JOIN driving_school_lesson t3 
+		JOIN driving_school t4
+		ON t1.user_course_id = t2.id
+		AND t2.course_id = t3.id
+	    AND t3.school_id = t4.id
+		WHERE
+	t2.course_type = 3
+	and t1.is_delete=0
+	and t2.is_delete=0
+	and t3.is_delete=0  
+	 <if test="userId!=null and userId!=''">
+	 	and t1.user_id=#{userId}
+	 </if>
+	 order by t1.update_time desc;
+    </select>
+    
+
+</mapper>

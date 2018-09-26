@@ -1,0 +1,510 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>登录</title>
+	<link rel="stylesheet" th:href="@{/css/swiper.min.css}">
+	<link rel="stylesheet" th:href="@{/css/common.css}">
+	<link rel="stylesheet" th:href="@{/css/style.css}">
+    <script type="text/javascript" th:src="@{/js/swiper.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/jquery-1.11.2.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/style.js}"></script>
+	<script type="text/javascript" th:src="@{/js/jquery.base64.js}"></script>
+</head>
+<body>
+	<div class="fade-box payment-banner" id="login">
+        <div class="login">
+			<h3>登录</h3>
+			<div class="login-info clear">
+				<form th:action="@{${ctx} + 'auth/login'}" method="post"
+					id="loginForm">
+					<div class="input-box">
+						<label for="">请输入手机号</label><br> <input class="mobile"
+							type="text" name="username" id="username" placeholder="请输入手机号" maxlength="11">
+						<div class="mark"></div>
+					</div>
+					<div class="input-box">
+						<label for="">请输入密码</label><br> <input class="pwd"
+							type="password" name="password" id="password" placeholder="请输入密码" maxlength="8">
+						<div class="mark"></div>
+						<input class="pwdEncode" type="hidden" name="pwdEncode"
+							id="pwdEncode" /> <img class="hide-img"
+							th:src="@{/img/hidden.png}" alt=""> <img class="show-img"
+							th:src="@{/img/show.png}" alt="">
+					</div>
+					<p class="forget fr">
+						<a href="#forget">忘记密码？</a>
+					</p>
+					<input type="hidden" name="redirectUrl" id="redirectUrl" th:value="${redirectUrl}"/> 
+					<input class="login-btn" type="button" id="loginButton" value="登录" />
+					<p class="sign-in">
+						还没有账号？去<a href="#regist" class="sign-1">注册</a>
+					</p>
+				</form>
+			</div>
+		</div>
+    </div>
+
+	<div class="fade-box payment-banner" id="regist" style="display: none;">
+        <div class="login">
+			<h3>注册</h3>
+			<div class="login-info" id="register_send_code">
+				<form th:action="@{${baseUrl} + '/api/register/sendCode'}"
+					id="sendCodeForm">
+					<div class="input-box">
+						<label for="">请输入手机号</label><br> <input class="mobile"
+							type="text" name="phoneNum" placeholder="请输入手机号"
+							id="register_phone_num" maxlength="11">
+						<div class="mark"></div>
+						<input type="hidden" name="type" value="1"> <input
+							type="button" class="send-code" value="获取验证码"
+							onclick="sendRegisterCode(this)" />
+						<div class="mark"></div>
+					</div>
+					<div class="input-box">
+						<label for="">请输入验证码</label><br> <input class="code"
+							type="text" name="code" id="register_code" placeholder="请输入验证码">
+						<div class="mark"></div>
+					</div>
+					<input class="login-btn" type="button" value="下一步"
+						onclick="checkRegisterCode()">
+					<p class="sign-in">
+						已有账号？去<a href="#login" class="sign-2">登录</a>
+					</p>
+				</form>
+			</div>
+			<div class="login-info" style="display: none;" id="register_set_pwd">
+				<form th:action="@{${baseUrl} + '/api/register/addPwd'}"
+					id="register_set_pwd_form">
+					<div class="input-box">
+						<label for="">请输入密码</label><br> <input class="pwd"
+							type="password" name="pwd" id="register_pwd" placeholder="请输入密码" maxlength="8">
+						<div class="mark"></div>
+						<img class="hide-img" th:src="@{/img/hidden.png}" alt=""> <img
+							class="show-img" th:src="@{/img/show.png}" alt="">
+					</div>
+					<div class="input-box">
+						<label for="">请确认密码</label><br> <input class="repwd"
+							type="password" name="rePassword" id="register_repwd"
+							placeholder="请确认密码" maxlength="8">
+						<div class="mark"></div>
+						<img class="hide-img" th:src="@{/img/hidden.png}" alt=""> <img
+							class="show-img" th:src="@{/img/show.png}" alt="">
+					</div>
+					<input type="hidden" name="phoneNum" id="phoneNum" /> <input
+						class="login-btn" type="button" value="注册" onclick="registerPwd()">
+				</form>
+			</div>
+		</div>
+    </div>
+    
+	<div class="fade-box payment-banner" id="forget" style="display: none;">
+        <div class="login">
+			<h3>忘记密码</h3>
+			<div class="login-info" id="forget_send_code">
+				<form th:action="@{${baseUrl} + '/api/register/sendCode'}"
+					id="forget_code_form">
+					<div class="input-box">
+						<label for="">请输入手机号</label><br> <input type="hidden"
+							name="type" value="2"> <input class="mobile" type="text"
+							name="phoneNum" id="forget_phone_num" placeholder="请输入手机号" maxlength="11">
+						<div class="mark"></div>
+						<input type="button" class="send-code" value="获取验证码"
+							onclick="sendForgetPwdCode(this)" />
+					</div>
+					<div class="input-box">
+						<label for="">请输入验证码</label><br> <input class="code"
+							type="text" name="code" id="forget_code" placeholder="请输入验证码">
+						<div class="mark"></div>
+					</div>
+					<input class="login-btn" type="button" value="下一步"
+						onclick="checkForgetCode()">
+				</form>
+			</div>
+			<div class="login-info" style="display: none;" id="forget_set_pwd">
+				<form action="" id="forget_pwd_form">
+					<div class="input-box">
+						<label for="">请输入密码</label><br> <input class="pwd"
+							type="password" name="pwd" id="forget_pwd" placeholder="请输入密码" maxlength="8">
+						<div class="mark"></div>
+						<img class="hide-img" th:src="@{/img/hidden.png}" alt=""> <img
+							class="show-img" th:src="@{/img/show.png}" alt="">
+					</div>
+					<input type="hidden" name="phoneNum" id="forget_phoneNum" />
+					<div class="input-box">
+						<label for="">请确认密码</label><br> <input class="repwd"
+							type="password" name="rePassword" id="forget_rePassword"
+							placeholder="请确认密码" maxlength="8">
+						<div class="mark"></div>
+						<img class="hide-img" th:src="@{/img/hidden.png}" alt=""> <img
+							class="show-img" th:src="@{/img/show.png}" alt="">
+					</div>
+					<input class="login-btn" type="button" value="确认"
+						onclick="updatePwd()">
+				</form>
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+	//    login
+    $('#loginText').click(function(){
+        $('#login').show();
+    });
+    $('.forget').click(function(){
+       $('#login').hide();
+       $('#forget').show();
+    });
+    $('.sign-1').click(function(){
+        $('#login').hide();
+        $('#regist').show();
+    });
+    $('.sign-2').click(function(){
+        $('#regist').hide();
+        $('#login').show();
+    });
+    
+//    验证手机号
+    
+    $('#register_phone_num').keyup(function() {
+        var register_phone_num = $("#register_phone_num").val();
+        if(register_phone_num.search(/^[1][3,4,5,6,7,8][0-9]{9}$/) == -1) {
+            $(this).next(".mark").show().text("请输入大陆手机号码");
+            return false;
+        }else{
+            $(this).next(".mark").hide();
+        }
+    });
+    $('#forget_phone_num').keyup(function() {
+        var forget_phone_num = $("#forget_phone_num").val();
+        if(forget_phone_num.search(/^[1][3,4,5,6,7,8][0-9]{9}$/) == -1) {
+            $(this).next(".mark").show().text("请输入大陆手机号码");
+            return false;
+        }else{
+            $(this).next(".mark").hide();
+        }
+    });
+    //验证密码
+    
+    $('#register_pwd').keyup(function() {
+        var register_pwd = $("#register_pwd").val();
+        if(register_pwd.search(/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,8}$/) == -1) {
+            $(this).next(".mark").show().text("请输入数字与字母结合6-8位字符");
+            return false;
+        }else{
+            $(this).next(".mark").hide();
+        }
+    });
+    $('#forget_pwd').keyup(function() {
+        var forget_pwd = $("#forget_pwd").val();
+        if(forget_pwd.search(/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,8}$/) == -1) {
+            $(this).next(".mark").show().text("请输入数字与字母结合6-8位字符");
+            return false;
+        }else{
+            $(this).next(".mark").hide();
+        }
+    });
+    //确认密码
+    $('#register_repwd').keyup(function() {
+    	var register_pwd = $("#register_pwd").val();
+        var register_repwd = $("#register_repwd").val();
+        if(register_repwd != register_pwd) {
+            $(this).next(".mark").show().text("两次密码不一致");
+            return false;
+        }else{
+            $(this).next(".mark").hide();
+        }
+    });
+    $('#forget_rePassword').keyup(function() {
+    	var forget_pwd = $("#forget_pwd").val();
+        var forget_rePassword = $("#forget_rePassword").val();
+        if(forget_rePassword != forget_pwd) {
+            $(this).next(".mark").show().text("两次密码不一致");
+            return false;
+        }else{
+            $(this).next(".mark").hide();
+        }
+    });
+    var countdown = 60;
+
+    
+    // 发送注册验证码
+    function sendRegisterCode(val) {
+    	var phoneNum = $("#register_phone_num").val();
+    	if (phoneNum.search(/^[1][3,4,5,6,7,8][0-9]{9}$/) == -1) {
+    		$("#register_phone_num").next(".mark").show().text("请输入大陆手机号码");
+            return false;
+    	}
+    	// 发送验证码
+        jQuery.ajax({
+           type:"post",
+           url: $("#sendCodeForm").attr("action"),
+           data:$("#sendCodeForm").serialize(),
+           success:function(msg){
+               if(msg.status=="1"){
+            	   settime(val);
+               }
+        	   $('.send-code').next('.mark').show().text(msg.msg);
+           }
+        })         
+    }
+
+    // 注册验证码校验
+    function checkRegisterCode() {
+    	var phoneNum = $("#register_phone_num").val();
+    	if (phoneNum.search(/^[1][3,4,5,6,7,8][0-9]{9}$/) == -1) {
+    		$("#register_phone_num").next(".mark").show().text("请输入大陆手机号码");
+            return false;
+    	}
+    	var code = $("#register_code").val();
+    	if (code == null) {
+    		$("#register_code").next(".mark").show().text("请输入验证码");
+            return false;
+    	}
+    	// 发送验证码
+        jQuery.ajax({
+           type:"post",
+           url: '[[${baseUrl}]]api/register/checkCode',
+           data:$("#sendCodeForm").serialize(),
+           success:function(msg){
+               if(msg.status=="1"){
+            	   // 成功跳转设置密码页
+            	   $('#register_send_code').hide();
+            	   $('#register_set_pwd').show();  
+            	   $('#phoneNum').val(phoneNum);
+               } else {
+           		 $("#register_code").next(".mark").show().text(msg.msg);
+               }
+           }
+        })    	
+    }
+      
+    // 注册设置密码
+    function registerPwd() {
+    	var password = $("#register_repwd").val();
+    	if (password == null) {
+    		$("#register_repwd").next(".mark").show().text("请输入密码");
+            return false;
+    	}
+    	var pwd = $('#register_pwd').val();
+    	$('#register_pwd').val(encodeBase64(pwd));
+    	// 发送验证码
+        jQuery.ajax({
+           type:"post",
+           url: '[[${baseUrl}]]api/register/addPwd',
+           data:$("#register_set_pwd_form").serialize(),
+           success:function(msg){
+               if(msg.status=="1"){
+            	   // 成功跳转设置登录页
+            	   $('#regist').hide();
+            	   $('#register_set_pwd').hide();
+            	   $('#login').show();
+               } else {
+           		 $("#rePassword").next(".mark").show().text(msg.msg);
+               }
+           }
+        })         
+    }
+    // ===============================忘记密码=================================
+    // 发送忘记密码验证码
+    function sendForgetPwdCode(val) {
+    	var phoneNum = $("#forget_phone_num").val();
+    	if (phoneNum.search(/^[1][3,4,5,6,7,8][0-9]{9}$/) == -1) {
+    		$("#register_phone_num").next(".mark").show().text("请输入大陆手机号码");
+            return false;
+    	}
+    	// 发送验证码
+        jQuery.ajax({
+           type:"post",
+           url: $("#forget_code_form").attr("action"),
+           data:$("#forget_code_form").serialize(),
+           success:function(msg){
+               if(msg.status=="1"){
+            	   settime(val);
+               }
+        	   $('.send-code').next('.mark').show().text(msg.msg);
+           }
+        })   
+    	
+    }
+    
+   // 忘记密码验证码校验
+    function checkForgetCode() {
+    	var phoneNum = $("#forget_phone_num").val();
+    	if (phoneNum.search(/^[1][3,4,5,6,7,8][0-9]{9}$/) == -1) {
+    		$("#register_phone_num").next(".mark").show().text("请输入大陆手机号码");
+            return false;
+    	}
+    	var code = $("#forget_code").val();
+    	if (code == null) {
+    		$("#forget_code").next(".mark").show().text("请输入验证码");
+            return false;
+    	}
+    	// 发送验证码
+        jQuery.ajax({
+           type:"post",
+           url: '[[${baseUrl}]]api/register/checkCode',
+           data:$("#forget_code_form").serialize(),
+           success:function(msg){
+               if(msg.status=="1"){
+            	   // 成功跳转设置密码页
+            	   $('#forget_send_code').hide();
+            	   $('#forget_set_pwd').show();  
+            	   $('#forget_phoneNum').val(phoneNum);
+               } else {
+           		 $("#forget_code").next(".mark").show().text(msg.msg);
+               }
+           }
+        })    	
+    }
+   
+   // 更新密码
+    function updatePwd() {
+    	var password = $("#forget_rePassword").val();
+    	if (password == null) {
+    		$("#forget_rePassword").next(".mark").show().text("请输入密码");
+            return false;
+    	}
+    	var pwd = $('#forget_pwd').val();
+    	$('#forget_pwd').val(encodeBase64(pwd));
+    	// 发送验证码
+        jQuery.ajax({
+           type:"post",
+           url: '[[${baseUrl}]]api/register/updatePwd',
+           data:$("#forget_pwd_form").serialize(),
+           success:function(msg){
+               if(msg.status=="1"){
+            	   // 成功跳转设置密码页
+            	   $('#forget').hide();
+            	   $('#forget_set_pwd').hide();
+            	   $('#login').show();
+               } else {
+           		 $("#forget_rePassword").next(".mark").show().text(msg.msg);
+               }
+           }
+        })         
+    }
+    
+    function settime(val) {
+    	
+        if(countdown == 1) {
+            val.removeAttribute("disabled");
+            val.value = "获取验证码";
+            countdown = 60;
+        } else {
+       		val.setAttribute("disabled", true);
+            val.value = countdown +"s";
+            countdown--;
+            setTimeout(function() {
+                settime(val)
+            }, 1000)          
+        }
+    }
+    
+    //        password show or hide
+    $(".hide-img").click(function(){
+        $(this).hide();
+        $(this).next(".show-img").show();
+        $(".pwd").attr("type","text");
+        $(".repwd").attr("type","text");
+    });
+    $(".show-img").click(function(){
+        $(this).hide();
+        $(this).prev(".hide-img").show();
+        $(".pwd").attr("type","password");
+        $(".repwd").attr("type","password");
+    });
+    //登录
+    $(function(){
+    	var ok1 = false;
+    	var ok2 = false;
+    	$('#username').keyup(function() {
+            var username = $("#username").val();
+            if(username.search(/^[1][3,4,5,6,7,8][0-9]{9}$/) == -1) {
+                $(this).next(".mark").show().text("请输入大陆手机号码");
+                return false;
+            }else if(username == ''){
+            	$(this).next(".mark").show().text("手机号码不能为空!");
+            	return false;
+            }else{
+                $(this).next(".mark").hide();
+                ok1 = true;
+            }
+        });
+    	$('#password').keyup(function() {
+            var password = $("#password").val();
+            if(password.search(/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,8}$/) == -1) {
+                $(this).next(".mark").show().text("请输入数字与字母结合6-8位字符");
+                return false;
+            }else if(password == ''){
+            	$(this).next(".mark").show().text("密码不能为空!");
+            	return false;
+            }else{
+                $(this).next(".mark").hide();
+                ok2 = true;
+            }
+        });
+    	// 登录操作
+        $("#loginButton").click(function(){
+        	if(ok1 && ok2){
+	        	/* if($("#username").val() == '') {
+	       		  $('#username').next(".mark").show().text("请输入手机号码"); 
+	       	    }
+	        	if($("#password").val() == '') {
+	        		 $('#password').next(".mark").show().text("请输入密码"); 
+	        	} */
+	        	$('#pwdEncode').val(encodeBase64($("#password").val()));
+	        	// 登录提交
+	            jQuery.ajax({
+	                type:"POST",
+	                url: $("#loginForm").attr('action'),
+	                data:$("#loginForm").serialize(),
+	                success:function(msg){
+	                    if(msg.status=="1"){
+	                    	var redirectUrl = $('#redirectUrl').val();               
+	                    	if (redirectUrl == '' || redirectUrl == undefined) {
+	                    		redirectUrl = "[[${ctx}]]person_center/person_video";
+	                    	} 
+	                    	window.location.href = redirectUrl;
+	                    }else{
+	                        $('.pwd').next(".mark").show().text(msg.msg);
+	                    }
+	                }
+	            })
+        	}
+        });
+      //按enter键触发登录
+        $("body").keydown(function() {
+            if (event.keyCode == "13") {//keyCode=13是回车键
+                $('#loginButton').click();
+            }
+        });
+    });
+    
+    
+  //加密可以加密N次，对应解密N次就可以获取明文    
+   function encodeBase64(mingwen,times){    
+      var code="";    
+      var num=1;    
+      if(typeof times=='undefined'||times==null||times==""){    
+         num=1;    
+      }else{    
+         var vt=times+"";    
+         num=parseInt(vt);    
+      }    
+      if(typeof mingwen=='undefined'||mingwen==null||mingwen==""){    
+      }else{    
+          $.base64.utf8encode = true;    
+          code=mingwen;    
+          for(var i=0;i<num;i++){    
+             code=$.base64.btoa(code);    
+          }    
+      }    
+      return code;    
+  };  
+  
+</script>
+</html>

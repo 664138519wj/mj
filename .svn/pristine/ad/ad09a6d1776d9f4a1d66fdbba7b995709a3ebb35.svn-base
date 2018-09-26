@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" th:href="@{/lib/lui/css/layui.css}">
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+</head>
+<body>
+
+<div style="text-align:center;margin:30px auto;">
+    <button class="layui-btn layui-btn-lg layui-btn-primary layui-btn-radius">可用余额: <span th:text="${remain}"></span>
+    </button>
+    =
+    <button class="layui-btn layui-btn-lg layui-btn-primary layui-btn-radius">视频课程分润比例: <span
+            th:text="${onlineBenefitShare}"></span></button>
+    *
+    <button class="layui-btn layui-btn-lg layui-btn-primary layui-btn-radius">视频课程收益总额: <span
+            th:text="${online_income}"></span></button>
+    +
+    <button class="layui-btn layui-btn-lg layui-btn-primary layui-btn-radius">网点课程分润比例: <span
+            th:text="${offlineBenefitShare}"></span></button>
+    *
+    <button class="layui-btn layui-btn-lg layui-btn-primary layui-btn-radius">网点课程收益总额: <span
+            th:text="${offline_income}"></span></button>
+    +
+    <button class="layui-btn layui-btn-lg layui-btn-primary layui-btn-radius">私教课程收益: <span
+            th:text="${privateTutor_income}"></span></button>
+    -
+    <button class="layui-btn layui-btn-lg layui-btn-primary layui-btn-radius">提现总额: <span th:text="${withdraw}"></span>
+    </button>
+</div>
+
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+    <legend>收益明细</legend>
+    <div class="layui-tab layui-tab-brief">
+        <ul class="layui-tab-title">
+            <li class="layui-this">所有课程</li>
+            <li>线上课程</li>
+            <li>线下课程</li>
+            <li>私教课程</li>
+        </ul>
+        <div class="layui-tab-content" style="height: 900px;">
+            <div class="layui-tab-item layui-show">
+                <table id="allCourseTable" class="layui-table"
+                       lay-data="{cellMinWidth: 80, page: true, limit:10, url:'data'}">
+                    <thead>
+                    <tr>
+                        <th lay-data="{field:'id',type:'checkbox'}">ID</th>
+                        <th lay-data="{field:'userId'}">用户ID</th>
+                        <th lay-data="{field:'userName', sort: true}">手机号码</th>
+                        <th lay-data="{field:'courseType', templet: '#courseTypeTpl'}">课程类型</th>
+                        <th lay-data="{field:'courseName', sort: true}">课程名字</th>
+                        <th lay-data="{field:'payTime', templet:'#dateTpl'}">支付时间</th>
+                        <th lay-data="{field:'price'}">支付费用</th>
+                        <th lay-data="{field:'payStatus', templet:'#TpayStatus'}">支付状态</th>
+                    </tr>
+                    </thead>
+                </table>
+
+            </div>
+
+            <div class="layui-tab-item">
+                <table id="onlineCourseTable" class="layui-table"
+                       lay-data="{cellMinWidth: 80, page: true, limit:10, url:'data?course_type=1'}">
+                    <thead>
+                    <tr>
+                        <th lay-data="{field:'id',type:'checkbox'}">ID</th>
+                        <th lay-data="{field:'userId'}">用户ID</th>
+                        <th lay-data="{field:'userName', sort: true}">手机号码</th>
+                        <th lay-data="{field:'courseName', sort: true}">课程名字</th>
+                        <th lay-data="{field:'payTime', templet:'#dateTpl'}">支付时间</th>
+                        <th lay-data="{field:'price'}">支付费用</th>
+                        <th lay-data="{field:'payStatus', templet:'#TpayStatus'}">支付状态</th>
+                    </tr>
+                    </thead>
+                </table>
+
+            </div>
+
+            <div class="layui-tab-item">
+                <table id="offlineCourseTable" class="layui-table"
+                       lay-data="{cellMinWidth: 80, page: true, limit:10, url:'data?course_type=2'}">
+                    <thead>
+                    <tr>
+                        <th lay-data="{field:'id',type:'checkbox'}">ID</th>
+                        <th lay-data="{field:'userId'}">用户ID</th>
+                        <th lay-data="{field:'userName', sort: true}">手机号码</th>
+                        <th lay-data="{field:'courseName', sort: true}">课程名字</th>
+                        <th lay-data="{field:'payTime', templet:'#dateTpl'}">支付时间</th>
+                        <th lay-data="{field:'price'}">支付费用</th>
+                        <th lay-data="{field:'payStatus', templet:'#TpayStatus'}">支付状态</th>
+                    </tr>
+                    </thead>
+                </table>
+
+            </div>
+            
+            <div class="layui-tab-item">
+                <table id="tutorCourseTable" class="layui-table"
+                       lay-data="{cellMinWidth: 80, page: true, limit:10, url:'data?course_type=6'}">
+                    <thead>
+                    <tr>
+                        <th lay-data="{field:'id',type:'checkbox'}">ID</th>
+                        <th lay-data="{field:'userId'}">用户ID</th>
+                        <th lay-data="{field:'userName', sort: true}">手机号码</th>
+                        <th lay-data="{field:'courseName', sort: true}">课程名字</th>
+                        <th lay-data="{field:'payTime', templet:'#dateTpl'}">支付时间</th>
+                        <th lay-data="{field:'price'}">支付费用</th>
+                        <th lay-data="{field:'payStatus', templet:'#TpayStatus'}">支付状态</th>
+                    </tr>
+                    </thead>
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+
+
+</fieldset>
+
+<script id="courseTypeTpl" type="text/html">
+    {{#
+    if(d.courseType == 1){ }}
+    <span>线上课程</span>
+    {{#   }
+    else if(d.courseType== 2){ }}
+    <span>线下课程</span>
+    {{#   }
+    else if(d.courseType== 6){ }}
+    <span>私教课程</span>
+    {{#   }
+    }}
+</script>
+<script id="TpayStatus" type="text/html">
+    {{#
+    if(d.payStatus == 0){ }}
+    <span>未支付</span>
+    {{#   }
+    else if(d.payStatus == 1){ }}
+    <span>支付等待反馈</span>
+    {{#   }
+    else if(d.payStatus== 2){ }}
+    <span>支付成功</span>
+    {{#   }
+    else if(d.payStatus== -1){ }}
+    <span>失败</span>
+    {{#   }
+    }}
+</script>
+<script id="dateTpl" type="text/html">
+    {{# var date = layui.util.toDateString(d.payTime, 'yyyy-MM-dd HH:mm:ss') }}
+    <span>{{date}}</span>
+</script>
+
+<script th:src="@{/lib/jquery/jquery.js}"></script>
+<script th:src="@{/lib/lui/layui.all.js}"></script>
+
+<script type="text/javascript">
+    var table = layui.table;
+    var layer = layui.layer;
+</script>
+
+</body>
+</html>

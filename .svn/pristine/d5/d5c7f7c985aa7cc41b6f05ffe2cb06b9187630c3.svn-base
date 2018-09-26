@@ -1,0 +1,501 @@
+package com.migu.online.service;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.beanutils.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.alibaba.druid.util.StringUtils;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.google.common.collect.Lists;
+import com.migu.online.mapper.DrivingSchoolMapper;
+import com.migu.online.mapper.SysUserMapper;
+import com.migu.online.mapper.TagMapper;
+import com.migu.online.mapper.TeacherMapper;
+import com.migu.online.model.DrivingSchool;
+import com.migu.online.model.Tag;
+import com.migu.online.model.Teacher;
+import com.migu.online.model.system.SysUser;
+import com.migu.online.model.system.SysUserRole;
+import com.migu.online.ops.vo.TeacherOpsVo;
+import com.migu.online.utils.MD5Util;
+import com.migu.online.vo.TagVo;
+import com.migu.online.vo.TeacherDetailVo;
+import com.migu.online.vo.TeacherShowDetailVo;
+import com.migu.online.vo.TeacherVo;
+
+import tk.mybatis.mapper.entity.Example;
+import tk.mybatis.mapper.entity.Example.Criteria;
+
+@Service
+public class TeacherService {
+
+	@Autowired
+	private TeacherMapper teacherMapper;
+	@Autowired
+	private TagMapper tagMapper;	
+	@Autowired
+	private DrivingSchoolMapper drivingSchoolMapper;
+	@Autowired
+	private SysUserMapper sysUserMapper;
+	@Autowired
+	UserNoticeService userNoticeService;
+	@Autowired
+	private SysUserManageService sysUserManageService;
+	
+	/**
+	 * 首页推荐老师
+	 * @return
+	 * @throws  
+	 * @throws Exception 
+	 */
+	public List<TeacherVo> selectHomePageAll() throws Exception {
+	    List<TeacherVo> result = new ArrayList<TeacherVo>();
+        //单表自定义查询
+        Example example = new Example(Teacher.class);
+        example.createCriteria().andCondition("is_delete = 0").andCondition("recommand = 1");
+        example.setOrderByClause("sort desc");
+        List<Teacher> list = teacherMapper.selectByExample(example);
+        for (Teacher data: list) {
+        	TeacherVo vo = new TeacherVo();
+        	BeanUtils.copyProperties(vo, data);
+        	result.add(vo);
+        }       
+        return result;
+	}
+	
+	/**
+     * 分页查询
+     * @param pageIndex
+     * @param pageSize
+     * @return
+     * @throws Exception
+     */
+    public List<TeacherDetailVo> selectByPage(Integer pageIndex, Integer pageSize) throws Exception{
+    	
+		List<TeacherDetailVo> result = new ArrayList<TeacherDetailVo>();
+        // 单表分页
+        PageHelper.startPage(pageIndex, pageSize, false);
+
+        //单表自定义查询
+        Example example = new Example(Teacher.class);
+        example.createCriteria().andCondition("is_delete = 0");
+        example.setOrderByClause("sort");   
+        List<Teacher> pageList = teacherMapper.selectByExample(example);
+        for (Teacher data : pageList) {
+        	TeacherDetailVo vo = new TeacherDetailVo();
+			BeanUtils.copyProperties(vo, data);
+			if (null != data) {
+				BeanUtils.copyProperties(vo, data);
+	            String tags = data.getTag();
+	            StringBuffer tagBuffer = new StringBuffer("");
+	            if (!StringUtils.isEmpty(tags)) {
+	            	String args[] = tags.split(",");
+	            	for (int i = 0; i < args.length; i++) {
+	            		Tag tag = new Tag();
+	                	tag.setId(Integer.parseInt(args[i]));
+	                	tag = tagMapper.selectOne(tag);
+	                	if (null != tag.getName()) {
+	                    	tagBuffer.append(tag.getName() + "/");
+	                	}
+	            	}            	
+	            }
+	            String tagStr = tagBuffer.toString();
+	            if (tagStr.length() > 1) {
+	            	tagStr = tagStr.substring(0, tagStr.length() - 1);
+	            }
+	            vo.setTags(tagStr);
+			}
+//			if (null != data.getSchoolId() && data.getSchoolId() > 0) {
+//				// 驾校获取
+//				DrivingSchool record = new DrivingSchool();
+//				record.setId(data.getSchoolId());
+//				record = drivingSchoolMapper.selectOne(record);
+//				vo.setSchoolName(record.getNameS());
+//			}
+			result.add(vo);
+		}
+        return result;
+    }
+    
+    /**
+     * 分页查询
+     * @param pageIndex
+     * @param pageSize
+     * @return
+     * @throws Exception
+     */
+    public Page<Teacher> selectWebByPage(Integer pageIndex, Integer pageSize) throws Exception{
+    	// 单表分页
+        PageHelper.startPage(pageIndex, pageSize, true);
+        //单表自定义查询
+        Example example = new Example(Teacher.class);
+        example.createCriteria().andCondition("is_delete = 0");
+        example.setOrderByClause("sort");   
+        return (Page<Teacher>)teacherMapper.selectByExample(example);
+    }
+	
+	/**
+     * 简略详情
+     * @param id
+     * @return
+     */
+    public TeacherDetailVo selectOne(Long id) throws Exception {
+    	TeacherDetailVo vo = new TeacherDetailVo();
+    	Teacher model = new Teacher();
+    	model.setId(id);
+    	model.setIsDelete(0);
+    	Teacher data = teacherMapper.selectOne(model);
+		if (null != data) {
+			BeanUtils.copyProperties(vo, data);
+            String tags = data.getTag();
+            StringBuffer tagBuffer = new StringBuffer("");
+            if (!StringUtils.isEmpty(tags)) {
+            	String args[] = tags.split(",");
+            	for (int i = 0; i < args.length; i++) {
+            		Tag tag = new Tag();
+                	tag.setId(Integer.parseInt(args[i]));
+                	tag = tagMapper.selectOne(tag);
+                	if (null != tag.getName()) {
+                    	tagBuffer.append(tag.getName() + "/");
+                	}
+            	}            	
+            }
+            String tagStr = tagBuffer.toString();
+            if (tagStr.length() > 1) {
+            	tagStr = tagStr.substring(0, tagStr.length() - 1);
+            }
+            vo.setTags(tagStr);
+		}
+
+        return vo;
+    }
+    
+    /**
+     * 显示详情
+     * @param id
+     * @return
+     */
+    public TeacherShowDetailVo selectDetailOne(Long id) throws Exception {
+    	TeacherShowDetailVo vo = new TeacherShowDetailVo();
+    	Teacher model = new Teacher();
+    	model.setId(id);
+    	model.setIsDelete(0);
+    	Teacher data = teacherMapper.selectOne(model);
+		if (null != data) {
+			BeanUtils.copyProperties(vo, data);
+            String tags = data.getTag();
+            StringBuffer tagBuffer = new StringBuffer("");
+            if (!StringUtils.isEmpty(tags)) {
+            	String args[] = tags.split(",");
+            	for (int i = 0; i < args.length; i++) {
+            		Tag tag = new Tag();
+                	tag.setId(Integer.parseInt(args[i]));
+                	tag = tagMapper.selectOne(tag);
+                	if (null != tag.getName()) {
+                    	tagBuffer.append(tag.getName() + "/");
+                	}
+            	}            	
+            }
+            String tagStr = tagBuffer.toString();
+            if (tagStr.length() > 1) {
+            	tagStr = tagStr.substring(0, tagStr.length() - 1);
+            }
+            if (null != data.getSchoolId() && data.getSchoolId() > 0) {
+				// 驾校获取
+				DrivingSchool record = drivingSchoolMapper.selectByPrimaryKey(data.getSchoolId());
+				if (null != record) {
+					vo.setSchoolName(record.getNameS());
+				}
+			}
+            vo.setTags(tagStr);
+		}
+
+        return vo;
+    }
+    
+    /**
+     * 删除
+     * @param id
+     * @return
+     */
+    public int deleteById(Long id) {
+    	Teacher record = teacherMapper.selectByPrimaryKey(id);
+    	if (null != record) {
+        	record.setIsDelete(1);
+        	return teacherMapper.updateByPrimaryKey(record);
+    	}
+    	return 0;
+    }
+    
+  
+    public Teacher selectById(Long id) {
+    	return teacherMapper.selectByPrimaryKey(id);
+    }
+    
+    public int createOrUpdate(Teacher model) {
+    	if (null != model.getId() && model.getId() > 0) {
+    		// update
+    		return teacherMapper.updateByPrimaryKey(model);
+    	} else {
+    		// add
+    		return teacherMapper.insert(model);
+    	}
+    }
+    
+    /**
+     * 后台管理分页查询
+     * @param pageIndex
+     * @param pageSize
+     * @return
+     * @throws Exception
+     */
+    public Page<TeacherDetailVo> selectByPage(Integer pageIndex, Integer pageSize, Map<String, String> filters) throws Exception{
+    	
+    	Page<TeacherDetailVo> result = new Page<TeacherDetailVo>();
+        // 单表分页
+        PageHelper.startPage(pageIndex, pageSize, true);
+
+        //单表自定义查询
+        Example example = new Example(Teacher.class);
+        Criteria criteria = example.createCriteria();
+        if (filters.size() > 0) {
+            for (String key : filters.keySet()) {
+                String value = filters.get(key);
+                switch (key) {
+                    case "status":
+                        criteria.andCondition("is_delete= ", filters.get(key));
+                        break;
+                    case "name":
+                    	criteria.andLike("name", "%" + value + "%");
+                        break;
+                }
+            }
+        }
+        example.and(criteria);
+        example.setOrderByClause("create_time desc");   
+        Page<Teacher> pageList = (Page<Teacher>)teacherMapper.selectByExample(example);
+        for (Teacher data : pageList) {
+        	TeacherDetailVo vo = new TeacherDetailVo();
+			BeanUtils.copyProperties(vo, data);
+			if (null != data) {
+				BeanUtils.copyProperties(vo, data);
+	            String tags = data.getTag();
+	            StringBuffer tagBuffer = new StringBuffer("");
+	            if (!StringUtils.isEmpty(tags)) {
+	            	String args[] = tags.split(",");
+	            	for (int i = 0; i < args.length; i++) {
+	            		Tag tag = new Tag();
+	                	tag.setId(Integer.parseInt(args[i]));
+	                	tag = tagMapper.selectOne(tag);
+	                	if (null != tag.getName()) {
+	                    	tagBuffer.append(tag.getName() + "/");
+	                	}
+	            	}            	
+	            }
+	            String tagStr = tagBuffer.toString();
+	            if (tagStr.length() > 1) {
+	            	tagStr = tagStr.substring(0, tagStr.length() - 1);
+	            }
+	            vo.setTags(tagStr);
+			}
+			result.add(vo);
+		}
+        result.setTotal(pageList.getTotal());
+        return result;
+    }
+    
+    /**
+     * 教师标签map
+     */
+    public List<TagVo> getTagList(String tagStr) {
+    	List<TagVo> tagList = new ArrayList<>();
+    	List<Tag> tags = tagMapper.selectAll();
+    	Map<Integer, Integer> tagMap = new HashMap<>();
+    	if (!StringUtils.isEmpty(tagStr)) {
+    		String args[] = tagStr.split(",");
+        	for (int i = 0; i < args.length; i++) {
+        		Integer id = Integer.parseInt(args[i]);
+        		tagMap.put(id, id);
+        	} 
+    	}   	 
+    	for (Tag tag: tags) {
+    		TagVo vo = new TagVo();
+    		if (tagMap.get(tag.getId()) != null) {
+    			vo.setIsSelected(true);
+    		}
+    		vo.setId(tag.getId());
+    		vo.setName(tag.getName());
+    		tagList.add(vo);
+    	}
+    	return tagList;
+    }
+    
+    /**
+     * 教师标签map
+     */
+    public List<Tag> getTagList() {
+    	return tagMapper.selectAll();
+    }
+    
+    /**
+     * 后台显示详情
+     * @param id
+     * @return
+     */
+    public TeacherOpsVo selectOpsOne(Long id) throws Exception {
+    	TeacherOpsVo vo = new TeacherOpsVo();
+    	Teacher model = new Teacher();
+    	model.setId(id);
+    	model.setIsDelete(0);
+    	Teacher data = teacherMapper.selectOne(model);
+		if (null != data) {
+			BeanUtils.copyProperties(vo, data);
+            String tags = data.getTag();
+            StringBuffer tagBuffer = new StringBuffer("");
+            if (!StringUtils.isEmpty(tags)) {
+            	String args[] = tags.split(",");
+            	for (int i = 0; i < args.length; i++) {
+            		Tag tag = new Tag();
+                	tag.setId(Integer.parseInt(args[i]));
+                	tag = tagMapper.selectOne(tag);
+                	if (null != tag.getName()) {
+                    	tagBuffer.append(tag.getName() + "/");
+                	}
+            	}            	
+            }
+            String tagStr = tagBuffer.toString();
+            if (tagStr.length() > 1) {
+            	tagStr = tagStr.substring(0, tagStr.length() - 1);
+            }
+            if (null != data.getSchoolId() && data.getSchoolId() > 0) {
+				// 驾校获取
+				DrivingSchool record = drivingSchoolMapper.selectByPrimaryKey(data.getSchoolId());
+				if (null != record) {
+					vo.setSchoolName(record.getNameS());
+				}
+			}
+            vo.setTags(tagStr);
+		}
+
+        return vo;
+    }
+    
+    /**
+     * 后台显示详情
+     * @param id
+     * @return
+     */
+    public TeacherOpsVo selectOpsOne2(Long id) throws Exception {
+    	TeacherOpsVo vo = new TeacherOpsVo();
+    	Teacher model = new Teacher();
+    	model.setId(id);
+    	Teacher data = teacherMapper.selectOne(model);
+		if (null != data) {
+			BeanUtils.copyProperties(vo, data);
+            String tags = data.getTag();
+            StringBuffer tagBuffer = new StringBuffer("");
+            if (!StringUtils.isEmpty(tags)) {
+            	String args[] = tags.split(",");
+            	for (int i = 0; i < args.length; i++) {
+            		Tag tag = new Tag();
+                	tag.setId(Integer.parseInt(args[i]));
+                	tag = tagMapper.selectOne(tag);
+                	if (null != tag.getName()) {
+                    	tagBuffer.append(tag.getName() + "/");
+                	}
+            	}            	
+            }
+            String tagStr = tagBuffer.toString();
+            if (tagStr.length() > 1) {
+            	tagStr = tagStr.substring(0, tagStr.length() - 1);
+            }
+            if (null != data.getSchoolId() && data.getSchoolId() > 0) {
+				// 驾校获取
+				DrivingSchool record = drivingSchoolMapper.selectByPrimaryKey(data.getSchoolId());
+				if (null != record) {
+					vo.setSchoolName(record.getNameS());
+				}
+			}
+            vo.setTags(tagStr);
+		}
+
+        return vo;
+    }
+    
+    /**
+     * 教师标签map
+     */
+    public List<Teacher> selectAll() {
+        Example example = new Example(Teacher.class);
+        example.createCriteria().andCondition("is_delete = 0");
+    	return teacherMapper.selectByExample(example);
+    }
+	
+    /**
+     * 教师标签map
+     */
+    public boolean registerTeacher(Teacher teacher, String loginName, String password) {
+    	if (null == teacher) {
+    		return false;
+    	}  
+    	teacher.setScore(5);
+    	int flag = teacherMapper.insert(teacher);
+    	if (flag < 1 ) {
+    		return false;
+    	}
+    	SysUser user = new SysUser();
+    	user.setPassword(MD5Util.getMD5(password));
+    	user.setRelateId(teacher.getId());
+    	user.setUserName(loginName);
+    	user.setNickName(teacher.getName());  
+    	user.setUserType(2);
+    	user.setState(0);
+        return sysUserMapper.insert(user) == 1 ? true:false;
+    }
+    
+    /**
+     * 后台审核
+     * @param id
+     * @return
+     */
+    public int dealTeacherRegister(Long id, boolean isApprove, String reason) {
+    	Teacher record = teacherMapper.selectByPrimaryKey(id);    	
+    	if (null == record) {
+        	return 0;
+    	}
+    	if (isApprove) {
+        	record.setIsDelete(0);        	
+    	} else {
+    		record.setIsDelete(1);
+    	}
+    	record.setUpdateTime(new Date());
+    	int flag = teacherMapper.updateByPrimaryKey(record);
+    	if (flag < 1) {
+    		return 0;
+    	}
+    	// 通过，激活sysuser
+    	if (isApprove) {
+    		SysUser user = sysUserManageService.selectByLoginName(record.getLoginName());
+        	if (null != user) {
+            	user.setState(1);
+            	sysUserMapper.updateByPrimaryKeySelective(user);
+            	// 插入权限
+                SysUserRole sysUserRole = new SysUserRole();
+                sysUserRole.setUserId(user.getId());
+                sysUserRole.setRoleId(3);
+                sysUserManageService.updateUserRole(Lists.newArrayList(sysUserRole), user.getId());
+        	}
+    	}
+    	// 发送通知短信
+    	userNoticeService.dealTeacherRegisterMessage(record, isApprove, reason);
+    	return flag;
+    }
+	
+}

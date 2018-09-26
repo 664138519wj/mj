@@ -1,0 +1,62 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>支付订单</title>
+	<link rel="stylesheet" th:href="@{/css/common.css}">
+	<link rel="stylesheet" th:href="@{/css/style.css}">
+	<script type="text/javascript" th:src="@{/js/jquery-1.11.2.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/style.js}"></script>
+</head>
+<body>
+	<div class="container">
+		<!--支付-->
+		<span th:if="${error}" th:text="${error.msg}"></span>
+	    <div class="buy-card-box payment-banner" th:unless="${error}">
+	        <div class="pay-fade after-choose">
+	            <p th:if="${courseType == 1}">购买该视频</p>
+	            <p th:if="${courseType == 2}">购买线下课程</p>
+	            <p th:if="${courseType == 3}">购买驾校课程</p>
+	            <p th:if="${courseType == 4}">购买选项卡</p>
+	            <div class="pay-head">
+	                <img th:if="${payType == 1}" th:src="@{/img/pay-weChat.png}" alt="">
+	                <img th:if="${payType == 2}" th:src="@{/img/pay-apliy.png}" alt="">
+	                <span th:if="${payType == 1}">微信支付</span>
+	                <span th:if="${payType == 2}">支付宝支付</span>
+	                <b th:text="@{'￥'+ ${price}}"></b>
+	            </div>
+	            <div class="code-img">
+	                <img th:if="${payType == 1}" th:src="@{${imageUrl} + '/upload/image/qr/' + ${outTradeNo} + 'w.png'}" alt="">
+	                <img th:if="${payType == 2}" th:src="@{${imageUrl} + '/upload/image/qr/' + ${outTradeNo} + 'z.png'}" alt="">
+	            </div>
+	        </div>
+	    </div>
+	</div>
+</body>
+<script th:unless="${error}">
+$(function(){
+	function checkIsPay() {
+		// 发送验证码
+	    jQuery.ajax({
+	       type:"post",
+	       url: '[[${baseUrl}]]api/pay/isPaySuccess',
+	       data: {'outTradeNo':'[[${outTradeNo}]]','payType': '[[${payType}]]'},
+	       success:function(msg){
+	           if(msg.data=="SUCCESS"){
+	        	   // 成功跳转购买列表
+               	window.location.href = "[[${ctx}]]person_center/person_video";
+	           } else {
+	       		 
+	           }
+	       }
+	    }) 
+	}
+	// @才华 10min中自动删除 定时任务，减少并发
+	setInterval(checkIsPay,3000);
+
+});
+</script>
+</html>

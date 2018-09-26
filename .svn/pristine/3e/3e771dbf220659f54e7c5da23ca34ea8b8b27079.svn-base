@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout">
+<head>
+<title>模拟考试</title>
+</head>
+<body th:fragment="content" style="min-height:500px;">
+  <form id="submitTest_form" method="post" th:action="${ctx} + 'submitTest'">
+  
+	<div class="choose-type choose com-width clear">
+		<div class="plat-title" th:unless="${msg}">
+			<h2 th:if="${data.language == 0}">模拟考试</h2>
+			<h2 th:if="${data.language == 1}">ᠳᠠᠭᠤᠷᠢᠶᠠᠬᠤ ᠰᠢᠯᠭᠠᠯᠲᠠ </h2>
+			<h2 th:if="${data.language == 2}">ەلىكتەمەلى سىناۋ</h2>
+			<h2 th:if="${data.language == 3}">تەقلىدىي ئىمتىھان </h2>			
+			<p>—</p>
+		</div>
+		<span th:if="${msg}" th:text="${msg}"></span>
+		<div class="test-box fl" th:unless="${msg}">
+			<p th:if="${data.language == 0}">剩余时间：<b id="time-1"></b></p>
+			<p th:if="${data.language == 1}">ᠨᠡᠮᠡᠭᠦᠦ ᠴᠠᠭ : <b id="time-1"></b></p>
+			<p th:if="${data.language == 2}">قالعان ۋاقىتى :<b id="time-1"></b></p>
+			<p th:if="${data.language == 3}">قالغان ۋاقىت : <b id="time-1"></b></p>
+			<!-- 增加不同语言的翻译 0:中文 1：蒙语 2：哈语 3：维语 -->
+			<p th:if="${data.quesType == 1}">
+			   <span th:if="${data.language==0}">试题类型：判断题，请选择正确答案</span>
+			   <span th:if="${data.language==1}">ᠰᠢᠯᠭᠠᠯᠲᠠ ᠶᠢᠨ ᠰᠡᠳᠦᠪ ᠦᠨ ᠲᠥᠷᠥᠯ ᠳᠦ ᠬᠤᠪᠢᠶᠠᠨ᠎ᠠ ᠄ ᠮᠠᠭᠠᠳᠯᠠᠬᠤ ᠰᠡᠳᠦᠪ ᠂ ᠵᠥᠪ ᠬᠠᠷᠢᠭᠤᠯᠲᠠ ᠶᠢ </span>
+			   <span th:if="${data.language==2}">ەمتيحان سۇراۋى : دەگەن تۇجىرىم جاساۋ ، دۇرىس تاڭداۋى كەرەك جاۋاپ </span>
+			   <span th:if="${data.language==3}">ئىمتىھان سوئاللىرىنى ： ھۆكۈم قىلىش سوئالى ، توغرا جاۋاپنى تاللاڭ</span>
+			</p>
+            <p th:if="${data.quesType != 1}">
+            	<span th:if="${data.language==0}">试题类型：选择题，请选择正确答案</span>
+            	<span th:if="${data.language==1}">ᠰᠢᠯᠭᠠᠬᠤ ᠲᠥᠷᠥᠯ ᠵᠦᠶᠯ ᠢ ᠰᠣᠩᠭᠣᠵᠤ ᠬᠠᠷᠢᠭᠤᠯᠬᠤ ᠰᠡᠳᠦᠪ ᠂ ᠵᠥᠪ ᠬᠠᠷᠢᠭᠤᠯᠲᠠ ᠶᠢ </span>
+            	<span th:if="${data.language==2}">ەمتيحان سۇراۋى : ، جاۋاپتاردىڭ ، دۇرىس تاڭداۋى كەرەك جاۋاپ </span>
+            	<span th:if="${data.language==3}">ئىمتىھان سوئالى تۈرى : تاللاش سوئالى ، توغرا جاۋاپنى تاللاڭ </span>
+            </p> 
+			<!-- <p th:if="${data.language == 0}">试题类型：请选择正确的答案</p>             
+			<p th:if="${data.language == 1}">ᠰᠢᠯᠭᠠᠯᠲᠠ ᠶᠢᠨ ᠰᠡᠳᠦᠪ ᠦᠨ ᠲᠥᠷᠥᠯ ᠳᠦ ᠬᠤᠪᠢᠶᠠᠨ᠎ᠠ ᠄ ᠮᠠᠭᠠᠳᠯᠠᠬᠤ ᠰᠡᠳᠦᠪ ᠂ ᠵᠥᠪ ᠬᠠᠷᠢᠭᠤᠯᠲᠠ ᠶᠢ </p>             
+            <p th:if="${data.language == 2}">ەمتيحان سۇراۋى : دەگەن تۇجىرىم جاساۋ ، دۇرىس تاڭداۋى كەرەك جاۋاپ</p>  
+            <p th:if="${data.language == 3}">ئىمتىھان سوئاللىرىنى ： ھۆكۈم قىلىش سوئالى ، توغرا جاۋاپنى تاللاڭ</p> -->  	
+			<div class="subject-detail">
+				<p th:text="${data.question}"></p>
+				<ul class="topic" th:if="${data.quesType == 1}">
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+                        <img th:src="@{/img/error1.png}" alt="" class="an-error">
+                        <input class="optionA" type="radio" name="radio" value="Y">
+						<span th:if="${data.language == 0}">对</span>
+						<span th:if="${data.language == 1}">ᠲᠡᠢ᠌ᠮᠦ </span>
+						<span th:if="${data.language == 2}">دۇرىس </span>
+						<span th:if="${data.language == 3}">سېل </span>
+					</li>
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+                        <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionB" type="radio" name="radio" value="N">
+						<span th:if="${data.language == 0}">错</span>
+						<span th:if="${data.language == 1}">ᠪᠤᠷᠤᠭᠤ </span>
+						<span th:if="${data.language == 2}">قاتە </span>
+						<span th:if="${data.language == 3}">خاتا </span>
+					</li>
+				</ul>
+				<ul class="topic" th:if="${data.quesType == 2}">
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+                        <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionA" type="radio" name="radio" value="A">
+						<span th:text="@{'A、' + ${data.answer1}}"></span></li>
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+                        <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionB" type="radio" name="radio" value="B">
+						<span th:text="@{'B、' + ${data.answer2}}"></span></li>
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+                        <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionC" type="radio" name="radio" value="C">
+						<span th:text="@{'C、' + ${data.answer3}}"></span></li>
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+                        <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionD" type="radio" name="radio" value="D">
+						<span th:text="@{'D、' + ${data.answer4}}"></span></li>
+				</ul>
+				<!--  多选题 -->
+				<ul class="topic" th:if="${data.quesType == 3}">
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+                        <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionA" type="checkbox" name="checkbox" value="A">
+						<span th:text="@{'A、' + ${data.answer1}}"></span></li>
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+                        <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionB" type="checkbox" name="checkbox" value="B">
+						<span th:text="@{'B、' + ${data.answer2}}"></span></li>
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+                        <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionC" type="checkbox" name="checkbox" value="C">
+						<span th:text="@{'C、' + ${data.answer3}}"></span></li>
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+                        <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionD" type="checkbox" name="checkbox" value="D">
+						<span th:text="@{'D、' + ${data.answer4}}"></span></li>
+				</ul>
+			</div>
+			<div class="btns clear">
+				<div class="car-btn fl" th:unless="${data.index == 1}">
+					<a th:href="${ctx} + 'ansAndGetTest?curIndex=' + ${data.index - 1}" style="display:inline-block;width:60px;height:60px"> <img th:src="@{/img/my-pic4.png}" alt="">
+					</a>
+				</div>
+				<div class="car-btn fl" th:unless="${data.index == answerList.size()}">
+					<a href="javascript:;" id="next_a" style="display:inline-block;width:60px;height:60px" onclick="submitAndNext();"> <img th:src="@{/img/my-pic4.1.png}" alt="">
+					</a>
+				</div>
+				<a href="javascript:;" id="submit_a"><button class="see-btn fl" type="button" onclick="submitTest()">
+				   <p th:if="${data.language == 0}">交卷</p>
+				   <p th:if="${data.language == 1}">ᠡᠭᠦᠷᠭᠡ ᠪᠡᠨ ᠪᠡᠶᠡᠯᠡᠭᠦᠯᠬᠦ </p>
+				   <p th:if="${data.language == 2}">تامامداۋ </p>
+				   <p th:if="${data.language == 3}">پۈتكۈزمەك </p>
+				</button></a>
+			</div>
+			<div class="test-pic" th:if="${data.imageUrl}">
+				<img th:src="@{${imageUrl} + ${data.imageUrl}}" alt="" style="max-width:340px;max-height:170px;">
+			</div>
+		</div>
+		<div class="test-object fr" th:unless="${msg}">
+			<ul class="clear">				 
+				 <li th:each="ansData:${answerList}" 
+				 th:class="${ansData.index == data.index}? 'now' : (${ansData.isCorrect == 0}? '':(${ansData.isCorrect == 1}? 'right':'error'))">
+				 <a th:href="${ansData.index == data.index}? '#': ${ctx} + 'ansAndGetTest?curIndex=' + ${ansData.index}" ><span th:text="${ansData.index}"></span></a></li>					
+			</ul>
+			<p>
+				<b class="right"></b>
+				<span th:if="${data.language == 0}">正确</span>
+				<span th:if="${data.language == 1}">ᠵᠥᠪ </span>
+				<span th:if="${data.language == 2}">دۇرىس ، تۋرا</span>
+				<span th:if="${data.language == 3}">توغرا </span>
+				<b class="error"></b>
+				<span th:if="${data.language == 0}">错误</span>
+				<span th:if="${data.language == 1}">ᠪᠤᠷᠤᠭᠤ</span>
+				<span th:if="${data.language == 2}">قاتە ، اعات ، تەرىس </span>
+				<span th:if="${data.language == 3}">خاتا </span>
+				<b class="now"></b>
+				<span th:if="${data.language == 0}">当前</span>
+				<span th:if="${data.language == 1}">ᠣᠳᠣᠬᠢ </span>
+				<span th:if="${data.language == 2}">الدا</span>
+				<span th:if="${data.language == 3}">نۆۋەتتە </span>
+			</p>
+		</div>
+	</div>
+</form>
+	<script th:unless="${msg}">	
+		// 倒计时
+		var m=29;
+	    var s=59;
+	    var seconds = [[${seconds}]];
+	    console.log(seconds);
+	    if (seconds != undefined && seconds > 0) {
+	    	m = parseInt(seconds/60);
+	    	s = seconds%60;
+	    }
+	    
+	    function testTime(){
+	    	if(s<10){
+	            $('#time-1').html(m+':0'+s);
+	        }else{
+	            $('#time-1').html(m+':'+s);
+	        }
+	        s--;
+	        if(s<0){
+	            s=59;
+	            m--;
+	        }
+	        if($('#time-1').html() == "0:00"){
+    	    	clearInterval(timer);
+    	    	alert('答题时间到！请交卷!');
+    	    	return false;
+    	    }
+	    }
+	    var timer = setInterval('testTime()',1000);
+	    
+	   /* var timer = setInterval(function(){
+	        if(s<10){
+	            $('#time-1').html(m+':0'+s);
+	        }else{
+	            $('#time-1').html(m+':'+s);
+	        }
+	        s--;
+	        if(s<0){
+	            s=59;
+	            m--;
+	        }
+	        if(m == 0&&s == 0){
+    	    	clearInterval(timer);
+    	    	alert('答题时间到！请交卷!');
+    	    	return false;
+    	    }
+	    },1000) */
+	    
+	    /* pushHistory();  */
+	   //监听浏览器的后退事件
+	    /* window.addEventListener("popstate", function(e) { 
+	        history.go(-1);
+	        alert("题目还没答完，退出将不保留您的答题信息，您确定要退出吗？");
+	    }, false);
+	    function pushHistory() { 
+	        var state = { 
+	            title: "title", 
+	            url: "#"
+	        }; 
+	        window.history.pushState(state, "title", "#"); 
+	    } */
+	    
+	
+		// 初始化答案
+	    var ans_flag = '[[${ansFlag}]]';
+	    if (ans_flag == 'true') {
+			//禁止答题
+	    	$("input[type=radio]").click(function(event){
+	    		$(this).parents('li').removeClass('active');
+	    		event.preventDefault();
+	    		
+		     });
+			
+	    	
+	    	// 已经答题
+	    	var answer = '[[${answerData}]]';
+			if (answer.length == 1) {
+				// 判断或者单选题
+				$('input[type=radio]').click(function() {
+					$(this).parents('li').addClass("active").siblings('li').removeClass('active');
+					$(this).find("input[type=radio]").prop("checked", true);
+				});
+				 $("input[type=radio]").each(function(){
+					   if($(this).val() == answer) {
+						   $(this).prop("checked", true);
+						   $(this).parents('li').addClass("active");
+					   }
+			     });
+			} else {
+				// 多选题
+				$("input[type=checkbox]").click(function() {
+					$(this).parents('li').addClass("active");
+					$(this).find("input[type=checkbox]").prop("checked", true);
+				});
+				$("input[type=checkbox]").each(function(){
+					   if($(this).val() == answer) {
+						   $(this).prop("checked", true);
+						   $(this).parents('li').addClass("active");
+					   }
+			    });
+			}
+	    } else {
+	    	// TODO 禁止答题 目前不生效，@才华 修改一下
+	    	//单选
+	    	$('input[type=radio]').click(function() {
+				$(this).parents('li').addClass("active").siblings('li').removeClass('active');
+				$(this).find("input[type=radio]").prop("checked", true);
+			});
+	    	//多选
+	    	$("input[type=checkbox]").click(function() {
+				$(this).parents('li').addClass("active");
+				$(this).find("input[type=checkbox]").prop("checked", true);
+			});
+	    }
+		
+	    function submitAndNext() {
+			var answer = '';
+			var quesType = [[${data.quesType}]];
+			if (quesType == 3) {
+				// 多选题
+				$("input[name='checkbox']").each(function(){
+					if($(this).is(":checked")){
+					// 被选中
+					 answer = answer + $(this).val();
+					}
+				})
+			} else {
+				answer = $("input[name='radio']:checked").val();
+			}			
+			console.log(answer);
+			var curIndex = [[${data.index}]];
+			var corrAnswer = '[[${data.corrAnswer}]]';
+			var isCorrect = 0;
+			var url = '[[${ctx}]]' + 'ansAndGetTest?curIndex=' + curIndex + '&next=1';
+
+			if (answer != undefined && ans_flag == 'false') {
+				// 未回答问题 或已作答 不提交答案
+				if (answer == corrAnswer) {
+				    isCorrect = 1;
+				} else {
+					isCorrect = 2;
+				}
+				url = url + '&answer=' + answer+ '&isCorrect=' + isCorrect;
+			} 			
+			$('#next_a').attr("href", url);
+		};
+		// 交卷
+		function submitTest() {
+			if (confirm("您确定要交卷")) {
+				var answer = '';
+				var quesType = [[${data.quesType}]];
+				if (quesType == 3) {
+					// 多选题
+					$("input[name='checkbox']").each(function(){
+						if($(this).is(":checked")){
+						// 被选中
+						 answer = answer + $(this).val();
+						}
+					})
+				} else {
+					answer = $("input[name='radio']:checked").val();
+				}			
+				console.log(answer);
+				var curIndex = [[${data.index}]];
+				var corrAnswer = '[[${data.corrAnswer}]]';
+				var isCorrect = 0;
+				var url = '[[${ctx}]]' + 'submitTest?curIndex=' + curIndex + '&examId=' + [[${data.examId}]];
+
+				if (answer != undefined && ans_flag == 'false') {
+					// 未回答问题 或已作答 不提交答案
+					if (answer == corrAnswer) {
+					    isCorrect = 1;
+					} else {
+						isCorrect = 2;
+					}
+					url = url + '&answer=' + answer+ '&isCorrect=' + isCorrect;
+				} 			
+				$('#submit_a').attr("href", url);
+			}			
+		};		
+		
+	</script>
+	
+</body>
+
+</html>

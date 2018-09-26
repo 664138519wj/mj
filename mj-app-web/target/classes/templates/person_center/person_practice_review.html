@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="head_center">
+<head>
+<head>
+<title>个人中心</title>
+</head>
+<body th:fragment="content">
+	<!--复习-->
+	<div class="review-box">
+		<div class="plat-title">
+			<h2>复习</h2>
+		</div>
+		<span th:if="${msg}" th:text="${msg}"></span>
+		<div class="subject-detail" th:unless="${msg}">
+			<p th:if="${data.quesType == 1}">试题类型：判断题，请选择正确答案</p>
+            <p th:if="${data.quesType != 1}">试题类型：选择题，请选择正确答案</p> 
+			<p class="subject-title" th:text="${data.question}"></p>
+			<ul class="topic" th:if="${data.quesType == 1}">
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+                        <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionA" type="radio" name="radio" value="Y">
+						<span>对</span></li>
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+                        <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionB" type="radio" name="radio" value="N">
+						<span>错</span></li>
+				</ul>
+				<ul class="topic" th:if="${data.quesType == 2}">
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+                        <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionA" type="radio" name="radio" value="A">
+						<span th:text="@{'A、' + ${data.answer1}}"></span></li>
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+                        <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionB" type="radio" name="radio" value="B">
+						<span th:text="@{'B、' + ${data.answer2}}"></span></li>
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+                        <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionC" type="radio" name="radio" value="C">
+						<span th:text="@{'C、' + ${data.answer3}}"></span></li>
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+                        <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionD" type="radio" name="radio" value="D">
+						<span th:text="@{'D、' + ${data.answer4}}"></span></li>
+				</ul>
+				<!--  多选题 -->
+				<ul class="topic" th:if="${data.quesType == 3}">
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+                        <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionA" type="checkbox" name="radio" value="A">
+						<span th:text="@{'A、' + ${data.answer1}}"></span></li>
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+                        <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionB" type="checkbox" name="radio" value="B">
+						<span th:text="@{'B、' + ${data.answer2}}"></span></li>
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+                        <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionC" type="checkbox" name="radio" value="C">
+						<span th:text="@{'C、' + ${data.answer3}}"></span></li>
+					<li>
+						<img th:src="@{/img/right.png}" alt="" class="an-right">
+                        <img th:src="@{/img/error1.png}" alt="" class="an-error">
+						<input class="optionD" type="checkbox" name="radio" value="D">
+						<span th:text="@{'D、' + ${data.answer4}}"></span></li>
+				</ul>
+			<div class="answer-box clear">
+				<div class="answer fl">
+					<p>
+						正确答案：<span th:text="${data.corrAnswer}"></span>
+					</p>
+					<p th:if="${data.wrongAns != data.corrAnswer}" style="color:red">
+						错误答案：<span th:text="${data.wrongAns}"></span>
+					</p>
+				</div>
+				<div class="btns clear fr">
+					<div class="car-btn fl" th:unless="${data.index == 1}">
+						<a th:href="@{${ctx} + 'reviewTest?curIndex=' + ${data.index - 1} + '&examId=' + ${data.examId}}"> <img th:src="@{/img/my-pic4.png}" alt="">
+						</a>
+					</div>
+					<div class="car-btn fl" th:unless="${data.index == answerList.size()}">
+						<a th:href="@{${ctx} + 'reviewTest?curIndex=' + ${data.index + 1} + '&examId=' + ${data.examId}}"> <img th:src="@{/img/my-pic4.1.png}" alt="">
+						</a>
+					</div>
+				</div>
+			</div>
+			<div class="subject-pic">
+				<img th:src="@{/img/my-pic5.png}" alt="">
+			</div>
+			<div class="test-object">
+				<p>答题信息</p>
+				<p>
+					<b class="right"></b><span>正确</span><b class="error"></b><span>错误</span><b
+						class="now"></b><span>当前</span>
+				</p>
+				<ul class="clear">
+					<li th:each="ansData:${answerList}"
+						th:class="${ansData.index == data.index}? 'now' : (${ansData.isCorrect == 0}? '':(${ansData.isCorrect == 1}? 'right':'error'))">
+						<a
+						th:href="${ansData.index == data.index}? '#': ${ctx} + 'reviewTest?curIndex=' + ${ansData.index} + '&examId=' + ${data.examId}"><span
+							th:text="${ansData.index}"></span></a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" th:href="@{/lib/lui/css/layui.css}">
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+</head>
+<body>
+<div class="layui-container">
+<div th:html="${model.id}"></div>
+<div th:if="${edit}">
+</div>
+<form id="modelForm" class="layui-form" action="edit" method="post">
+    <input type="hidden" name="id" th:value="${model.id}"/>
+    <div class="layui-form-item">
+        <label class="layui-form-label">证件名称</label>
+        <div  class="layui-input-block">
+		<div class="layui-form-mid"  th:text="${model.certificateTypeDesc}" ></div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">证件号码</label>
+        <div  class="layui-input-block">
+		<div class="layui-form-mid"  th:text="${model.certificateCode}"></div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">姓名</label>
+        <div  class="layui-input-block">
+		<div class="layui-form-mid"  th:text="${model.name}"></div>
+    </div>
+    
+    <div class="layui-form-item">
+        <label class="layui-form-label">性别</label>
+        <div  class="layui-input-block">
+		<div class="layui-form-mid"  th:text="${model.sexDesc}"></div>
+    </div>
+    
+    <div class="layui-form-item">
+        <label class="layui-form-label">出生日期</label>
+        <div  class="layui-input-block">
+		<div class="layui-form-mid"  th:text="${#dates.format(model.birthDay, 'yyyy-MM-dd')}"></div>
+    </div>
+    
+    
+    <div class="layui-form-item">
+        <label class="layui-form-label">国籍</label>
+        <div  class="layui-input-block">
+		<div class="layui-form-mid"  th:text="${model.country}"></div>
+    </div>
+    
+    <div class="layui-form-item">
+        <label class="layui-form-label">申请车型</label>
+        <div  class="layui-input-block">
+		<div class="layui-form-mid"  th:text="${model.carModel}"></div>
+    </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label">驾校名称</label>
+        <div  class="layui-input-block">
+		<div class="layui-form-mid"  th:text="${model.drivingSchool}"></div>
+    </div>
+    
+      <div class="layui-form-item">
+        <label class="layui-form-label">登记住所行政区域</label>
+        <div  class="layui-input-block">
+		<div class="layui-form-mid"  th:text="${model.registerArea}"></div>
+    </div>
+    
+      <div class="layui-form-item">
+        <label class="layui-form-label">登记住所详细地址</label>
+        <div  class="layui-input-block">
+		<div class="layui-form-mid"  th:text="${model.registerAddress}"></div>
+    </div>
+    
+      <div class="layui-form-item">
+        <label class="layui-form-label">驾驶人来源</label>
+        <div  class="layui-input-block">
+		<div class="layui-form-mid"  th:text="${model.sourceDesc}"></div>
+    </div>
+    
+      <div class="layui-form-item">
+        <label class="layui-form-label">暂住证编号</label>
+        <div  class="layui-input-block">
+		<div class="layui-form-mid"  th:text="${model.temporaryResidenceCode}"></div>
+    </div>
+    
+     <div class="layui-form-item">
+        <label class="layui-form-label">联系住所行政区域</label>
+        <div  class="layui-input-block">
+		<div class="layui-form-mid"  th:text="${model.contactArea}"></div>
+    </div>
+    
+     <div class="layui-form-item">
+        <label class="layui-form-label">联系住所详细地址</label>
+        <div  class="layui-input-block">
+		<div class="layui-form-mid"  th:text="${model.contactAddress}"></div>
+    </div>
+    
+    
+     <div class="layui-form-item">
+        <label class="layui-form-label">所属辖区</label>
+        <div  class="layui-input-block">
+		<div class="layui-form-mid"  th:text="${model.contactJurisdiction}"></div>
+    </div>
+    
+     <div class="layui-form-item">
+        <label class="layui-form-label">邮政编码</label>
+        <div  class="layui-input-block">
+		<div class="layui-form-mid"  th:text="${model.contactZip}"></div>
+    </div>
+     <div class="layui-form-item">
+        <label class="layui-form-label">固定电话</label>
+        <div  class="layui-input-block">
+		<div class="layui-form-mid"  th:text="${model.phone}"></div>
+    </div>
+    
+     <div class="layui-form-item">
+        <label class="layui-form-label">联系电话</label>
+        <div  class="layui-input-block">
+		<div class="layui-form-mid"  th:text="${model.mobile1}"></div>
+    </div>
+    
+     <div class="layui-form-item">
+        <label class="layui-form-label">电子邮箱</label>
+        <div  class="layui-input-block">
+		<div class="layui-form-mid"  th:text="${model.mobile2}"></div>
+    </div>
+    
+     <div class="layui-form-item">
+        <label class="layui-form-label">指纹</label>
+        <div  class="layui-input-block">
+		<div class="layui-form-mid"  th:text="${model.fingerprint}"></div>
+    </div>
+    <div class="layui-form-item">
+    	<label class="layui-form-label">身份证正面照</label>
+	    <img class="layui-upload-img"  th:if="${model.idcardBefore != ''}" th:src="@{${baseUrl} + ${model.idcardBefore}}">
+	</div>
+	
+	<div class="layui-form-item">
+    	<label class="layui-form-label">身份证反面照</label>
+	    <img class="layui-upload-img"  th:if="${model.idcardBack != ''}" th:src="@{${baseUrl} + ${model.idcardBack}}">
+	</div>
+	
+	<div class="layui-form-item">
+    	<label class="layui-form-label">手持身份证照片</label>
+	    <img class="layui-upload-img"  th:if="${model.scenePicture != ''}" th:src="@{${baseUrl} + ${model.scenePicture}}">
+	</div>
+	
+	<div class="layui-form-item">
+    	<label class="layui-form-label">扫描注册表照片</label>
+	    <img class="layui-upload-img"  th:if="${model.registryPicture != ''}" th:src="@{${baseUrl} + ${model.registryPicture}}">
+	</div>
+			  
+			 
+    
+  </div>
+
+</form>
+</div>
+
+
+
+
+
+
+</body>
+</html>

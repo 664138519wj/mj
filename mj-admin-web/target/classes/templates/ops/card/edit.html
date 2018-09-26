@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" th:href="@{/lib/lui/css/layui.css}">
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+</head>
+<body>
+<div class="layui-container">
+    <div th:html="${data.id}"></div>
+    <div th:if="${edit}">
+    </div>
+    <form id="courseOnlineForm" class="layui-form" action="edit" method="post">
+        <input type="hidden" name="id" th:value="${data.id}"/>
+        
+     
+        <div class="layui-form-item layui-form-text">
+	        <label class="layui-form-label">价格</label>
+	        <div class="layui-input-inline" th:if="${edit}">
+	         <input type="number" id="priceNum" placeholder="请输入" autocomplete="off" class="layui-input" th:value="${data.price}">
+	         </div>
+	         <input type="hidden" id="price" name="price" th:value="${data.price}">
+	         <div th:unless="${edit}" class="layui-form-mid" th:text="${data.price}"></div>
+        </div>
+        
+        <div class="layui-form-item layui-form-text">
+	        <label class="layui-form-label">过期天数</label>
+	        <div class="layui-input-inline" th:if="${edit}">
+	         <input type="number" id="expiredNum" placeholder="请输入" autocomplete="off" class="layui-input" th:value="${data.expiredDays}">
+	         </div>
+	         <input type="hidden" id="expiredDays" name="expiredDays" th:value="${data.expiredDays}">
+	         <div th:unless="${edit}" class="layui-form-mid" th:text="${data.price}"></div>
+        </div>
+
+        
+    </form>
+</div>
+<script th:src="@{/lib/jquery/jquery.js}"></script>
+<script th:src="@{/lib/jquery/jquery.forms.js}"></script>
+<script th:src="@{/lib/lui/layui.all.js}"></script>
+<script type="text/javascript">
+    $.fn.serializeObject = function () {
+        var o = {};
+        var a = this.serializeArray();
+        $.each(a, function () {
+            if (o[this.name] !== undefined) {
+                if (!o[this.name].push) {
+                    o[this.name] = [o[this.name]];
+                }
+                o[this.name].push(this.value || '');
+            } else {
+                o[this.name] = this.value || '';
+            }
+        });
+        return o;
+    };
+</script>
+<script type="text/javascript">
+	layui.laydate.render({
+	    elem: '#beginTimeStr'
+	    ,type: 'datetime'
+	});
+ 
+    function checkForm(arr) {
+        for (var i = 0; i < arr.length; i++) {
+            if ($("#" + arr[i][0]).val() == '') {
+                alert(arr[i][1]);
+                $("#" + arr[i][0]).focus();
+                return false;
+            }
+        }
+        return true;
+    }
+    ;
+    //调用方式
+    var arr = new Array(
+        	new Array('priceNum','价格不可为空!'),
+        	new Array('expiredNum','过期天数不可为空!'),
+    );
+
+    function doSave(fn) {
+        $("#price").val($("#priceNum").val());
+        $("#expiredDays").val($("#expiredNum").val());
+        if (!checkForm(arr)) {
+            return false;
+        }
+        var dataParam = $("#courseOnlineForm").serialize();
+
+        jQuery.ajax({
+            type: "post",
+            url: 'save.html',
+            data: dataParam,
+            success: function (data) {
+                if (data) {
+                	if (data == 'success') {
+                		parent.tips(1, "保存成功！");
+                        fn.call();
+                	} else {
+                		parent.tips(0, data);
+                	}                 
+                } else {
+                    parent.tips(0, "保存信息失败！");
+                }
+            }
+
+        })
+    }
+
+</script>
+<script type="text/javascript">
+    layui.laydate.render({
+        elem: '#date'
+    });
+
+</script>
+</body>
+</html>

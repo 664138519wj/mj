@@ -1,0 +1,21 @@
+package com.migu.online.vo;
+
+/**
+ * 首页推荐老师vo
+ * @author fanyunlong
+ *
+ */
+public class TeacherDetailVo extends TeacherVo {
+	/**
+	 * 标签列表
+	 */
+	private String tags;
+
+	public String getTags() {
+		return tags;
+	}
+
+	public void setTags(String tags) {
+		this.tags = tags;
+	}
+}

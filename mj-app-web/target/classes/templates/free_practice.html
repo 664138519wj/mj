@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+<head>
+    <title>自由练习</title>
+</head>
+<body th:fragment="content" >
+            <div class="car-type">
+                <div class="plat-title">
+               		 <h2>自由练习</h2>
+                   <!--  <h2 th:if="${kemu==1}">科目一自由练习</h2>
+                    <h2 th:if="${kemu==4}">科目四自由练习</h2>   -->                 
+                    <p>—</p>
+                </div>
+                <div class="choose-box clear com-width">
+                    <ul class="choose-lang clear" style="margin:0;">
+                        <li><p><b>选择练习科目</b></p></li>
+                        <li class="fl">
+                            <input type="radio" name="rad_kemu" checked value="1">
+                            <span>科目一</span>
+                        </li>
+                        <li class="fr" style="margin-right:506px;">
+                            <input type="radio" name="rad_kemu" value="4">
+                            <span>科目四</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="choose-box clear com-width">
+                    <ul class="choose-lang fl" style="margin:0;">
+                        <li><p><b>选择语言</b></p></li>
+                        <li>
+                            <input type="radio" name="rad_language" checked value="0">
+                            <span>汉语</span>
+                        </li>
+                        <li class="writing-mode">
+                            <input type="radio" name="rad_language" value="1">
+                            <span class="writing-mode"> ᠮᠣᠩᠭᠣᠯ ᠤᠢᠰᠦᠭ </span>
+                            <!-- 蒙古文 -->
+                        </li>
+                    </ul>
+                    <ul class="choose-lang fr" style="margin-right:406px;">
+                        <li><p><b></b></p></li>
+                        <li>
+                            <input type="radio" name="rad_language" value="3">
+                            <span>ئۇيغۇر يېزىقى </span>
+                            <!-- 维吾尔文 -->
+                        </li>
+                        <li>
+                            <input type="radio" name="rad_language" value="2">
+                            <span> قازاق جازۋى ، قازاق ٴتىلى </span>
+                            <!-- 哈萨克文 -->
+                        </li>
+                    </ul>
+                </div>
+                <div class="car-main com-width clear"  style="padding-bottom:60px;">
+                    <p><b>选择车型</b></p>
+                    <ul class="clear">
+                        <li value="1">
+                            <div class="car-pic">
+                                <img th:src="@{/img/mn-pic2.png}" alt="">
+                            </div>
+                            <p>A、B</p>
+                        </li>
+                        <li value="2">
+                            <div class="car-pic">
+                                <img th:src="@{/img/mn-pic3.png}" alt="">
+                            </div>
+                            <p>C</p>
+                        </li>
+                        <li value="">
+                            <div class="car-pic">
+                                <img th:src="@{/img/mn-pic4.png}" alt="">
+                            </div>
+                            <p>D、E、F</p>
+                        </li>
+                    </ul>
+                    <div class="car-btn fr">
+                        <a href="javascript:;" id="next_a" onclick="goToPractice()" style="display:inline-block;width:60px;height:60px">
+                            <img th:src="@{/img/my-pic4.1.png}" alt="">
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" name="kemu" th:value="${kemu}" id="kemu"> 
+            <input type="hidden" name="licType" id="licType"> 
+            
+	<script>
+		$('.car-main ul li').click(
+				function() {
+					$(this).addClass('car-active').siblings('li').removeClass(
+							'car-active');
+					$('#licType').val($(this).val())					
+				})
+				
+		function goToPractice() {
+			var kemu= $("input[name='rad_kemu']:checked").val();
+			var licType = $('#licType').val();
+			var language = $("input[name='rad_language']:checked").val();
+			if (licType == '' || licType == undefined) {
+				alert("请选择车型");
+				return;
+			}
+			$('#next_a').attr("href", '[[${ctx}]]' + 'free_practice_1?kemu=' + kemu + '&licType=' + licType +'&language=' + language);
+		}		
+			
+	</script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" th:href="@{/lib/lui/css/layui.css}">
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+</head>
+<body>
+<div class="layui-container">
+<div th:html="${userAppointment.id}"></div>
+<div th:if="${edit}">
+</div>
+<form id="userAppointmentForm" class="layui-form" action="edit" method="post">
+    <input type="hidden" name="id" th:value="${userAppointment.id}"/>  
+    <div class="layui-form-item">
+        <label class="layui-form-label">手机号</label>
+        <div class="layui-form-mid" th:text="${userAppointment.userName}"></div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">用户姓名</label>
+        <div class="layui-form-mid" th:text="${userAppointment.realName}"></div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">身份证号</label>
+        <div class="layui-form-mid" th:text="${userAppointment.idNo}"></div>
+    </div>
+  
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">科目</label>
+        <div class="layui-form-mid" th:if="${userAppointment.kemu ==1}">科目一</div>
+        <div class="layui-form-mid" th:if="${userAppointment.kemu ==2}">科目二</div>
+        <div class="layui-form-mid" th:if="${userAppointment.kemu ==3}">科目三</div>
+        <div class="layui-form-mid" th:if="${userAppointment.kemu ==4}">科目四</div>
+        
+    </div> 
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">价格</label>
+        <div class="layui-form-mid" th:text="${userAppointment.price}"></div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">支付类型</label>
+        <div class="layui-form-mid"  th:text="${userAppointment.payType == 0?'在线支付':'线下支付'}"></div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">考试地点</label>
+        <div class="layui-form-mid" th:text="${userAppointment.examPlaceName}"></div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">考试地址</label>
+        <div class="layui-form-mid" th:text="${userAppointment.examPlaceAddress}"></div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">分数</label>
+        <div th:if="${edit}" class="layui-input-block">
+			<input type="text" name="score" lay-verify="title" autocomplete="off" th:value="${userAppointment.score}" placeholder="分数" class="layui-input">
+        </div>
+        <div class="layui-form-mid" th:unless="${edit}" th:text="${userAppointment.score}"></div>
+    </div>
+     <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">状态</label>
+<!--         <div th:if="${edit}" class="layui-input-block"> -->
+<!-- 			<input type="text" name="status" lay-verify="title" autocomplete="off" th:value="${userAppointment.status}" placeholder="状态" class="layui-input"> -->
+<!--         </div> -->
+<!--         <div class="layui-form-mid" th:unless="${edit}" th:text="${userAppointment.status}"></div> -->
+<div class="layui-form-mid" th:if="${userAppointment.status == 0}">预约中</div>
+<div class="layui-form-mid" th:if="${userAppointment.status == 1}">预约成功</div>
+<div class="layui-form-mid" th:if="${userAppointment.status == 2}">预约失败</div>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">考试时间</label>
+        <div class="layui-form-mid" th:text="${#dates.format(userAppointment.startTime, 'yyyy-MM-dd HH:mm:ss')}"></div>
+    </div>
+    </div>
+
+</form>
+</div>
+<script th:src="@{/lib/jquery/jquery.js}"></script>
+<script th:src="@{/lib/jquery/jquery.forms.js}"></script>
+<script th:src="@{/lib/lui/layui.all.js}"></script>
+<script type="text/javascript">
+    $.fn.serializeObject = function()
+    {
+        var o = {};
+        var a = this.serializeArray();
+        $.each(a, function() {
+            if (o[this.name] !== undefined) {
+                if (!o[this.name].push) {
+                    o[this.name] = [o[this.name]];
+                }
+                o[this.name].push(this.value || '');
+            } else {
+                o[this.name] = this.value || '';
+            }
+        });
+        return o;
+    };
+</script>
+<script type="text/javascript">
+   
+    //layui.layedit.build('LAY_demo_editor');
+
+     function checkForm(arr){
+  	  for(var i=0;i<arr.length;i++){
+  	  if($("#"+arr[i][0]).val()==''){
+  	    alert(arr[i][1]);
+  	    $("#"+arr[i][0]).focus();
+  	    return false;
+  	  }
+  	  }
+  	  return true;
+  	};
+  	//调用方式
+  	var arr=new Array(
+  	  new Array('score','分数不可为空!'),
+  	);
+    function doSave(fn){
+    	if(!checkForm(arr)){
+    		  return false;
+        } 
+        var dataParam = $("#userAppointmentForm").serialize();
+        jQuery.ajax({
+            type:"post",
+            url: '[[${baseUrl}]]ops/userappointment/save.html',
+            data: dataParam,
+            success:function(data){
+         	    if(data) {
+                    parent.tips(1, "保存成功！");
+                    fn.call();
+                }else{
+                    parent.tips(0, "保存信息失败！");
+                }  
+            },
+            error:function(e){
+                parent.tips(0,e);
+            }	    
+         })  
+
+    }
+
+</script>
+
+</body>
+</html>

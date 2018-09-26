@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="head_center">
+<head>
+<head>
+<title>个人中心</title>
+</head>
+<body>
+	<!--自主预约考试-->
+	<div class="tab" th:fragment="content" th:if="${data}">
+	   <form id="appointment_form" th:action="@{${baseUrl} + 'user/appointment'}" method="post"> 
+		
+		<div class="car-main clear">
+			<div class="test-lists">
+				<input type="hidden" id="licenceType" name="licenceType" th:value="${data.licenceType}">
+				<input type="hidden" id="kemu" name="kemu" th:value="${data.kemu}">
+				<input type="hidden" id="price" name="price" th:value="${data.price}">
+				<input type="hidden" id="examPlaceId" name="examPlaceId" th:value="${data.examPlaceId}">
+				<input type="hidden" id="examPlaceName" name="examPlaceName" th:value="${data.examPlaceName}">
+				<input type="hidden" id="startTime" name="startTime" th:value="${#dates.format(data.startTime, 'yyyy-MM-dd HH:mm:ss')}">	
+				<input type="hidden" id="appointmentId" name="appointmentId" th:value="${data.id}">	
+	               <p>
+						<b th:text="@{'考场名称：' + ${data.examPlaceName}}"></b>
+				   </p>
+	               <ul class="result-list clear" >
+	                     <li>
+	                     	<span th:text="@{'驾照类型：' + ${data.licenceType}}"></span>
+	                     	<span th:if="${data.kemu ==1}" th:text="科目一"></span>
+	                     	<span th:if="${data.kemu ==2}" th:text="科目二"></span>
+							<span th:if="${data.kemu ==3}" th:text="科目三"></span>
+							<span th:if="${data.kemu ==4}" th:text="科目四"></span>
+	                     </li>
+	                     <li>报考价格：<span th:text="${data.price}"></span></li>
+	               </ul>
+	               <ul class="result-list clear">
+	                     <li>考试时间：<span th:text="${#dates.format(data.startTime, 'yyyy-MM-dd HH:mm:ss')}"></span></li>
+	                     <li>考试地点：<span th:text="${data.examPlaceAddress}"></span></li>
+	               </ul>
+	        </div>
+			<!-- <p>
+				<b th:text="@{'驾照类型：' + ${data.licenceType}}"></b>
+				<input type="hidden" id="licenceType" name="licenceType" th:value="${data.licenceType}">
+				<input type="hidden" id="kemu" name="kemu" th:value="${data.kemu}">
+				<input type="hidden" id="price" name="price" th:value="${data.price}">
+				<input type="hidden" id="examPlaceId" name="examPlaceId" th:value="${data.examPlaceId}">
+				<input type="hidden" id="examPlaceName" name="examPlaceName" th:value="${data.examPlaceName}">
+				<input type="hidden" id="startTime" name="startTime" th:value="${#dates.format(data.startTime, 'yyyy-MM-dd HH:mm:ss')}">	
+				<input type="hidden" id="appointmentId" name="appointmentId" th:value="${data.id}">			
+						
+			</p>
+			<p>
+				<b th:if="${data.kemu ==1}" th:text="科目一"></b>
+				<b th:if="${data.kemu ==2}" th:text="科目二"></b>
+				<b th:if="${data.kemu ==3}" th:text="科目三"></b>
+				<b th:if="${data.kemu ==4}" th:text="科目四"></b>
+			</p>
+			<p>
+				<b th:text="@{'价格：' + ${data.price}}"></b>
+			</p>
+			<p>
+				<b th:text="@{'考场名称：' + ${data.examPlaceName}}"></b>
+			</p>
+			<p>
+				<b th:text="@{'考试时间：'+ ${#dates.format(data.startTime, 'yyyy-MM-dd HH:mm:ss')}}"></b>
+			</p> -->
+			
+		</div>
+		
+		<div class="test-subject clear">
+			<div class="fill-name fl">
+				<p>
+					<b>填写姓名</b><b class="required">*</b>
+				</p>
+				<input type="text" placeholder="请输入姓名" name="realName" id="realName" maxlength="20">
+			</div>
+			<div class="fill-name fr">
+				<p>
+					<b>填写身份证号码</b><b class="required">*</b>
+				</p>
+				<input type="text" placeholder="请输入身份证号码" name="idNo" id="idNo" maxlength="18">
+				<div class="mark"></div>
+			</div>
+		</div>
+				
+		<div class="test-subject pay-method">
+			<p>
+				<b>付费方式</b>
+			</p>
+			<ul class="clear" id="payType_class">
+				<li class="active" value="0">在线支付</li>
+				<li value="1">线下支付</li>
+			</ul>
+			<input type="hidden" id="payType" name="payType" value="0">			
+		</div>
+		<div class="submit-btn clear">
+		 <input type="hidden" id="relocationUrl" th:value="@{${ctx} + 'person_center/person_order_record'}">
+		 <input type="hidden" id="relocationUrl2" th:value="@{${baseUrl} + 'api/pay/web/payChoose'}">
+			<button type="button" id="submit_appointment_button">提交考试申请</button>
+		</div>
+	 </form>
+	 </div>
+</html>

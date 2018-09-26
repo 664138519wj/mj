@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" th:href="@{/lib/lui/css/layui.css}">
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+</head>
+<body>
+<div class="layui-container">
+<div th:html="${model.id}"></div>
+<div th:if="${edit}">
+</div>
+<form id="form" class="layui-form" action="edit" method="post">
+    <input type="hidden" name="id" id="id" th:value="${model.id}"/>
+    <div class="layui-form-item">
+        <label class="layui-form-label">岗位</label>
+        <div th:if="${edit}" class="layui-input-block">
+            <input  type="text" name="post" id="post" autocomplete="off" th:value="${model.post}" placeholder="岗位" class="layui-input">
+        </div>
+        <div class="layui-form-mid" th:unless="${edit}" th:text="${model.post}"></div>
+    </div>
+     <div class="layui-form-item">
+        <label class="layui-form-label">要求</label>
+        <div th:if="${edit}" class="layui-input-block">
+            <!-- <input  type="text" name="content" id="content" autocomplete="off" th:value="${model.content}" placeholder="要求" class="layui-input"> -->
+            <textarea  id="content" style="display:none;" th:text="${model.content}"></textarea>
+        </div>
+        <div class="layui-form-mid" th:unless="${edit}"  >
+        <textarea  id="content" style="display:disabled;" th:text="${model.content}"></textarea>
+        </div>
+    </div>
+    
+    
+  
+
+</form>
+</div>
+<script th:src="@{/lib/jquery/jquery.js}"></script>
+<script th:src="@{/lib/jquery/jquery.forms.js}"></script>
+<script th:src="@{/lib/lui/layui.all.js}"></script>
+
+<script type="text/javascript">
+var layedit;
+var index;
+
+layui.use('upload', function(){
+  var $ = layui.jquery
+  ,upload = layui.upload;
+  
+});
+
+layui.use('layedit', function(){
+   layedit = layui.layedit;
+ 	index =  layedit.build('content'); //建立编辑器
+});
+
+    $.fn.serializeObject = function()
+    {
+        var o = {};
+        var a = this.serializeArray();
+        $.each(a, function() {
+            if (o[this.name] !== undefined) {
+                if (!o[this.name].push) {
+                    o[this.name] = [o[this.name]];
+                }
+                o[this.name].push(this.value || '');
+            } else {
+                o[this.name] = this.value || '';
+            }
+        });
+        return o;
+    };
+    function CheckInputIntFloat(oInput){
+		if('' != oInput.value.replace(/\d{1,}\.{0,1}\d{0,}/,'')){
+		        oInput.value = oInput.value.match(/\d{1,}\.{0,1}\d{0,}/) == null ? '' :oInput.value.match(/\d{1,}\.{0,1}\d{0,}/);
+		 }
+	}
+
+    
+	
+     function checkForm(arr){
+	  for(var i=0;i<arr.length;i++){
+	  if($("#"+arr[i][0]).val()==''){
+	    alert(arr[i][1]);
+	    $("#"+arr[i][0]).focus();
+	    return false;
+	  }
+	  }
+	  return true;
+	};
+	//调用方式
+	var arr=new Array(
+	  new Array('cnName','岗位不能为空!'),
+	  new Array('enName','要求不能为空!')
+	);
+	
+    function doSave(fn){    	
+    	
+        if(!checkForm(arr)){
+  		  return false;
+        } 
+        
+        var dataParam = $("#form").serialize();
+        //获取编辑内容
+ 		var content = encodeURI(layedit.getContent(index));
+ 		alert(content);
+ 		dataParam =dataParam+"&content="+content;
+ 		//alert(dataParam);
+ 		//alert(encodeURI(content));
+          jQuery.ajax({
+            type:"post",
+            url: '[[${baseUrl}]]jobs/save.html',
+            data: dataParam,
+            success:function(data){
+         	    if(data) {
+                    parent.tips(1, "保存成功！");
+                    fn.call();
+                }else{
+                    parent.tips(0, "保存信息失败！");
+                }  
+            }
+ 	    
+         })   
+
+    }
+
+</script>
+
+
+
+</body>
+</html>

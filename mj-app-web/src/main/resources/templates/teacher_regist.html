@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+<head>
+    <title>教练注册</title>
+</head>
+<body th:fragment="content">
+	<div class="container payment-banner" style="height:92vh;">
+            <div class="xc-register">
+                <h3>注册</h3>
+                <div class="xc-regist-box">
+                    <form th:action="@{${baseUrl} + 'user/teacherRegister'}" id="register_teacher_form">
+                        <ul class="clear">
+                            <li class="xc-w240 margin40">
+                                <label for="">请输入姓名</label><b class="required">*</b><span style="color:#ff3d1f">（必填项）</span><br>
+                                <input type="text" id="name" name="name" placeholder="请输入姓名" maxlength="20">
+                            </li>
+                            <li class="xc-w280 margin40">
+                                <label for="">手机号</label><b class="required">*</b><span style="color:#ff3d1f"></span><br>
+                                <input type="text" id="mobile" name="mobile" placeholder="请输入手机号" maxlength="11">
+                            </li>
+                            <li class="xc-w280">
+                                <label for="">请输入身份证号码</label><b class="required">*</b><br>
+                                <input id="idNo" name="idNo" type="text" placeholder="请输入身份证号码" maxlength="18">
+                                <div class="xc-marks"></div>
+                            </li>
+                        </ul>
+                        <ul class="clear">
+                            <li class="xc-w120" style="margin-right:14px;">
+                                <label for="">请输入驾龄</label><b class="required">*</b><br>
+                                <input type="text" name="drivingAge" id="drivingAge" placeholder="驾龄" maxlength="3" onkeyup="this.value=this.value.replace(/[^\d]/g,'')">&nbsp;年
+                            </li>
+                            <li class="xc-w120" style="margin-right:14px;">
+                                <label for="">请输入教龄</label><b class="required">*</b><br>
+                                <input type="text" name="teachingAge" id="teachingAge" placeholder="教龄" maxlength="3" onkeyup="this.value=this.value.replace(/[^\d]/g,'')">&nbsp;年
+                            </li>
+                            <li class="xc-w240" style="margin-right:20px;">
+                                <label for="">请输入教练员证件编号</label><b class="required">*</b><br>
+                                <input type="text" name="teacherNo" placeholder="请输入教练员证件编号" maxlength="20">
+                            </li>
+                            <li class="xc-w350 fl">
+                                <label for="">请输入具体住所地址</label><b class="required">*</b><br>
+                                <input type="text" name="address" id="address" placeholder="请输入具体住所地址">                                
+                            </li>
+                        </ul>
+                        <ul class="clear">
+                            <li class="xc-w240 margin40">
+                                <label for="">请设置登录账号</label><b class="required">*</b><br>
+                                <input id="teachName" type="text" name="loginName" placeholder="请设置登录账号" maxlength="12">
+                                <div class="xc-marks"></div>
+                            </li>
+                            <li class="xc-w280 margin40">
+                                <label for="">请设置登录密码</label><b class="required">*</b><br>
+                                <input id="teachPwd" type="password" name="password" placeholder="请设置登录密码" maxlength="8">
+                                <div class="xc-marks"></div>
+                            </li>
+                            <li class="xc-w280">
+                                <label for="">请确认登录密码</label><b class="required">*</b><br>
+                                <input id="teachRePwd" type="password" name="teachRePwd" placeholder="请确认登录密码" maxlength="8">
+                                <div class="xc-marks"></div>
+                            </li>
+                            
+                        </ul>
+                        <div class="xc-is">
+                                <p class="clear">
+                                    <span>是否为驾校教练？</span>
+                                    <span class="fr">
+                                        <input id="right" type="radio" name="isSchoolTeacher" value="1"><span style="margin-right: 60px;">是</span>
+                                        <input id="deny" type="radio" name="isSchoolTeacher" value="0" checked><span style="color:#fd9938;">否</span>
+                                    </span>                                   
+                                </p>
+                                <div class="xc-input" style="display: none;">
+                                    <label for="">您所属的驾校名称&nbsp;&nbsp;&nbsp;</label>
+                                    <input type="input" id="schoolName" name="schoolName" placeholder="您所属的驾校名称">
+                                </div>
+                        </div>
+                        <div class="xc-info">
+                            <p><b>上传证件材料</b><b class="required">*</b></p>
+                            <ul class="clear">
+                                <li>
+                                    <img class="show tximg" id="myPhoto" src="" alt="" />
+                                    <img class="my-photo" th:src="@{/img/xc-img1.png}" alt="" />
+                                    <input id="myInput" type="file" name="file1" accept="image/*" />
+                                </li>
+                                <li>
+                                    <img class="show tximg" id="coachCard" src="" alt="" />
+                                    <img class="coach-card" th:src="@{/img/xc-img2.png}" alt="" />
+                                    <input id="coachInput" type="file" name="file2" accept="image/*" />
+                                </li>
+                                <li>
+                                    <img class="show tximg" id="facePic" src="" alt="" />
+                                    <img class="face-pic" th:src="@{/img/xc-img3.png}" alt="" />
+                                    <input id="faceInput" type="file" name="file3" accept="image/*" />
+                                </li>
+                                <li>
+                                    <img class="show tximg" id="backPic" src="" alt="" />
+                                    <img class="back-pic" th:src="@{/img/xc-img4.png}" alt="" />
+                                    <input id="backInput" type="file" name="file4" accept="image/*" />
+                                </li>
+                            </ul>
+                            <input type="hidden" name="photo" id="photo">												
+						    <input type="hidden" name="coachPhoto" id="coachPhoto">
+                            <input type="hidden" name="idUp" id="idUp">												
+						    <input type="hidden" name="idDown" id="idDown">
+                        </div>
+                        <div class="xc-next">
+                            <input type="button" id="teacher_register_submit" value="提交">
+                        </div>
+                    </form>
+                </div>
+            </div>
+    </div>
+    <script type="text/javascript">
+    $(function(){
+        $("#myInput").change(function() {
+            if(checkMyPhoto()) {
+                $(".tximg").attr("src", perPic(this.id, 'myPhoto'));
+                $('.my-photo').hide();
+            }
+        });
+        function checkMyPhoto() {
+            var picPath = $("#myInput").val();
+            var type = picPath.substring(picPath.lastIndexOf(".") + 1, picPath.length).toLowerCase();
+            if(type != "jpg" && type != "bmp" && type != "gif" && type != "png") {
+                alert("请上传正确的图片格式");
+                return false;
+            }
+            return true;
+        }
+
+        $("#coachInput").change(function() {
+            if(checkCoachCard()) {
+                $(".tximg").attr("src", perPic(this.id, 'coachCard'));
+                $('.coach-card').hide();
+            }
+        });
+        function checkCoachCard() {
+            var picPath = $("#coachInput").val();
+            var type = picPath.substring(picPath.lastIndexOf(".") + 1, picPath.length).toLowerCase();
+            if(type != "jpg" && type != "bmp" && type != "gif" && type != "png") {
+                alert("请上传正确的图片格式");
+                return false;
+            }
+            return true;
+        }
+
+        $("#faceInput").change(function() {
+            if(checkFacePic()) {
+                $(".tximg").attr("src", perPic(this.id, 'facePic'));
+                $('.face-pic').hide();
+            }
+        });
+
+        function checkFacePic() {
+            var picPath = $("#faceInput").val();
+            var type = picPath.substring(picPath.lastIndexOf(".") + 1, picPath.length).toLowerCase();
+            if(type != "jpg" && type != "bmp" && type != "gif" && type != "png") {
+                alert("请上传正确的图片格式");
+                return false;
+            }
+            return true;
+        }
+        $("#backInput").change(function() {
+            if(checkBackInput()) {
+                $(".tximg").attr("src", perPic(this.id, 'backPic'));
+                $('.back-pic').hide();
+            }
+        });
+
+        function checkBackInput() {
+            var picPath = $("#backInput").val();
+            var type = picPath.substring(picPath.lastIndexOf(".") + 1, picPath.length).toLowerCase();
+            if(type != "jpg" && type != "bmp" && type != "gif" && type != "png") {
+                alert("请上传正确的图片格式");
+                return false;
+            }
+            return true;
+        }
+
+        function perPic(sourceId, targetId) {
+            if(typeof FileReader === 'undefined') {
+                alert('Your browser does not support FileReader...');
+                return;
+            }
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var img = document.getElementById(targetId);
+                img.src = this.result;
+                return img.src;
+            };
+            reader.readAsDataURL(document.getElementById(sourceId).files[0]);
+        }
+    });
+    
+    $(function(){
+        $("#right").click(function(){
+            if($(this).prop("checked") == true){
+                $(this).next("span").css("color",'#fd9938');
+                $("#deny").next("span").css("color","#666");
+                $(".xc-input").show();
+            }
+        });
+        $("#deny").click(function(){
+            if($(this).prop("checked") == true){
+                $(this).next("span").css("color","#fd9938");
+                $("#right").next("span").css("color",'#666');
+                $(".xc-input").hide();
+            }
+        })
+    });
+
+    $(function(){
+   
+         //  验证教师身份证号
+	    var Validator = new IDValidator();
+        /* $('input[name="idNo"]').keyup(function() {
+            var IDcard = $("#idNo").val();
+            var i = Validator.isValid(IDcard);
+            if(i == false){
+                $(this).next(".xc-marks").show().html("身份证号码不合法！");
+            }else{
+                $(this).next(".xc-marks").hide();
+            }
+        });
+        //验证教师登录名
+        $('#teachName').keyup(function() {
+            var teachName = $("#teachName").val();
+            if(teachName.search(/^[a-zA-Z0-9]{4,12}\w*$/) == -1) {
+                $(this).next(".mark").show().text("请输入正确格式的登录名");
+                return false;
+            }else{
+                $(this).next(".mark").hide();
+            }
+        });
+        //验证密码
+        $('#teachPwd').keyup(function() {
+            var teachPwd = $("#teachPwd").val();
+            if(teachPwd.search(/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,8}$/) == -1) {
+                $(this).next(".mark").show().text("请输入数字与字母结合6-8位字符");
+                return false;
+            }else{
+                $(this).next(".mark").hide();
+            }
+        });
+        //确认密码
+        $('#teachRePwd').keyup(function() {
+            var teachPwd = $("#teachPwd").val();
+            var teachRePwd = $("#teachRePwd").val();
+            if(teachPwd != teachRePwd) {
+                $(this).next(".mark").show().text("两次密码不一致");
+                return false;
+            }else{
+                $(this).next(".mark").hide();
+            }
+        });  */
+        // 入参校验
+        function basicParamValidate() {
+        	//自主预约and驾校报名验证手机号码and身份证号码
+            var mobile = $("#mobile").val();
+            if(mobile.search(/^[1][3,4,5,6,7,8][0-9]{9}$/) == -1) {
+                alert('请输入大陆手机号码！');
+                return false; 
+            }          
+            // ID
+            var IDcard = $("#idNo").val();
+            var i = Validator.isValid(IDcard);
+            if(i == false){
+            	alert('身份证号码不合法!');
+            	return false;
+            }
+            //验证教师登录名        
+            var teachName = $("#teachName").val();
+            if(teachName.search(/^[a-zA-Z0-9]{4,12}\w*$/) == -1) {
+            	alert("请输入正确格式的登录名");
+                return false;
+            }       
+            //验证密码    
+            var teachPwd = $("#teachPwd").val();
+            if(teachPwd.search(/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,8}$/) == -1) {
+            	alert("请输入数字与字母结合6-8位字符");
+                return false;
+            }       
+            //确认密码        
+            var teachPwd = $("#teachPwd").val();
+            var teachRePwd = $("#teachRePwd").val();
+            if(teachPwd != teachRePwd) {
+            	alert("两次密码不一致");
+                return false;
+            }
+            return true;
+        };
+        // validate
+        function checkForm(arr) {
+    		for (var i = 0; i < arr.length; i++) {
+    			if ($("#" + arr[i][0]).val() == '') {
+    				alert(arr[i][1]);
+    				$("#" + arr[i][0]).focus();
+    				return false;
+    			}
+    		}
+    		return true;
+    	};
+    	
+        var registerTeacher = new Array(
+    			new Array('name', '姓名不能为空!'),
+    			new Array('mobile','手机号码不能为空!'), 
+    			new Array('idNo','身份证号码不能为空!'), 
+    			new Array('teacherNo','教练证号不能为空!'), 
+    			new Array('drivingAge','驾龄不能为空!'), 
+    			new Array('teachingAge','教龄不能为空!'), 
+    			new Array('address','住址不能为空!'), 
+    			new Array('photo', '请上传照片!'),
+    			new Array('coachPhoto', '请上传教练员证件照片!'),
+    			new Array('idUp', '请上传身份证正面!'),
+    			new Array('idDown', '请上传身份证反面!')
+        );
+        $("#teacher_register_submit").click(function(){		
+    		
+             var idUpStr = $('#facePic')[0].src;
+    		if (idUpStr != undefined && idUpStr.indexOf(",") != -1) {
+    	        $('#idUp').val(idUpStr.split(",")[1]);
+    		}
+    		var idDownStr = $('#backPic')[0].src;
+    		if (idDownStr != undefined && idDownStr.indexOf(",") != -1) {
+    	        $('#idDown').val(idDownStr.split(",")[1]);
+    		}
+    		var photoStr = $('#myPhoto')[0].src;
+    		if (photoStr != undefined && photoStr.indexOf(",") != -1) {
+    	        $('#photo').val(photoStr.split(",")[1]);
+    		}
+    		var coachCardStr = $('#coachCard')[0].src;
+    		if (coachCardStr != undefined && coachCardStr.indexOf(",") != -1) {
+    	        $('#coachPhoto').val(coachCardStr.split(",")[1]);
+    		}
+    		 // null check
+    		if (!checkForm(registerTeacher)) {
+    			return false;
+    		} 
+    		//自主预约and驾校报名验证手机号码and身份证号码
+            var mobile = $("#mobile").val();
+            if(mobile.search(/^[1][3,4,5,6,7,8][0-9]{9}$/) == -1) {
+                alert('请输入大陆手机号码！');
+                return false; 
+            }          
+            // ID
+            var IDcard = $("#idNo").val();
+            var i = Validator.isValid(IDcard);
+            if(i == false){
+            	alert('身份证号码不合法!');
+            	return false;
+            }
+            //验证教师登录名        
+            var teachName = $("#teachName").val();
+            if(teachName.search(/^[a-zA-Z0-9]{4,12}\w*$/) == -1) {
+            	alert("请输入正确格式的登录名");
+                return false;
+            }       
+            //验证密码    
+            var teachPwd = $("#teachPwd").val();
+            if(teachPwd.search(/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,8}$/) == -1) {
+            	alert("请输入数字与字母结合6-8位字符");
+                return false;
+            }       
+            //确认密码        
+            var teachPwd = $("#teachPwd").val();
+            var teachRePwd = $("#teachRePwd").val();
+            if(teachPwd != teachRePwd) {
+            	alert("两次密码不一致");
+                return false;
+            }
+    		/* // illegal check
+    		 if (!basicParamValidate()) {
+    			return false;
+    		}    */
+    		var dataParam = $("#register_teacher_form").serialize();
+    		jQuery.ajax({
+    			type : "post",
+    			url : $("#register_teacher_form").attr("action"),
+    			data : dataParam,
+    			success : function(data) {
+    				if (data) {
+    					if (data.status == '0') {
+    						alert(data.msg);
+    						return;
+    					}  else {
+    						if(confirm("您已注册成功，后台会尽快审核您的材料")){
+    							window.history.go(-1);
+    						}
+    					}    					
+    				} else {
+    					alert("系统异常");
+    				}
+    			},
+    			error : function(e) {
+    			}
+    		})
+    	});       
+            
+    })
+</script>
+</body>
+</html>

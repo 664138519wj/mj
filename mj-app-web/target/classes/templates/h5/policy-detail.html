@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<title>驾考政策详情</title>
+	<script type="text/javascript" th:src="@{/js/rem.js}"></script>
+    <link rel="stylesheet" href="css/h5/common.css" th:href="@{/css/h5/common.css}"/>
+    <link rel="stylesheet" href="css/h5/style.css" th:href="@{/css/h5/style.css}"/>
+</head>
+<body>
+	<div class="com-width policy-detail">
+		<h2 class="title"><span th:text="${data.title}"></span></h2>
+		<!-- Editable AREA|START -->
+		<span th:utext="${data.content}"></span>
+		<!-- Editable AREA|END -->
+	</div>
+</body>
+</html>

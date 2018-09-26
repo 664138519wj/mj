@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+<head>
+    <title>私教陪练课程详情</title>
+</head>
+<body th:fragment="content" >
+<script>
+    $(function(){
+    	
+    	$(".login-btn .sure").click(function(){
+    		$(location).attr('href', '[[${ctx}]]auth/toLogin?redirectUrl=[[${ctx}]]private_tutor_detail?id=[[${data.id}]]');  
+    	});
+    	$(".pay-btn .sure").click(function(){
+    		$("#pay_form").submit();
+    	});
+    	
+    	
+        $('.course-btn').click(function(){
+        	var isLogin = [[${isLogin}]];
+        	if (isLogin == true) {
+        		 $('.pay').show();
+        	} else {
+        		 $('.tips').show();
+        	}          
+        });
+        $('.sure').click(function(){
+            $('.buy-method').hide();
+            $('.after-choose').show();
+        });
+        $('.cancel').click(function(){
+            $('.buy-card-box').hide();
+        })
+    })
+</script>  
+         <!-- content -->
+        <div class="content xc-content">
+            <div class="com-width">
+                <div class="course-detail">
+                    <div class="top-model clear">
+                        <div class="teacher-pic fl">
+                            <img th:src="${imageUrl} + ${data.imagePath}" alt="">
+                        </div>
+                        <div class="teacher-profile fl">
+                            <p><b th:text="${data.title}"></b></p>
+                            <p th:text="${data.content}"></p>
+                            <p>教学地点：<span th:text="${data.address}"></span></p>
+                            <p>所属科目：<span th:if="${data.type == 2}">科目二</span><span th:if="${data.type==3}">科目三</span>
+                            <span>价格：</span><b th:text="@{'￥' + ${data.price}}"></b><span style="margin-left:80px;">开课时间：</span><span th:text="${#dates.format(data.beginTime, 'yyyy-MM-dd HH:mm:ss')}"></span></p>
+                          
+                        </div>
+                        <div class="course-btn fr" th:unless="${isPay}">
+                            <button type="button">报名</button>
+                        </div>
+                        <div class="course-btn fr" th:if="${isPay}">
+                             <button type="button" style="background:#ccc;">已报名</button>                          
+                        </div>
+                    </div>
+                    <div class="bottom-model clear">
+                       <a th:href="@{${ctx} + 'platform_teacher_detail?id=' + ${tData.id}}">
+                        <div class="header-pic fl">
+                            <img th:src="${imageUrl} + ${tData.avator}" alt="">
+                        </div>
+                        <div class="teacher-profile fl">
+                            <p><b th:text="${tData.name}"></b><span th:text="@{${tData.teachingAge} + '年教龄'}"></span></p>
+                            <p th:text="${tData.tags}"></p>
+                        </div>
+                       </a> 
+                    </div>
+                </div>
+            </div>
+            <!--recommend course-->
+            <div class="recommend-course">
+                <div class="plat-title">
+                    <h2>平台推荐私教课程</h2>
+                    <p>—</p>
+                </div>
+                <div class="xc-tutor-main com-width">
+                    <ul class="clear">
+		                 <li th:each="data2:${recommandList}">
+	                       <a th:href="@{${ctx} + 'private_tutor_detail?id=' + ${data.id}}">
+	                            <div class="xc-tutor-course clear">
+	                                <div class="xc-pic fl">
+	                                    <img th:src="${imageUrl} + ${data2.imagePath}" alt="">
+	                                </div>
+	                                <div class="xc-tutor-desc fl">
+	                                    <h3 th:text="${data.title}"></h3>
+	                                    <div class="xc-kemu clear">
+	                                        <p class="xc-mr80">对应科目：<span th:text="${data2.kemu}"></span></p>
+	                                        <p>授课老师：<span th:text="${data2.teacherName}"></span></p>
+	                                        <ul class="xc-start xc-mr80 clear">
+	                                            <li th:class="${data2.score >=1 ? 'xc-start-active':''}">★</li>
+					                            <li th:class="${data2.score >=2 ? 'xc-start-active':''}">★</li>
+					                            <li th:class="${data2.score >=3 ? 'xc-start-active':''}">★</li>
+					                            <li th:class="${data2.score >=4 ? 'xc-start-active':''}">★</li>
+					                            <li th:class="${data2.score >=5 ? 'xc-start-active':''}">★</li>
+	                                        </ul>
+	                                        <p>开课时间：<span th:text="${#dates.format(data2.beginTime, 'yyyy-MM-dd HH:mm:ss')}"></span></p>
+	                                    </div>
+	                                    <p th:text="@{'教学地址：' + ${data2.address}}"></p>
+	                                    <p class="xc-price">价格：<span th:text="@{'￥' + ${data2.price}}"></span></p>
+	                                </div>
+	                            </div>
+	                        </a>
+	                    </li>
+	                </ul>
+                </div>
+            </div>
+        </div>
+    <!-- 未登录提示 -->
+    <div class="buy-card-box tips" style="display:none;">
+        <div class="pay-fade">
+            <p>温馨提示</p>
+            <div class="tips-word">线下课程需要登录后才能报名，您还未登录。</div>
+            <div class="login-btn clear">
+                <button class="cancel" type="button">取消</button>
+                <button class="sure" type="button">去登录</button>
+            </div>
+        </div>
+    </div>
+    <!--支付-->
+    <div class="buy-card-box pay" style="display: none;">
+      <form method="post" id="pay_form" th:action="@{${baseUrl} + 'api/pay/web/order'}">
+        <div class="pay-fade buy-method">
+            <p>线下课程报名</p>
+            <div class="pay-box">
+                <p><b th:text="@{'￥' + ${data.price}}"></b></p>
+                <ul class="pay-head">
+                    <li>
+                        <img th:src="@{/img/pay-apliy.png}" alt="">
+                        <span>支付宝支付</span>
+                        <input type="radio" name="payType" value="2" checked="checked">
+                    </li>
+                    <li>
+                        <img th:src="@{/img/pay-weChat.png}" alt="">
+                        <span>微信支付</span>
+                        <input type="radio" name="payType" value="1">
+                    </li>
+                </ul>
+            </div>
+            <input type="hidden" name="courseType" value="6"/>
+            <input type="hidden" name="courseId" th:value="${data.id}"/>
+            <div class="pay-btn clear">
+                <button class="cancel" type="button">取消</button>
+                <button class="sure" type="button">确认选择</button>
+            </div>
+        </div>
+        </form>
+     </div>
+        <!-- 
+        <div class="pay-fade after-choose" style="display: none;">
+            <p>线下课程报名</p>
+            <div class="pay-head">
+                <img th:src="@{/img/pay-apliy.png}" alt="">
+                <span>支付宝支付</span>
+                <b>￥3860</b>
+            </div>
+            <div class="code-img">
+                <img th:src="@{/img/code.png}" alt="">
+            </div>
+        </div>-->
+ 
+</body>
+</html>

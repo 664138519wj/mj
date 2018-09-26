@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+<link rel="stylesheet" th:href="@{/lib/lui/css/layui.css}">
+<!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+<style type="text/css">
+</style>
+</head>
+<body>
+	<div th:html="${lessonId}" id="lessonId"></div>
+	<div th:html="${userCourseId}" id="userCourseId"></div>
+
+	<fieldset class="layui-elem-field">
+		<div class="site-text site-block">
+			<div class="layui-row">
+				<div class="layui-col-xs8">
+					<div class="grid-demo grid-demo-bg1">
+						<form class="layui-form" action="">
+						  <div class="layui-form-item">
+                            <label class="layui-form-label">班级编号</label>
+                            <div class="layui-input-block">
+                               <input type="text" name="classNo" id="classNo"
+							 class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">班级名称</label>
+                            <div class="layui-input-block">
+                               <input type="text" name="className" id="className"
+							class="layui-input">
+                            </div>
+                        </div>
+						</form>
+					</div>
+				</div>
+				<div class="layui-col-xs4">
+					<div class="grid-demo">
+						<div class="layui-input-block">
+							<button class="layui-btn" onclick="filter()">查询</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</fieldset>
+	<table id="schoolClass" class="layui-table"
+		lay-filter="classTable">
+		<thead>
+			<tr>
+				<th lay-data="{field:'id',type:'radio'}">ID</th>
+				<th lay-data="{field:'name', width:150, sort: true}">驾照类型</th>
+				<th lay-data="{field:'classNo', width:150, sort: true}">班级编号</th>
+				<th lay-data="{field:'className', width:150, sort: true}">班级名称</th>
+				<th lay-data="{field:'startTime' , width:150,sort: true,templet:'#dateTpl'}">开班时间</th>
+				 <th lay-data="{fixed: 'right', width:178, align:'center', toolbar: '#operation'}"></th>  
+			</tr>
+		</thead>
+	</table>
+
+	
+
+
+
+	<script th:src="@{/lib/jquery/jquery.js}"></script>
+<script th:src="@{/lib/jquery/jquery.forms.js}"></script>
+<script th:src="@{/lib/lui/layui.all.js}"></script>
+	<script id="operation" type="text/html">
+     <a class="layui-btn layui-btn-xs" lay-event="adjustToThis">调至该班</a>
+	</script>
+
+	<script type="text/javascript">
+		layui.laydate.render({
+			elem : '#startTime',
+			type : 'date'
+		});
+		
+		
+		var lessonId = $("#lessonId").attr("html");
+		
+		var table = layui.table;
+		
+	    var options={url : 'getAdjustClasses?lessonId='+lessonId, //请求地址
+								method : 'get', //方式
+								id : 'classesReload', //生成 Layui table 的标识 id，必须提供，用于后文刷新操作，笔者该处出过问题
+								page : false, //是否分页
+								limit:20,
+								request: {
+									'page':1,
+									'limit':30,
+									'lessonId' :lessonId
+								},
+								response: {
+									  statusName: 'code' //数据状态的字段名称，默认：code
+									  ,statusCode: 0 //成功的状态码，默认：0
+									  ,msgName: 'msg' //状态信息的字段名称，默认：msg
+									  ,countName: 'count' //数据总数的字段名称，默认：count
+									  ,dataName: 'data' //数据列表的字段名称，默认：data
+									}  
+				};
+	
+	table.init('classTable',options);
+	
+    
+    function filter() {
+			 var lessonId = $("#lessonId").attr("html");
+			 var className = $("#className").val();
+        	 var classNo = $("#classNo").val();
+		
+			table.reload("classesReload", {
+			url : 'getAdjustClasses',
+				where : {
+					lessonId : lessonId,
+					classNo : classNo,
+					className : className
+				}
+			}) ;
+	
+		}
+	
+		//table点击事件
+		table.on("tool(classTable)", function(obj) {
+			 var userCourseId = $("#userCourseId").attr("html");
+			 var disLessonId = obj.data.id;
+			 if (obj.event === 'adjustToThis') {
+				doAdjust(userCourseId,disLessonId);
+			}
+		});
+	
+		function doAdjust(userCourseId,  disLessonId) {
+			jQuery.ajax({
+            type:"post",
+            url: 'saveAdjust',
+            data: {userCourseId:userCourseId,
+                   disLessonId:disLessonId},
+            success:function(data){
+         	    if(data) {
+         	    	var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+					/* parent.layer.close(index);  // 关闭layer
+					parent.layer.filter(); */
+					parent.layer.closeAll('iframe'); 
+                    parent.tips(1, "调班成功！");
+                }else{
+                    parent.tips(0, "调班失败！");
+                }  
+            }   
+         })  
+		}
+	 
+
+    
+	</script>
+	<script id="dateTpl" type="text/html">
+    {{# var date = layui.util.toDateString(d.startTime, 'yyyy-MM-dd') }}
+    <span>{{date}}</span>
+</script>
+
+</body>
+</html>

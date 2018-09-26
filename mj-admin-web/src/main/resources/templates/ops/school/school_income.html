@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" th:href="@{/lib/lui/css/layui.css}">
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+    <style type="text/css">
+        .layui-table-box {
+            min-height: 450px;
+        }
+    </style>
+</head>
+<body>
+
+<div style="text-align:center;margin:30px auto;">
+    <button class="layui-btn layui-btn-lg layui-btn-primary layui-btn-radius">可用余额: <span th:text="${remain}"></span></button>
+    =
+    <button class="layui-btn layui-btn-lg layui-btn-primary layui-btn-radius">分润比例: <span th:text="${profitRatio}"></span></button>
+    *
+    <button class="layui-btn layui-btn-lg layui-btn-primary layui-btn-radius">收益总额: <span th:text="${income}"></span></button>
+    -
+    <button class="layui-btn layui-btn-lg layui-btn-primary layui-btn-radius">提现总额: <span th:text="${withdraw}"></span></button>
+</div>
+
+<fieldset class="layui-elem-field">
+    <div class="site-text site-block">
+        <div class="layui-row">
+            <div class="layui-col-xs8">
+                <div class="grid-demo grid-demo-bg1">
+                    <form class="layui-form" action="">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">驾照类型</label>
+                            <div class="layui-input-block">
+                               <select name="licence" id="licence">
+                               		<option value="">全部</option>
+								 	<option value="A1">A1-大型客车</option>
+				                    <option value="A2">A2-牵引车</option>
+				                    <option value="A3">A3-城市公共汽车</option>
+				                    <option value="B1">B1-中型客车</option>
+				                    <option value="B2">B2-大型货车</option>
+				                    <option value="C1">C1-小型汽车</option>
+				                    <option value="C2">C2-小型自动档汽车</option>
+				                    <option value="C3">C3-低速载货汽车</option>
+				                    <option value="C4">C4-三轮汽车</option>
+				                    <option value="C5">C5-残疾人专用小型自动挡载客汽车</option>
+				                    <option value="D">D-三轮摩托车</option>
+				                    <option value="E">E-二轮摩托车</option>
+				                    <option value="F">F-轻便摩托车</option>
+				                    <option value="M">M-轮式自行机械车</option>
+				                    <option value="N">N-无轨电车</option>
+				                    <option value="P">P-有轨电车</option>
+								 </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">开班时间</label>
+                            <div class="layui-input-block">
+                               <input type="text" name="startTime" id="startTime"
+							placeholder="yyyy-MM-dd"  class="layui-input">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="layui-col-xs4">
+                <div class="grid-demo">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" onclick="filter()">查询</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</fieldset>
+
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+    <legend>收益明细</legend>
+</fieldset>
+
+
+<table id="table" class="layui-table" lay-data="{cellMinWidth: 80, page: true, limit:20, url:'detailData'}" lay-filter="courseTable">
+    <thead>
+	    <tr>
+	        <th lay-data="{field:'id',type:'checkbox'}">ID</th>
+	        <th lay-data="{field:'licenceName', width:200, sort: true}">驾照类型</th>
+	        <th lay-data="{field:'classNo', width:130,  sort: true}">班级编号</th>
+	        <th lay-data="{field:'className', width:150,  sort: true}">班级名称</th>
+	        <th lay-data="{field:'startTime', width:150, sort: true,templet:'#dateTpl'}">开班时间</th>
+	        <th lay-data="{field:'price', width:100, sort: true}">报名费用</th>
+	        <th lay-data="{field:'userName', width:200, sort: true}">学生姓名</th>
+	        <th lay-data="{field:'payStatus', width:100, sort: true,templet:'#payStatus'}">支付状态</th>
+	     	<th lay-data="{field:'refundStatus', width:100, sort: true,templet:'#refundStatus'}">退款状态</th>
+	        <th lay-data="{field:'sex', width:100, sort: true,templet:'#sex'}">性别</th>
+	        <th lay-data="{field:'firstApply', width:150, sort: true,templet:'#firstApply'}">是否初次领证</th>
+	        <th lay-data="{field:'payType', width:100, sort: true,templet:'#payType2'}">付费方式</th>
+	        <th lay-data="{field:'telNo', width:200, sort: true}">手机号码</th>
+	        <th lay-data="{field:'idUp', width:200, sort: true}">身份证正面照片</th>
+	        <th lay-data="{field:'idDown', width:200, sort: true}">身份证反面照片</th>
+	    </tr>
+    </thead>
+</table>
+
+
+<script th:src="@{/lib/jquery/jquery.js}"></script>
+<script th:src="@{/lib/lui/layui.all.js}"></script>
+
+
+<script type="text/javascript">
+layui.laydate.render({
+        elem: '#startTime'
+        ,type: 'date'
+    });
+    
+    var table = layui.table;
+    var layer = layui.layer;
+
+    var iframeWin = null;
+
+
+    function filter(){
+        var licence = $("#licence").val();
+        var startTime = $("#startTime").val();
+         table.reload("table",{
+             where:{licence:licence,startTime:startTime}
+         })
+        
+    }
+</script>
+<script id="dateTpl" type="text/html">
+    {{# var date = layui.util.toDateString(d.startTime, 'yyyy-MM-dd') }}
+    <span>{{date}}</span>
+</script>
+
+<script id="firstApply" type="text/html">
+				{{#  
+			if(d.firstApply == 0){ }}
+			     <span>否</span>
+ 				 {{#   }
+			else if(d.firstApply == 1){ }}
+			     <span>是</span>
+ 				 {{#   }
+			
+				}}
+</script>
+
+<script id="sex" type="text/html">
+				{{#  
+			if(d.sex == 0){ }}
+			     <span>男</span>
+ 				 {{#   }
+			else if(d.sex == 1){ }}
+			     <span>女</span>
+ 				 {{#   }
+			
+				}}
+</script>
+
+<script id="payType2" type="text/html">
+				{{#  
+			if(d.payType == 0){ }}
+			     <span>在线支付</span>
+ 				 {{#   }
+			else if(d.payType == 1){ }}
+			     <span>线下支付</span>
+ 				 {{#   }
+			
+				}}
+</script>
+
+<script id="payStatus" type="text/html">
+				{{#  
+			if(d.payStatus == 0){ }}
+			     <span>未支付</span>
+ 				 {{#   }
+			else if(d.payStatus == 1){ }}
+			     <span>支付等待反馈</span>
+ 				 {{#   }
+			else if(d.payStatus == 2){ }}
+			     <span>支付成功</span>
+ 				 {{#   }
+			
+				}}
+</script>
+
+<script id="refundStatus" type="text/html">
+				{{#  
+			if(d.refundStatus == 0){ }}
+			     <span>无退款</span>
+ 				 {{#   }
+			else if(d.refundStatus == 1){ }}
+			     <span>申请退款</span>
+ 				 {{#   }
+			else if(d.refundStatus == 2){ }}
+			     <span>已退款</span>
+ 				 {{#   }
+			
+				}}
+</script>
+
+</body>
+</html>

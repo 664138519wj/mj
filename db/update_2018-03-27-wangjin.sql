@@ -1,0 +1,1 @@
+ALTER TABLE `ssm`.`driving_school_lesson` ADD COLUMN `lesson_name` varchar(50);	

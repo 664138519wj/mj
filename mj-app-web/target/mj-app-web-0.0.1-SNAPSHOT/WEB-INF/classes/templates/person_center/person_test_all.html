@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="head_center">
+<head>
+<head>
+<title>个人中心</title>
+</head>
+<body th:fragment="content">
+	<!--自由练习-->
+	<div class="tab">
+		<div class="plat-title">
+			<h2>答题记录</h2>
+		</div>
+		<div class="test-list">
+			<ul>
+				<li th:each="data:${pageList}">
+					<div class="test-name fl">
+						<p>
+							<b th:text="${data.kemu == 1? '【科一】':'【科四】'}"></b><b th:text="${data.type == 0? '模拟考试':'自由练习'}"></b>
+						</p>
+						<p th:text="${data.licTypeStr}"></p>
+						<p th:text="@{'时间：' + ${data.createTimeStr}}"></p>
+					</div>
+					<div class="test-result fr">
+						<p>
+							错题率：<b th:text="@{${data.errorRate} + '%'}"></b>
+						</p>
+						<a th:if="${data.errorRate > 0}" th:href="@{${ctx} + 'wrongAnsList?examId=' + ${data.examId} + '&curIndex=1'}"><button class="check-error">查看错题</button></a>
+<!-- 						<a th:href="@{${ctx} + 'reviewTest?examId=' + ${data.examId} + '&curIndex=1'}"><button class="review">复习</button></a> -->
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+</body>
+</html>

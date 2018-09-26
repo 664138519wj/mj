@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+ <head>   
+ <title>首页</title>    
+</head>
+
+<body th:fragment="content">
+        <!--banner-->
+        <div class="swiper-container">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide" th:each="banner:${shufflingList}">
+                    <a th:href="${banner.url}"><img th:src="${imageUrl} + ${banner.imagePath}" alt=""></a>
+                </div>               
+            </div>
+            <!-- Add Pagination -->
+            <div class="swiper-pagination"></div>
+        </div>
+        <!--content-->
+        <div class="content">
+            <div class="index-title">
+                Welcome —
+            </div>
+            <div class="index-label">
+                <div class="com-width clear">
+                	<div class="label-box">
+                        <a th:href="@{${ctx} + 'school_sign_up?areaName=全部&priceStr=全部&licenceName=全部'}">
+                            <div class="index-img-box">
+                                <img class="label-img1" th:src="@{/img/index-label1.png}" alt="">
+                                <img class="label-img2" th:src="@{/img/index-label1.1.png}" alt="">
+                            </div>
+                            <p>驾校报名</p>
+                        </a>
+                    </div>
+                    <div class="label-box">
+                        <a th:href="@{${ctx} + 'platform_course'}">
+                            <div class="index-img-box">
+                                <img class="label-img1" th:src="@{/img/index-label5.png}" alt="">
+                                <img class="label-img2" th:src="@{/img/index-label5.1.png}" alt="">
+                            </div>
+                            <p>课程报名</p>
+                        </a>
+                    </div>
+                    <div class="label-box">
+                        <a th:href="@{${ctx} + 'test_plan?kemuStr=全部&licenceName=全部'}">
+                            <div class="index-img-box">
+                                <img class="label-img1" th:src="@{/img/index-label6.png}" alt="">
+                                <img class="label-img2" th:src="@{/img/index-label6.1.png}" alt="">
+                            </div>
+                            <p>预约考试</p>
+                        </a>
+                    </div>
+                    <div class="label-box">
+                        <a th:href="@{${ctx} + 'free_practice?kemu=1'}">
+                            <div class="index-img-box">
+                                <img class="label-img1" th:src="@{/img/index-label7.png}" alt="">
+                                <img class="label-img2" th:src="@{/img/index-label7.1.png}" alt="">
+                            </div>
+                            <p>理论练习</p>
+                        </a>
+                    </div>
+                    <div class="label-box" id="last_box">
+                        <a href="javascript:;">
+                            <div class="index-img-box">
+                                <img class="label-img1" th:src="@{/img/index-label3.png}" alt="">
+                                <img class="label-img2" th:src="@{/img/index-label3.1.png}" alt="">
+                            </div>
+                            <p>场地练习</p>
+                        </a>
+                    </div>
+                 
+                </div>
+            </div>
+            <!--The training teacher-->
+            <div class="index-platform">
+                <div class="plat-title">
+                    <h2>平台推荐培训老师</h2>
+                    <b>The training teacher</b>
+                    <p>—</p>
+                </div>
+                <div class="plat-teacher">
+                    <div class="teacher-box com-width clear">
+                        <div class="plat-box fl" th:each="teacher:${teacherList}">
+                            <a th:href="@{${ctx} + 'platform_teacher_detail?id=' + ${teacher.id}}">
+                                <div class="teacher-img">
+                                    <img th:src="${imageUrl} + ${teacher.avator}" alt="">
+                                </div>
+                                <div class="teacher-desc">
+                                    <h3><span th:text="${teacher.name}"/></h3>
+                                    <p>教龄：<span th:text="${teacher.teachingAge}"/></p>
+                                    <img class="pic1" th:src="@{/img/index-pic2.png}"  alt="">
+                                    <img class="pic2" th:src="@{/img/index-pic2.1.png}" alt="">
+                                </div>
+                            </a>
+                        </div>
+                        
+                        <div class="label-add">
+                            <a th:href="@{${ctx} + 'platform_teacher'}">
+                                <img th:src="@{/img/index-pic3.png}" alt="">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Simulation test-->
+            <div class="index-test com-width clear">
+                <div class="mock-box mock-box1 fl">
+                    <p>ㅡ&nbsp;模拟考试</p>
+                    <div class="test clear">
+                        <div class="test-name fl">
+                            <h3>科目一模拟考试</h3>
+                            <p>Simulation test</p>
+                        </div>
+                        <div class="test-btn fr">
+                            <a th:href="@{${ctx} + 'simulation_test?kemu=1'}">开始考试</a>
+                        </div>
+                    </div>
+                    <div class="test clear">
+                        <div class="test-name fl">
+                            <h3>科目四模拟考试</h3>
+                            <p>Simulation test</p>
+                        </div>
+                        <div class="test-btn fr">
+                            <a th:href="@{${ctx} + 'simulation_test?kemu=4'}">开始考试</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="mock-box mock-box2 fr">
+                    <p>ㅡ&nbsp;自由练习</p>
+                    <div class="test clear">
+                        <div class="test-name fl">
+                            <h3>科目一自由练习</h3>
+                            <p>Simulation test</p>
+                        </div>
+                        <div class="test-btn fr">
+                            <a th:href="@{${ctx} + 'free_practice?kemu=1'}">开始练习</a>
+                        </div>
+                    </div>
+                    <div class="test clear">
+                        <div class="test-name fl">
+                            <h3>科目四自由练习</h3>
+                            <p>Simulation test</p>
+                        </div>
+                        <div class="test-btn fr">
+                            <a th:href="@{${ctx} + 'free_practice?kemu=4'}">开始练习</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--A training course-->
+            <div class="index-course">
+                <div class="plat-title">
+                    <h2>平台培训计划课程</h2>
+                    <b>A training course</b>
+                    <p>—</p>
+                </div>
+                <div class="course-box com-width">
+                    <ul>
+                        <li th:each="offlineCourse:${offlineCourseList}">
+                            <a th:href="@{${ctx} + 'platform_course_detail?id=' + ${offlineCourse.id}}">
+                                <div class="course-left fl">
+                                    <h2><span th:text="${offlineCourse.title}"></span></h2>
+                                    <div class="figcaption"><p th:text="${offlineCourse.content}"></p></div>
+                                    <p>授课地点：<span th:text="${offlineCourse.address}"></span></p>
+                                    
+                                    <div class="price clear">
+                                        <p style="float:left;">授课时间：<span th:text="${#dates.format(offlineCourse.startTime, 'yyyy-MM-dd')}"></span></p>
+                                    	<p style="float:right;">
+	                                        <span>价格:</span>
+	                                        <b>¥<b th:text="${offlineCourse.price}"></b></b>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="course-right fr">
+                                    <img th:src="${imageUrl} + ${offlineCourse.imagePath}" alt="">
+                                </div>
+                            </a>
+                        </li>                      
+                    </ul>
+                    <div class="label-add">
+                        <a th:href="@{${ctx} + 'platform_course'}">
+                            <img th:src="@{/img/index-pic3.png}" alt="">
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!--Video course-->
+            <div class="index-video">
+                <div class="plat-title">
+                    <h2>平台在线视频课程</h2>
+                    <b>Video course</b>
+                    <p>—</p>
+                </div>
+                <div class="video-box com-width clear">
+                    <div class="video fl" th:each="onlineCourse:${onlineCourseList}">
+                        <a th:href="@{${ctx} + 'platform_video_detail?id=' + ${onlineCourse.id}}">
+                            <div class="video-img">
+                                <img th:src="${imageUrl} + ${onlineCourse.imagePath}" alt="">
+                                <div class="video-label">
+                                    <img th:if="${onlineCourse.isHotAndCharge == 1 || onlineCourse.isHotAndCharge == 3}" th:src="@{/img/index-pic7.png}" alt="">
+                                    <img th:if="${onlineCourse.isHotAndCharge == 2 || onlineCourse.isHotAndCharge == 3}" th:src="@{/img/index-pic8.png}" alt="">  
+                                </div>
+                            </div>
+                            <div class="video-name">
+                                <h3><span th:text="${onlineCourse.title}"></span></h3>
+                                <p class="clear">
+                                    <span th:text="@{'上传时间：'+${onlineCourse.updateTime}}"></span>
+                                    <img class="video-pic1" th:src="@{/img/index-pic9.png}" alt="">
+                                    <img class="video-pic2" th:src="@{/img/index-pic9.1.png}" alt="">
+                                </p>
+                            </div>
+                        </a>
+                    </div>               
+                    <div class="label-add">
+                        <a th:href="@{${ctx} + 'platform_video'}">
+                            <img th:src="@{/img/index-pic3.png}" alt="">
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!--footer-->
+            <div class="footer">
+                <div class="com-width clear">
+                    <div class="index-about fl">
+                        <p>关于我们</p>
+                        <p>
+                            定位于自治区最专业的交通信息综合服务平台，新疆交通信息网运用互联网、移动
+                            互联网等技术，为广大用户提供交管业务办理、交通违章信息告知、驾驶人考试相关服
+                            务、出行信息查询、交通地图搜索、实时路况播报、交通相关资讯在线交流等一站式服
+                            务平台。
+                        </p>
+                        <p>
+                            新疆复安信息技术有限公司是专业从事公安、交通相关的计算机软硬产品研发、工
+                            程设计和实施、信息系统集成、信息增值服务、信息技术培训等业务的高科技产业公司。
+                            公司凭借在交通管理行业服务多年所积累的丰富经验，基于机动车驾驶人的实际需求，
+                            从规范性、实用性、易用性等角度出发对新疆交通信息网进行规划和设计，并为广大会员
+                            提供最贴心最优质的服务。
+                        </p>
+                    </div>
+                    <div class="index-contact fr">
+                        <p>联系我们</p>
+                        <p>
+                            <span>地址</span>
+                            <b>乌鲁木齐市黄河路396号 A座2001室</b>
+                        </p>
+                        <p>
+                            <span>邮编</span><br>
+                            <b>830001</b>
+                        </p>
+                        <p>
+                            <span>技术支持电话</span><br>
+                            <b>0991-5501799</b>
+                        </p>
+                        <p>
+                            <span>传真</span><br>
+                            <b>0991-5501799</b>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+  
+    <!-- 右侧边栏 -->
+    <div class="index-right-menu">
+        <ul>
+            <li style="border-bottom: 1px solid #fd9938;">
+                <a th:href="${ctx} + teacher_regist">
+                    <img th:src="@{/img/teach-icon.png}" alt=""><br>
+                    <span>教练<br>注册</span>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{${ctx} + 'simulation_test?kemu=1'}">
+                    <img th:src="@{/img/index_right.png}" alt=""><br>
+                    <span>模拟<br>考试</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+	<a class="to-top" style="display:none;padding:15px 12px;border-radius:5px;color:#fff;background:#fd9938;">Top</a>
+	
+	<!-- 场地练习弹窗 -->
+	<div id="index_place" class="fade" style="display:none;">
+		<div class="purchased">
+			<img class="fork" th:src="@{/img/app-pic1.png}" alt="">
+	     	<img th:src="@{/img/waiting.png}" alt="" style="width:150px;height:150px;margin-top:40px;">
+			<p style="line-height:1.5;">正在开发中，敬请期待……</p>
+		</div>
+	</div>
+	<!-- 首次访问提示框 -->
+	
+<script>
+$(function() {
+	$('.to-top').toTop();
+	$('#last_box').click(function(){
+		$('#index_place').show();
+	});
+	$('.fork').click(function(){
+		$('#index_place').hide();
+	})
+});
+</script>
+</html>

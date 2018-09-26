@@ -1,0 +1,328 @@
+package com.migu.online.controller.ops;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.Page;
+import com.migu.online.controller.response.ResponsePageData;
+import com.migu.online.model.SendMsgRecord;
+import com.migu.online.model.Teacher;
+import com.migu.online.model.User;
+import com.migu.online.model.UserCourseVip;
+import com.migu.online.ops.vo.UserCourseVipOpsVo;
+import com.migu.online.service.MessageSendService;
+import com.migu.online.service.SendMsgRecordService;
+import com.migu.online.service.TeacherService;
+import com.migu.online.service.UserCourseVipService;
+import com.migu.online.service.UserService;
+import com.migu.online.utils.DateUtil;
+
+@Controller
+@RequestMapping("/ops/usercoursevip/")
+public class UserCourseVipOpsController {
+
+    @Autowired
+    private UserCourseVipService userCourseVipService;
+    @Autowired
+    private TeacherService teacherService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private SendMsgRecordService sendMsgRecordService;
+    
+   
+    /**
+     *  ------页面跳转 start-----
+     */
+    @GetMapping("index")
+    public String index(ModelMap modelMap){
+        return "ops/usercoursevip/index";
+    }
+
+    /**
+     * 编辑，新增，查看 方法，。
+     * @param modelMap
+     * @param id
+     * @param editFlag edit = 1, new = 0 , show = 2
+     * @return
+     * @throws InvocationTargetException 
+     * @throws IllegalAccessException 
+     */
+    @GetMapping("edit")
+    public String edit(ModelMap modelMap,@RequestParam(value = "id",required = false) Long id,
+                       @RequestParam(value = "flag",defaultValue = "1") Integer editFlag) throws IllegalAccessException, InvocationTargetException{
+    	UserCourseVip model = new UserCourseVip();
+        modelMap.put("teacherList", teacherService.selectAll());
+        if(editFlag > 0) {
+            model = userCourseVipService.selectById(id);           
+            if (null != model) {
+            	String kemus = model.getKemus();
+            	if (StringUtils.isNotEmpty(kemus)) {
+            		String[] args = kemus.split(",");
+                    String kemuStr = "";
+                    for (int i = 0 ;i < args.length; i ++) {
+                    	String kemu = "";
+                    	if (args[i].equals("1")) {
+                    		kemu = "科目一";
+                            modelMap.put("kemu1", true);
+                            modelMap.put("teacherId1", model.getKemuTeacherId1());
+                    	} else if (args[i].equals("2")) {
+                    		kemu = "科目二";
+                    		modelMap.put("kemu2", true);
+                            modelMap.put("teacherId2", model.getKemuTeacherId2());
+                    	} else if (args[i].equals("3")) {
+                    		kemu = "科目三";
+                    		modelMap.put("kemu3", true);
+                            modelMap.put("teacherId3", model.getKemuTeacherId3());
+                    	} else if (args[i].equals("4")) {
+                    		kemu = "科目四";
+                    		modelMap.put("kemu4", true);
+                            modelMap.put("teacherId4", model.getKemuTeacherId4());
+                    	} else if (args[i].equals("5")) {
+                    		kemu = "组合套餐";
+                    		modelMap.put("kemu1", true);
+                            modelMap.put("teacherId1", model.getKemuTeacherId1());
+                            modelMap.put("kemu2", true);
+                            modelMap.put("teacherId2", model.getKemuTeacherId2());
+                            modelMap.put("kemu3", true);
+                            modelMap.put("teacherId3", model.getKemuTeacherId3());
+                            modelMap.put("kemu4", true);
+                            modelMap.put("teacherId4", model.getKemuTeacherId4());
+                    	}
+                    	kemuStr += kemu + " ";
+                    }
+                    modelMap.put("kemuStr", kemuStr);
+            	}
+            }
+                       
+        }
+        modelMap.put("data",model);
+        modelMap.put("edit",editFlag);
+        return "ops/usercoursevip/edit";
+    }
+    
+    /**
+     * 数据处理
+     * @throws Exception 
+     */
+    @SuppressWarnings("rawtypes")
+	@GetMapping("data")
+    @ResponseBody
+    public ResponsePageData data(@RequestParam(value = "page",defaultValue = "0") Integer offset,
+                                    @RequestParam(value = "limit",defaultValue = "10") Integer limit,
+                                 @RequestParam(value = "mobile",required = false) String mobile,
+                                 @RequestParam(value = "assignStatus",required = false) Integer assignStatus,
+                                 @RequestParam(value = "payStatus",required = false) Integer payStatus,
+                                 @RequestParam(value = "kemu",required = false) Integer kemu) throws Exception{
+    	Map<String, String> filters = new HashMap<String,String>();
+    	if (StringUtils.isNotEmpty(mobile)) {
+        	filters.put("mobile", mobile);
+    	}
+        if (assignStatus != null) {
+            filters.put("assignStatus", assignStatus.toString());
+        }
+        if (payStatus != null) {
+            filters.put("payStatus", payStatus.toString());
+        }
+        if (kemu != null) {
+            filters.put("kemu", kemu.toString());
+        }
+        Page<UserCourseVipOpsVo> page = (Page<UserCourseVipOpsVo>)userCourseVipService.selectConditions(filters);
+        return new ResponsePageData<UserCourseVipOpsVo>(page.getTotal(),page);
+    }
+    
+    @PostMapping("save")
+	@ResponseBody
+	public String save(UserCourseVip model, String beginTimeStr) {
+		if (null == model) {
+			return "error";
+		}
+		if (StringUtils.isNotEmpty(beginTimeStr)) {
+			model.setBeginTime(DateUtil.getDate(beginTimeStr, DateUtil.DATAFORMAT_STR));
+		}
+		if (model.getId() != null && model.getId() > 0) {
+			// 更新
+			UserCourseVip record = userCourseVipService.selectById(model.getId());
+			if (null == record) {
+				return "error";
+			}
+			if (record.getPayStatus() != 2) {
+				return "error";
+			}
+			record.setBeginTime(model.getBeginTime());
+			String kemus = record.getKemus();
+			if (kemus.contains("1") || kemus.contains("5")) {
+				// 包含科目1
+				if (null == model.getKemuTeacherId1()) {
+					return "error";
+				} 
+				Long orginTeacherId = record.getKemuTeacherId1();
+				Long newTeacherId = model.getKemuTeacherId1();
+				if (orginTeacherId == null || !orginTeacherId.equals(newTeacherId)) {
+					record.setKemuTeacherId1(newTeacherId);
+					Teacher teacher = teacherService.selectById(newTeacherId);
+					record.setKemuTeacherName1(teacher.getName());
+					record.setKemuTeacherMobile1(teacher.getMobile());
+					// 发送短信	
+					sendMessage(teacher, "科目一", record);				
+				}	
+			}
+			if (kemus.contains("2") || kemus.contains("5")) {
+				// 包含科目1
+				if (null == model.getKemuTeacherId2()) {
+					return "error";
+				} 
+				Long orginTeacherId = record.getKemuTeacherId2();
+				Long newTeacherId = model.getKemuTeacherId2();
+				if (orginTeacherId == null || !orginTeacherId.equals(newTeacherId)) {
+					record.setKemuTeacherId2(newTeacherId);
+					Teacher teacher = teacherService.selectById(newTeacherId);
+					record.setKemuTeacherName2(teacher.getName());
+					record.setKemuTeacherMobile2(teacher.getMobile());
+					// 发送短信	
+					sendMessage(teacher, "科目二", record);				
+				}				
+			}
+			if (kemus.contains("3") || kemus.contains("5")) {
+				// 包含科目1
+				if (null == model.getKemuTeacherId3()) {
+					return "error";
+				} 
+				Long orginTeacherId = record.getKemuTeacherId3();
+				Long newTeacherId = model.getKemuTeacherId3();
+				if (orginTeacherId == null || !orginTeacherId.equals(newTeacherId)) {
+					record.setKemuTeacherId3(newTeacherId);
+					Teacher teacher = teacherService.selectById(newTeacherId);
+					record.setKemuTeacherName3(teacher.getName());
+					record.setKemuTeacherMobile3(teacher.getMobile());
+					// 发送短信	
+					sendMessage(teacher, "科目三", record);				
+				}				
+			}
+			if (kemus.contains("4") || kemus.contains("5")) {
+				// 包含科目1
+				if (null == model.getKemuTeacherId4()) {
+					return "error";
+				} 
+				Long orginTeacherId = record.getKemuTeacherId4();
+				Long newTeacherId = model.getKemuTeacherId4();
+				if (orginTeacherId == null || !orginTeacherId.equals(newTeacherId)) {
+					record.setKemuTeacherId4(newTeacherId);
+					Teacher teacher = teacherService.selectById(newTeacherId);
+					record.setKemuTeacherName4(teacher.getName());
+					record.setKemuTeacherMobile4(teacher.getMobile());
+					// 发送短信	
+					sendMessage(teacher, "科目四", record);
+				}				
+			}
+			record.setAssignStatus(1);													
+			return userCourseVipService.createOrUpdate(record) >= 1 ? "success" : "error";
+		} else {
+		}
+		return userCourseVipService.createOrUpdate(model) >= 1 ? "success" : "error";
+	}
+
+ 
+    @DeleteMapping("del")
+    @ResponseBody
+    public int del(@RequestParam("id") Long id){
+        return userCourseVipService.deleteById(id);
+    }
+    
+    /**
+     * 发短信
+     * @param phoneNum
+     * @param kemu
+     * @param tName
+     * @param tTel
+     * @param beginTime
+     * @return
+     */
+    private void sendMessage(Teacher teacher, String kemu, UserCourseVip model) {
+		// 发送短信	
+    	sendMessageToTeacher(teacher.getMobile(), kemu, model.getUserId(), model.getMobile(), DateUtil.dateToDateString(model.getBeginTime()));
+		// 发给学生
+    	sendMessageToStudent(model.getMobile(), kemu, teacher.getName(), teacher.getMobile(), DateUtil.dateToDateString(model.getBeginTime()));
+    }
+    
+    /**
+     * 给老师发短信
+     * @param phoneNum
+     * @param kemu
+     * @param tName
+     * @param tTel
+     * @param beginTime
+     * @return
+     */
+    private void sendMessageToTeacher(String phoneNum, String kemu, Long userId, String tel, String beginTime) {
+    	Map<String, String> param = new HashMap<>();
+		param.put("phoneNum", phoneNum);
+		param.put("kemu", kemu);
+		// 查找学生名字
+		User user = userService.selectById(userId);
+		if (null == user) {
+			return;
+		}
+		param.put("name", user.getUserName());
+		param.put("tel", tel);
+		param.put("beginTime", beginTime);
+		SendMsgRecord model = new SendMsgRecord();
+		JSONObject itemJSONObj = JSONObject.parseObject(JSON.toJSONString(param));
+		model.setContent(itemJSONObj.toJSONString());
+		model.setUserId(0L);
+		model.setIsDelete(0);
+		model.setCreateTime(new Date());
+		model.setStatus(0);
+		model.setTemplate(MessageSendService.MSG_TEMPLATE_VIP_TEACHER);
+		model.setMobile(phoneNum);
+		model.setUpdateTime(new Date());
+		sendMsgRecordService.insert(model);
+//		return messageSendService.sendSmsByTemplate(param, MessageSendService.MSG_TEMPLATE_VIP_TEACHER);
+    }
+    
+    /**
+     * 给学生发短信
+     * @param phoneNum
+     * @param kemu
+     * @param tName
+     * @param tTel
+     * @param beginTime
+     * @return
+     */
+    private void sendMessageToStudent(String phoneNum, String kemu, String tName, String tTel, String beginTime) {
+    	Map<String, String> param = new HashMap<>();
+		param.put("phoneNum", phoneNum);
+		param.put("course", kemu);
+		param.put("tName", tName);
+		param.put("tel", tTel);
+		param.put("beginTime", beginTime);
+		SendMsgRecord model = new SendMsgRecord();
+		JSONObject itemJSONObj = JSONObject.parseObject(JSON.toJSONString(param));
+		model.setContent(itemJSONObj.toJSONString());
+		model.setUserId(0L);
+		model.setIsDelete(0);
+		model.setCreateTime(new Date());
+		model.setStatus(0);
+		model.setMobile(phoneNum);
+		model.setTemplate(MessageSendService.MSG_TEMPLATE_VIP_STUDENT);
+		model.setUpdateTime(new Date());
+		sendMsgRecordService.insert(model);
+//		return messageSendService.sendSmsByTemplate(param, MessageSendService.MSG_TEMPLATE_VIP_STUDENT);
+    }
+        
+}

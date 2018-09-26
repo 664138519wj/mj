@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" th:href="@{/lib/lui/css/layui.css}">
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+</head>
+<body>
+<div class="layui-container" style="margin-top: 30px">
+    <form id="TeacherWithdrawForm" class="layui-form" action="edit" method="post">
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">提现金额</label>
+            <div class="layui-input-block">
+                <input type="number" name="amount" placeholder="请输入提现金额" class="layui-input" id="amount"/>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">银行名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="bankName" id="bankName" placeholder="请输入银行名称" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">银行卡号</label>
+            <div class="layui-input-block">
+                <input type="text" name="bankNo" id="bankNo" placeholder="请输入银行卡号" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">持卡人姓名</label>
+            <div class="layui-input-block">
+                <input type="text" name="cardHolder" id="cardHolder" placeholder="请输入银行卡持卡人姓名" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">提现原因</label>
+            <div class="layui-input-block">
+            <textarea class="layui-textarea" name="reason" id="reason"> </textarea>
+            </div>
+        </div>
+    </form>
+</div>
+<script th:src="@{/lib/jquery/jquery.js}"></script>
+<script th:src="@{/lib/jquery/jquery.forms.js}"></script>
+<script th:src="@{/lib/lui/layui.all.js}"></script>
+<script type="text/javascript">
+    $.fn.serializeObject = function () {
+        var o = {};
+        var a = this.serializeArray();
+        $.each(a, function () {
+            if (o[this.name] !== undefined) {
+                if (!o[this.name].push) {
+                    o[this.name] = [o[this.name]];
+                }
+                o[this.name].push(this.value || '');
+            } else {
+                o[this.name] = this.value || '';
+            }
+        });
+        return o;
+    };
+</script>
+<script type="text/javascript">
+    layui.laydate.render({
+        elem: '#date'
+    });
+
+    function checkForm(arr) {
+        for (var i = 0; i < arr.length; i++) {
+            if ($("#" + arr[i][0]).val() == '') {
+                alert(arr[i][1]);
+                $("#" + arr[i][0]).focus();
+                return false;
+            }
+        }
+        return true;
+    }
+    ;
+
+    function doSave(fn) {
+        var dataParam = $("#TeacherWithdrawForm").serialize();
+        jQuery.ajax({
+            type: "post",
+            url: '[[${baseUrl}]]/ops/schoolIncome/saveSchoolWithdraw.html',
+            data: dataParam,
+            success: function (data) {
+                if (data) {
+                    parent.tips(1, "流程发起成功，等待平台审核");
+                    fn.call();
+                } else {
+                    parent.tips(0, "流程发起失败");
+                }
+            }
+        })
+    }
+</script>
+</body>
+</html>

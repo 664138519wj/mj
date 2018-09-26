@@ -1,0 +1,354 @@
+<!doctype html>
+
+<!--[if lt IE 7 ]><html xmlns:th="http://www.thymeleaf.org" lang="en" class="no-js ie6"> <![endif]-->
+<!--[if IE 7 ]><html xmlns:th="http://www.thymeleaf.org" lang="en" class="no-js ie7"> <![endif]-->
+<!--[if IE 8 ]><html xmlns:th="http://www.thymeleaf.org" lang="en" class="no-js ie8"> <![endif]-->
+<!--[if IE 9 ]><html xmlns:th="http://www.thymeleaf.org" lang="en" class="no-js ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--><html xmlns:th="http://www.thymeleaf.org" lang="en" class="no-js" > <!--<![endif]-->
+<head>
+    <meta charset="utf-8" />
+    <meta name="author" content="" />
+    <meta name="keywords" content="" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title></title>
+    <link rel="stylesheet" href="css/common.css" th:href="@{/css/common.css}">
+    <link rel="stylesheet" href="css/style.css" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+<p class="content right-content">
+    <th:block th:replace="menu"></th:block>
+    <div class="info-progress">
+        <p>信息录入进程</p>
+        <ul class="clear">
+            <li class="active">
+                <div class="top-pic">
+                    <img th:src="@{/img/icon1.png}" alt="">
+                </div>
+                <div class="bottom-pic">
+                    <img th:src="@{/img/pro-pic1.png}" alt="">
+                </div>
+            </li>
+            <li>
+                <div class="top-pic">
+                    <img class="img2" th:src="@{/img/icon2.png}" alt="" style="display: none;">
+                    <img class="img1" th:src="@{/img/icon2.1.png}" alt="">
+                </div>
+                <div class="bottom-pic">
+                    <img class="img1" src="img/pro-pic2.png" alt="">
+                    <img class="img2" src="img/pro-pic2.1.png" alt="" style="display: none;">
+                </div>
+            </li>
+            <li>
+                <div class="top-pic">
+                    <img class="img2" src="img/icon3.png" alt="" style="display: none;">
+                    <img class="img1" src="img/icon3.1.png" alt="">
+                </div>
+                <div class="bottom-pic">
+                    <img class="img1" src="img/pro-pic3.png" alt="">
+                    <img class="img2" src="img/pro-pic3.1.png" alt="" style="display: none;">
+                </div>
+            </li>
+            <li>
+                <div class="top-pic">
+                    <img class="img2" src="img/icon4.png" alt="" style="display: none;">
+                    <img class="img1" src="img/icon4.1.png" alt="">
+                </div>
+                <div class="bottom-pic">
+                    <img class="img1" src="img/pro-pic4.png" alt="">
+                    <img class="img2" src="img/pro-pic4.1.png" alt="" style="display: none;">
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="tab-contents">
+        <div class="tab1 clear">
+            <div class="info-title clear">
+                <p class="fl">录入学员个人信息</p>
+                <div class="info-btn fr edit">
+                    <button class="save">编辑</button>
+                </div>
+                <div class="info-btn fr" style="display: none;">
+                    <button class="save">下一步</button>
+                    <button class="cancel">取消</button>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <div class="flex-box">
+                    <ul>
+                        <li class="father">
+                            <p>证件名称</p>
+                            <div class="card-name">
+                                <select class="disable" disabled>
+                                    <option value="">身份证</option>
+                                    <option value="">港澳通行证</option>
+                                    <option value="">台湾通行证</option>
+                                    <option value="">护照</option>
+                                </select>
+                            </div>
+                        </li>
+                        <li>
+                            <p>出生日期</p>
+                            <input type="text" disabled>
+                        </li>
+                        <li class="search">
+                            <p>登记住所行政区域</p>
+                            <input class="disable" type="text" placeholder="塔什库尔干塔吉克自治县区" disabled>
+                            <img src="img/search.png" alt="">
+                        </li>
+                        <li>
+                            <p>联系住所行政区域</p>
+                            <input class="disable" type="text" placeholder="塔什库尔干塔吉克自治县区" disabled>
+                        </li>
+                        <li>
+                            <p>固定电话</p>
+                            <input class="disable" type="text" placeholder="0564613135" disabled>
+                        </li>
+                    </ul>
+
+                </div>
+                <div class="flex-box">
+                    <ul>
+                        <li>
+                            <p>证件号码</p>
+                            <input class="disable" type="text" placeholder="512033198602210140" disabled>
+                        </li>
+                        <li class="father">
+                            <p>国籍</p>
+                            <div class="card-name">
+                                <select class="disable" disabled>
+                                    <option value="">中国</option>
+                                    <option value="">中国</option>
+                                    <option value="">中国</option>
+                                    <option value="">中国</option>
+                                </select>
+                            </div>
+                        </li>
+                        <li>
+                            <p>登记住所详细地址</p>
+                            <input class="disable" type="text" disabled>
+                        </li>
+                        <li>
+                            <p>联系住所详细地址</p>
+                            <input class="disable" type="text" disabled>
+                        </li>
+                        <li>
+                            <p>移动电话</p>
+                            <input class="disable" type="text" disabled>
+                        </li>
+                    </ul>
+
+                </div>
+                <div class="flex-box">
+                    <ul>
+                        <li>
+                            <p>姓名</p>
+                            <input class="disable" type="text" disabled>
+                        </li>
+                        <li class="father">
+                            <p>申请车型</p>
+                            <div class="card-name">
+                                <select class="disable" disabled>
+                                    <option value="">C1-x小型汽车</option>
+                                    <option value="">C1-x小型汽车</option>
+                                    <option value="">C1-x小型汽车</option>
+                                    <option value="">C1-x小型汽车</option>
+                                </select>
+                            </div>
+                        </li>
+                        <li>
+                            <p>驾驶人来源</p>
+                            <input class="disable" type="text" disabled>
+                        </li>
+                        <li class="father">
+                            <p>所属辖区</p>
+                            <div class="card-name">
+                                <select class="disable" disabled>
+                                    <option value="">天山区</option>
+                                    <option value="">天山区</option>
+                                    <option value="">天山区</option>
+                                </select>
+                            </div>
+                        </li>
+                        <li>
+                            <p>移动电话</p>
+                            <input class="disable" type="text" disabled>
+                        </li>
+                    </ul>
+                </div>
+                <div class="flex-box">
+                    <ul>
+                        <li>
+                            <p>性别</p>
+                            <input type="text" disabled>
+                        </li>
+                        <li>
+                            <p>驾校名称</p>
+                            <input type="text" disabled>
+                        </li>
+                        <li>
+                            <p>暂住证编号</p>
+                            <input class="disable" type="text" disabled>
+                        </li>
+                        <li>
+                            <p>邮政编码</p>
+                            <input class="disable" type="text" disabled>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="btn-box fr">
+                <button>读取二代证</button>
+                <button class="center-btn">学员现场面签</button>
+                <button class="right-btn">不需要面签</button>
+            </div>
+
+        </div>
+
+        <div class="tab1" style="display: none;">
+            <div class="info-title">
+                <p>采集指纹</p>
+            </div>
+            <div class="fade">
+                <div class="finger-mark clear">
+                    <div class="info-title">
+                        <p>采集指纹</p>
+                    </div>
+                    <div class="big-box clear">
+                        <div class="left-box fl">
+                            <p>学员一次采集指纹</p>
+                            <div class="finger-pic">
+                                <img src="img/zhiwen1.png" alt="">
+                            </div>
+                        </div>
+                        <div class="left-box fr">
+                            <p>指纹采集参照</p>
+                            <div class="finger-pic">
+                                <img src="img/zhiwen.png" alt="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info-btn fr">
+                        <button class="save">重新采集</button>
+                        <button class="cancel">取消退出</button>
+                    </div>
+                </div>
+            </div>
+            <!--采集成功and失败弹窗-->
+            <div class="finger-fade">
+                <div class="wind" style="display: none;">
+                    <img src="img/success.png" alt="">
+                    <p>采集成功</p>
+                </div>
+                <div class="wind">
+                    <img src="img/error.png" alt="">
+                    <p>采集失败</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab1 clear" style="display: none;">
+            <div class="info-title">
+                <p>上传照片信息</p>
+            </div>
+            <div class="img-box clear">
+                <div class="box1 fl">
+                    <p>上传身份证照片信息</p>
+                    <div class="upload upload-pic">
+                        <img src="img/label1.png" alt="">
+                        <p>扫描身份证正面照片</p>
+                    </div>
+                </div>
+                <div class="upload upload-pic s-box fl">
+                    <img src="img/label1.png" alt="">
+                    <p>扫描身份证反面照片</p>
+                </div>
+                <div class="box2 fl">
+                    <p>现场拍照</p>
+                    <div class="upload">
+                        <img src="img/label2.png" alt="">
+                        <p>现场拍照</p>
+                    </div>
+                </div>
+                <div class="box2 fl">
+                    <p>上传身份证电子照片</p>
+                    <div class="upload">
+                        <img src="img/label3.png" alt="">
+                        <p>电子照片</p>
+                    </div>
+                </div>
+            </div>
+            <div class="refer-sample clear">
+                <p>参照样例</p>
+                <div class="refer fl">
+                    <img src="img/refer1.png" alt="">
+                </div>
+                <div class="refer fl">
+                    <img src="img/refer1.png" alt="">
+                </div>
+            </div>
+            <div class="btns fr">
+                <button class="save">确定保存</button>
+                <button class="cancel">取消</button>
+            </div>
+        </div>
+
+        <div class="tab1 clear" style="display: none;">
+            <div class="info-title">
+                <p>提交注册表</p>
+            </div>
+            <div class="img-box sub-table">
+                <p>提交扫描注册表</p>
+                <div class="upload table-box">
+                    <img src="img/label1.png" alt="">
+                    <p>扫描注册表</p>
+                </div>
+            </div>
+            <div class="btns sub-btn fr">
+                <button class="save">确定提交</button>
+                <button class="cancel">取消</button>
+            </div>
+            <!--提交成功弹窗-->
+            <div class="fade">
+                <div class="boxs">
+                    <div class="top">
+                        <img src="img/success.png" alt="">
+                        <p>提交成功</p>
+                    </div>
+                    <p>"打印"机动车驾驶证申请表</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script src="js/jquery-1.11.0.min.js" th:src="@{/js/jquery-1.11.0.min.js}"></script>
+<script>
+    $(function(){
+        $(".info-progress ul li").click(function(){
+            if($(".info-progress ul li").hasClass("active")){
+                $(this).find(".img2").show();
+                $(this).find(".img1").hide();
+            }else{
+                $(this).find(".img1").show();
+                $(this).find(".img2").hide();
+            }
+            $(".tab-contents .tab1").eq($(this).index()).show().siblings().hide();
+        });
+        $(".edit").click(function(){
+            $(this).hide();
+            $(this).next(".info-btn").show();
+            $(".disable").removeAttr("disabled");
+        });
+        $(".info-btn .cancel").click(function(){
+            $(this).parent(".info-btn").hide();
+            $(this).parent(".info-btn").prev(".edit").show();
+            $(".disable").attr("disabled",true);
+        })
+    })
+</script>
+</html>

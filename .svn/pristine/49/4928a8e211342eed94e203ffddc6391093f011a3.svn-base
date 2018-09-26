@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+<link rel="stylesheet" th:href="@{/lib/lui/css/layui.css}">
+<!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+<style type="text/css">
+</style>
+</head>
+<body>
+	<div th:html="${lessonId}" id="lessonId"></div>
+
+	<fieldset class="layui-elem-field">
+		<div class="site-text site-block">
+			<div class="layui-row">
+				<div class="layui-col-xs8">
+					<div class="grid-demo grid-demo-bg1">
+						<form class="layui-form" action="">
+						  <label class="layui-form-label">学生姓名</label>
+						    <div class="layui-input-block">
+								<input type="text" name="userName" id="userName" placeholder=""
+                                       class="layui-input">
+                             </div>
+						</form>
+					</div>
+				</div>
+				<div class="layui-col-xs4">
+					<div class="grid-demo">
+						<div class="layui-input-block">
+							<button class="layui-btn" onclick="filter()">查询</button>
+							<button class="layui-btn" onclick="exportEnroll()">导出</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</fieldset>
+	<table id="schoolStudentTable" class="layui-table"
+		lay-filter="courseTable">
+		<thead>
+			<tr>
+				<th lay-data="{field:'id',type:'checkbox'}">ID</th>
+				<th lay-data="{field:'userName', width:100, sort: true}">学生姓名</th>
+				<th lay-data="{field:'licenceName', width:150, sort: true}">驾照类型</th>
+				<th lay-data="{field:'classNo', width:150, sort: true}">班级编号</th>
+				<th lay-data="{field:'className', width:150, sort: true}">班级名称</th>
+				<th
+					lay-data="{field:'status', width:100, sort: true, templet:'#status'}">状态</th>
+				<th
+					lay-data="{field:'payStatus', width:100, sort: true, templet:'#TpayStatus'}">付款状态</th>
+				<th
+					lay-data="{field:'startTime', width:100, sort: true,templet:'#dateTpl'}">开班时间</th>
+				<th lay-data="{field:'price', width:100, sort: true}">报名费用</th>
+			
+				<th lay-data="{field:'sex', width:100, sort: true,templet:'#sex'}">性别</th>
+				<th
+					lay-data="{field:'firstApply', width:150, sort: true,templet:'#firstApply'}">是否初次领证</th>
+				<th
+					lay-data="{field:'payType', width:100, sort: true,templet:'#payType2'}">付费方式</th>
+				<th lay-data="{field:'telNo', width:150, sort: true}">手机号码</th>
+				<th lay-data="{field:'idUp', width:200, sort: true}">身份证正面照片</th>
+				<th lay-data="{field:'idDown', width:200, sort: true}">身份证反面照片</th>
+				 <th lay-data="{fixed: 'right', width:178, align:'center', toolbar: '#operation'}"></th>      
+			</tr>
+		</thead>
+	</table>
+	
+	<script id="status" type="text/html">
+				{{#  
+			if(d.status == 0){ }}
+			     <span>报名中</span>
+ 				 {{#   }
+			else if(d.status == 1){ }}
+			     <span>报名成功</span>
+ 				 {{#   }
+			else if(d.status == 2){ }}
+			     <span>报名失败</span>
+ 				 {{#   }
+				}}
+</script>
+
+	<script id="firstApply" type="text/html">
+				{{#  
+			if(d.firstApply == 0){ }}
+			     <span>否/span>
+ 				 {{#   }
+			else if(d.firstApply == 1){ }}
+			     <span>是</span>
+ 				 {{#   }
+			
+				}}
+</script>
+
+	<script id="sex" type="text/html">
+				{{#  
+			if(d.sex == 0){ }}
+			     <span>男</span>
+ 				 {{#   }
+			else if(d.sex == 1){ }}
+			     <span>女</span>
+ 				 {{#   }
+			
+				}}
+</script>
+
+	<script id="payType2" type="text/html">
+				{{#  
+			if(d.payType == 0){ }}
+			     <span>在线支付</span>
+ 				 {{#   }
+			else if(d.payType == 1){ }}
+			     <span>线下支付</span>
+ 				 {{#   }
+			
+				}}
+</script>
+
+	<script id="TpayStatus" type="text/html">
+				{{#  
+			if(d.payStatus == 0){ }}
+			     <span>未付款</span>
+ 				 {{#   }
+			else if(d.payStatus == 2){ }}
+			     <span>付款完成</span>
+ 				 {{#   }
+				}}
+</script>
+
+<script id="operation" type="text/html">
+     <a class="layui-btn layui-btn-xs" lay-event="adjust">调班</a>
+</script>
+
+
+
+	<script th:src="@{/lib/jquery/jquery.js}"></script>
+	<script th:src="@{/lib/lui/layui.all.js}"></script>
+
+	<script type="text/javascript">
+		layui.laydate.render({
+			elem : '#startTime',
+			type : 'date'
+		});
+		
+		
+		var lessonId = $("#lessonId").attr("html");
+		/* var licence = $("#licence").val();
+		var startTime = $("#startTime").val();
+		var payType = $("#payType").val(); */
+		var userName = $("#userName").val();
+		
+		var table = layui.table;
+		
+	    var options={url : 'schoolStudentEnrollData?page=1&limit=10&lessonId='+lessonId, //请求地址
+								method : 'get', //方式
+								id : 'listReload', //生成 Layui table 的标识 id，必须提供，用于后文刷新操作，笔者该处出过问题
+								page : true, //是否分页
+								limit:10,
+								request: {
+									'page':1,
+									'limit':30,
+									'lessonId' :lessonId,
+									'userName':userName
+									/* 'licence' : licence,
+									'startTime' : startTime,
+									'payType' : payType */
+								},
+								response: {
+									  statusName: 'code' //数据状态的字段名称，默认：code
+									  ,statusCode: 0 //成功的状态码，默认：0
+									  ,msgName: 'msg' //状态信息的字段名称，默认：msg
+									  ,countName: 'count' //数据总数的字段名称，默认：count
+									  ,dataName: 'data' //数据列表的字段名称，默认：data
+									}  
+				};
+	
+	table.init('courseTable',options);
+	
+    
+    function filter() {
+			 var lessonId = $("#lessonId").attr("html");
+			/*var licence = $("#licence").val();
+			var startTime = $("#startTime").val();
+			var payType = $("#payType").val(); */
+			var userName = $("#userName").val();
+		
+			table.reload("listReload", {
+			url : 'schoolStudentEnrollData',
+				where : {
+					lessonId : lessonId,
+					userName:userName
+					/* licence : licence,
+					startTime : startTime,
+					payType : payType */
+					
+				}
+			}) 
+	
+		}
+		
+		 function exportEnroll() {
+		 var tableLength = $("tbody").find("tr").length ;
+		 if (tableLength === 0) {
+		 	alert("无数据可导出!");
+		 	return;
+		 }
+		 
+		 
+			 var lessonId = $("#lessonId").attr("html");
+			  window.open("exportEnroll?lessonId=" + lessonId);
+			  
+	
+	
+		}
+		
+	
+		var iframeWin = null;
+	
+		
+		//table点击事件
+		table.on("tool(courseTable)", function(obj) {
+			 var lessonId = $("#lessonId").attr("html");
+			 var userCourseId = obj.data.userCourseId;
+			 if (obj.event === 'adjust') {
+				openAdjustWin("调班", false,userCourseId, lessonId);
+			}
+		});
+	
+		function openAdjustWin(title, isShow,userCourseId, lessonId) {
+			var url = 'ops/schoolStudent/adjustClass?userCourseId='+userCourseId+'&lessonId=' + lessonId;
+			var option = {
+				type : 2,
+				title : [ title, "color:green" ],
+				success : function(layero, index) {
+					iframeWin = parent.window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+				},
+				content : url,
+				area : [ '800px', '600px' ]
+			};
+			var btn = [ '关闭' ];
+			
+			option['btn'] = function(){
+			  // 刷新table数据
+                table.reload("courseTable");
+				parent.layer.close(index);
+			}
+			
+			//option['btn'] = btn;
+			var index = parent.layer.open(option);
+             
+			
+			
+			
+			
+			
+		}
+	
+		
+	</script>
+	<script id="dateTpl" type="text/html">
+    {{# var date = layui.util.toDateString(d.startTime, 'yyyy-MM-dd') }}
+    <span>{{date}}</span>
+</script>
+
+</body>
+</html>

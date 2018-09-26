@@ -1,0 +1,13 @@
+$(function(){
+    //    app-download
+    //$('.app-down').click(function(){
+   //     $('#fade').show();
+    //});
+   // $('.out').click(function(){
+       // $('#fade').hide();
+    //});
+    //    login/regist/forget-password
+    $('.fade .login>img.fork').click(function(){
+    	$('.fade').hide();
+    })
+})

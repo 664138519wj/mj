@@ -1,0 +1,13 @@
+.title{
+	font-size: .15rem;
+	text-align: center;
+	padding:.2rem 0;
+}
+.main{
+	padding-bottom:.3rem;
+}
+.policy-detail img{
+	width: 3.45rem;
+	height:2.3rem;
+	margin-bottom:.2rem;
+}

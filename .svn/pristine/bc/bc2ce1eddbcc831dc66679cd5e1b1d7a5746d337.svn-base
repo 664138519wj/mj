@@ -1,0 +1,795 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>机动车驾驶证申请表</title>
+	<script language="javascript" src="Lodop/LodopFuncs.js"></script>
+</head>
+<script language="javascript" type="text/javascript">
+	var LODOP; //声明为全局变量 
+	
+	// 打印预览
+	function Preview() {
+		CreatePrintPage();
+		LODOP.PREVIEW();
+	};
+	// 直接打印
+	function Print() {
+		CreatePrintPage();
+		LODOP.PRINT();
+	};
+	// 打印设计
+	function Design() {		
+		CreatePrintPage();
+		LODOP.PRINT_DESIGN();		
+	};
+	
+	function CreatePrintPage() {
+		LODOP = getLodop();
+		LODOP.PRINT_INITA(10, 10, 754, 453, "学生信息");
+		LODOP.ADD_PRINT_RECT(70, 900, 644, 913, 0, 2);
+		LODOP.ADD_PRINT_RECT(160, 447, 21, 30, 2, 0);
+		LODOP.ADD_PRINT_RECT(160, 488, 22, 30, 2, 0);
+		LODOP.ADD_PRINT_RECT(160, 571, 22, 30, 2, 0);
+		LODOP.ADD_PRINT_RECT(160, 509, 21, 30, 2, 0);
+		LODOP.ADD_PRINT_RECT(160, 592, 22, 30, 2, 0);
+		LODOP.ADD_PRINT_RECT(131, 343, 43, 30, 0, 2);
+		LODOP.ADD_PRINT_RECT(131, 385, 42, 30, 0, 2);
+		LODOP.ADD_PRINT_RECT(131, 426, 64, 30, 0, 2);
+		LODOP.ADD_PRINT_RECT(131, 489, 125, 30, 0, 2);
+		LODOP.ADD_PRINT_RECT(131, 613, 50, 30, 0, 2);
+		LODOP.ADD_PRINT_RECT(131, 662, 94, 30, 0, 2);
+		LODOP.ADD_PRINT_RECT(160, 613, 143, 166, 0, 2);
+		LODOP.ADD_PRINT_RECT(189, 343, 22, 31, 2, 0);
+		LODOP.ADD_PRINT_RECT(160, 280, 22, 30, 2, 0);
+		LODOP.ADD_PRINT_RECT(160, 322, 22, 30, 2, 0);
+		LODOP.ADD_PRINT_RECT(160, 364, 22, 30, 2, 0);
+		LODOP.ADD_PRINT_RECT(160, 301, 22, 30, 2, 0);
+		LODOP.ADD_PRINT_RECT(189, 322, 22, 31, 2, 0);
+		LODOP.ADD_PRINT_RECT(160, 405, 22, 30, 2, 0);
+		LODOP.ADD_PRINT_RECT(160, 259, 22, 30, 2, 0);
+		LODOP.ADD_PRINT_RECT(160, 238, 22, 30, 2, 0);
+		LODOP.ADD_PRINT_RECT(160, 426, 22, 30, 2, 0);
+		LODOP.ADD_PRINT_RECT(160, 343, 22, 30, 2, 0);
+		LODOP.ADD_PRINT_RECT(160, 385, 21, 30, 2, 0);
+		LODOP.ADD_PRINT_RECT(189, 364, 22, 31, 2, 0);
+		LODOP.ADD_PRINT_RECT(189, 238, 22, 31, 2, 0);
+		LODOP.ADD_PRINT_RECT(160, 550, 22, 30, 2, 0);
+		LODOP.ADD_PRINT_RECT(189, 280, 22, 31, 2, 0);
+		LODOP.ADD_PRINT_RECT(189, 385, 21, 31, 2, 0);
+		LODOP.ADD_PRINT_RECT(189, 259, 22, 31, 2, 0);
+		LODOP.ADD_PRINT_RECT(160, 467, 22, 30, 2, 0);
+		LODOP.ADD_PRINT_RECT(189, 405, 22, 31, 2, 0);
+		LODOP.ADD_PRINT_RECT(160, 529, 22, 30, 2, 0);
+		LODOP.ADD_PRINT_RECT(189, 301, 22, 31, 2, 0);
+		LODOP.ADD_PRINT_RECT(131, 89, 255, 30, 0, 2);
+		LODOP.ADD_PRINT_RECT(131, 16, 30, 195, 0, 2);
+		LODOP.ADD_PRINT_RECT(131, 45, 45, 30, 0, 2);
+		LODOP.ADD_PRINT_RECT(160, 193, 46, 30, 0, 2);
+		LODOP.ADD_PRINT_RECT(160, 45, 45, 60, 0, 2);
+		LODOP.ADD_PRINT_RECT(160, 89, 105, 30, 0, 2);
+		LODOP.ADD_PRINT_RECT(189, 89, 105, 31, 0, 2);
+		LODOP.ADD_PRINT_RECT(189, 193, 46, 31, 0, 2);
+		LODOP.ADD_PRINT_RECT(189, 447, 21, 31, 2, 0);
+		LODOP.ADD_PRINT_RECT(189, 426, 22, 31, 2, 0);
+		LODOP.ADD_PRINT_RECT(189, 550, 22, 31, 2, 0);
+		LODOP.ADD_PRINT_RECT(189, 509, 21, 31, 2, 0);
+		LODOP.ADD_PRINT_RECT(189, 467, 22, 31, 2, 0);
+		LODOP.ADD_PRINT_RECT(189, 571, 22, 31, 2, 0);
+		LODOP.ADD_PRINT_RECT(189, 529, 22, 31, 2, 0);
+		LODOP.ADD_PRINT_RECT(189, 488, 22, 31, 2, 0);
+		LODOP.ADD_PRINT_RECT(189, 592, 22, 31, 2, 0);
+		LODOP.ADD_PRINT_RECT(219, 45, 45, 36, 0, 2);
+		LODOP.ADD_PRINT_RECT(254, 45, 45, 37, 0, 2);
+		LODOP.ADD_PRINT_RECT(290, 45, 45, 36, 0, 2);
+		LODOP.ADD_PRINT_RECT(219, 89, 525, 36, 0, 2);
+		LODOP.ADD_PRINT_RECT(367, 914, 525, 37, 0, 2);
+		LODOP.ADD_PRINT_RECT(362, 845, 525, 36, 0, 2);
+		LODOP.ADD_PRINT_RECT(325, 16, 740, 471, 0, 2);
+		LODOP.ADD_PRINT_RECT(325, 16, 30, 372, 0, 2);
+		LODOP.ADD_PRINT_RECT(254, 89, 256, 37, 0, 2);
+		LODOP.ADD_PRINT_RECT(290, 344, 104, 36, 0, 2);
+		LODOP.ADD_PRINT_RECT(325, 195, 150, 85, 0, 2);
+		LODOP.ADD_PRINT_RECT(451, 45, 300, 22, 0, 2);
+		LODOP.ADD_PRINT_RECT(697, 16, 98, 30, 0, 1);
+		LODOP.ADD_PRINT_RECT(727, 16, 98, 70, 0, 2);
+		LODOP.ADD_PRINT_RECT(697, 112, 644, 30, 0, 1);
+		LODOP.ADD_PRINT_RECT(727, 113, 109, 42, 0, 1);
+		LODOP.ADD_PRINT_RECT(796, 16, 30, 257, 0, 2);
+		LODOP.ADD_PRINT_RECT(853, 582, 174, 95, 0, 2);
+		LODOP.ADD_PRINT_RECT(102, 539, 75, 30, 0, 2);
+		LODOP.ADD_PRINT_RECT(102, 613, 143, 30, 0, 2);
+		LODOP.ADD_PRINT_RECT(102, 385, 155, 30, 0, 2);
+		LODOP.ADD_PRINT_RECT(102, 278, 108, 30, 0, 2);
+		LODOP.ADD_PRINT_TEXT(69, 194, 375, 32, "机 动 车 驾 驶 证 申 请 表");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 18);
+		LODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(110, 282, 112, 15, "受理岗签字签章");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(111, 548, 69, 15, "档案编号");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(138, 54, 44, 17, "姓名");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(191, 24, 22, 100, "申请人信息");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(140, 350, 45, 15, "性别");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(139, 430, 70, 15, "出生日期");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(138, 622, 41, 15, "国籍");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(165, 53, 41, 59, "身份证明名称");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(165, 199, 41, 25, "号码");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(198, 199, 41, 23, "号码");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(222, 53, 41, 17, "邮寄");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(293, 53, 41, 16, "移动");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(238, 53, 43, 14, "地址");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(309, 53, 41, 16, "电话");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(301, 364, 74, 15, "邮政编码");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(493, 24, 24, 121, "申请业务种类");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(329, 66, 75, 16, "初次申领");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(350, 65, 110, 14, "增加准驾车型");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(371, 64, 140, 15, "持军警驾驶证申领");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(391, 66, 141, 15, "持境外驾驶证申领");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(747, 30, 98, 18, "委托代理人            ");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(695, 928, 79, 20, "本申请");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 11);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(704, 990, 47, 20, "委托");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 11);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(694, 896, 100, 20, "监护人申请");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 11);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(705, 849, 78, 20, "代理申请");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 11);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(949, 584, 165, 25, "代理人/监护人签字：");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(733, 112, 112, 24, "代理人/监护\n人姓名");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
+		LODOP.ADD_PRINT_TEXT(381, 834, 100, 20, "号码");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 11);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(410, 819, 100, 20, "住址");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 11);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(849, 22, 23, 168, "申告的义务和内容");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(800, 77, 486, 30, "申请人应当如实申告是否具有下列不准申请机动车驾驶证的情形：");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP
+				.ADD_PRINT_TEXT(
+						825,
+						70,
+						510,
+						200,
+						" 一、器质性心脏病、癫痫病、美尼尔氏症、眩晕症、癔病、震颤麻痹、精神病、痴呆以及影响肢体活动的神经系统疾病等妨碍安全驾驶疾病；\n二、三年内有吸食、注射毒品行为或者解除强制隔离戒毒措施未满三年，或者长期服用依赖性精神药品成瘾尚未戒除；\n三、提供虚假申请材料，以欺骗等不正当手段申领机动车驾驶证；\n四、造成交通事故后逃逸构成犯罪；\n五、饮酒后或者醉酒驾驶机动车发生重大交通事故构成犯罪；\n六、醉酒驾驶机动车或者饮酒后驾驶营运机动车依法被吊销机动车驾驶证未满五年；\n七、醉酒驾驶营运机动车依法被吊销机动车驾驶证未满十年；\n八、因其他情形依法被吊销机动车驾驶证未满二年；\n九、驾驶许可依法被撤销未满三年；\n十、法律和行政法规规定的其他不准申请的情形。");
+		LODOP
+				.ADD_PRINT_TEXT(1033, 59, 503, 25,
+						" 上述内容本人已认真阅读，本人不具有所列的不准申请的情形。");
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(856, 585, 105, 25, "申请人签字：");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(371, 497, 69, 15, "军队驾驶证");
+		LODOP.ADD_PRINT_TEXT(372, 594, 73, 15, "武警驾驶证");
+		LODOP.ADD_PRINT_TEXT(393, 398, 73, 15, "香港驾驶证");
+		LODOP.ADD_PRINT_TEXT(394, 498, 69, 14, "澳门驾驶证");
+		LODOP.ADD_PRINT_TEXT(393, 594, 71, 15, "台湾驾驶证");
+		LODOP.ADD_PRINT_TEXT(393, 684, 71, 14, "外国驾驶证");
+		LODOP.ADD_PRINT_RECT(392, 48, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_RECT(329, 48, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_RECT(349, 48, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_RECT(371, 48, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_RECT(372, 573, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_RECT(392, 477, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_RECT(392, 667, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_RECT(392, 573, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_RECT(392, 381, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_RECT(371, 477, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_RECT(705, 890, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_RECT(570, 288, 14, 14, 0, 1);
+		LODOP.ADD_PRINT_RECT(733, 874, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_TEXT(709, 892, 230, 20,
+				"      ${student.xmjx}           ");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 13);
+		LODOP.SET_PRINT_STYLEA(0, "Underline", 1);
+		LODOP.ADD_PRINT_TEXT(137, 91, 242, 20, name);
+		if (name.length > 12) {
+			LODOP.SET_PRINT_STYLEA(0, "FontSize", 12);
+		} else {
+			LODOP.SET_PRINT_STYLEA(0, "FontSize", 13);
+		}
+
+		if (sex == '1') {
+			LODOP.ADD_PRINT_TEXT(139, 387, 34, 15, "男");
+		} else {
+			LODOP.ADD_PRINT_TEXT(139, 387, 34, 15, "女");
+		}
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 13);
+		LODOP.ADD_PRINT_TEXT(139, 492, 100, 14, birthDay);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 13);
+		LODOP.ADD_PRINT_TEXT(138, 672, 54, 15, country);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 13);
+		LODOP.ADD_PRINT_TEXT(167, 91, 100, 20, "居民身份证");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 13);
+		LODOP.ADD_PRINT_TEXT(197, 92, 100, 20, "");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 13);
+		LODOP.ADD_PRINT_TEXT(227, 93, 513, 25, registerAddress);
+		if (registerAddress.length > 32) {
+			LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		} else {
+			LODOP.SET_PRINT_STYLEA(0, "FontSize", 12);
+		}
+
+		LODOP.ADD_PRINT_TEXT(297, 91, 220, 20, mobile);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 13);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(301, 450, 136, 19, email);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 13);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+
+		if (sqlx == '1') {
+			LODOP.ADD_PRINT_TEXT(358, 280, 31, 24, "${student.zkcx}");
+			LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+			LODOP.SET_PRINT_STYLEA(0, "FontSize", 13);
+			LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+			LODOP.ADD_PRINT_TEXT(328, 46, 27, 15, "√");
+			LODOP.SET_PRINT_STYLEA(0, "FontSize", 15);
+			LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+			LODOP.ADD_PRINT_TEXT(329, 394, 27, 15, "√");
+			LODOP.SET_PRINT_STYLEA(0, "FontSize", 15);
+			LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		} else {
+			LODOP.ADD_PRINT_TEXT(358, 260, 80, 24,
+					carModelCode);
+			LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+			LODOP.SET_PRINT_STYLEA(0, "FontSize", 13);
+			LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+			LODOP.ADD_PRINT_TEXT(332,44,28,15,"√");
+			LODOP.SET_PRINT_STYLEA(0,"FontSize",15);
+			LODOP.SET_PRINT_STYLEA(0,"Bold",1);
+			LODOP.ADD_PRINT_TEXT(329,392,27,15,"√");
+			LODOP.SET_PRINT_STYLEA(0,"FontSize",15);
+			LODOP.SET_PRINT_STYLEA(0,"Bold",1);
+
+		}
+
+		LODOP.ADD_PRINT_TEXT(919, 641, 30, 30, "年");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.ADD_PRINT_TEXT(919, 685, 30, 30, "月");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.ADD_PRINT_TEXT(920, 726, 30, 30, "日");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.ADD_PRINT_TEXT(1024, 645, 30, 30, "年");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.ADD_PRINT_TEXT(1025, 685, 30, 30, "月");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.ADD_PRINT_TEXT(1025, 725, 30, 30, "日");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.ADD_PRINT_TEXT(1065, 357, 318, 27, "xmjx");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 13);
+		LODOP.SET_PRINT_STYLEA(0, "Alignment", 3);
+		LODOP.ADD_PRINT_TEXT(715, 971, 31, 26, "√");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 15);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_IMAGE(170, 626, 117, 143,
+				"    照        片");
+		LODOP.SET_PRINT_STYLEA(0, "Stretch", 1);
+		LODOP.ADD_PRINT_BARCODE(15, 423, 314, 40, "128A", certificateCode);
+		var sfzmhm = certificateCode;
+		var j = 1
+		var sfArray = new Array();
+		for (var i = 0; i < sfzmhm.length; i++) {
+			temp = sfzmhm.substring(i, j);
+			sfArray[i] = temp;
+			j++;
+		}
+
+		var zhzhm = '';
+		var zhArray = new Array();
+		var k = 1;
+
+		for (var i = 0; i < zhzhm.length; i++) {
+			temp = zhzhm.substring(i, k);
+			zhArray[i] = temp;
+			k++;
+		}
+
+		LODOP.ADD_PRINT_TEXT(166, 241, 18, 20, sfArray[0]);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 15);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(166, 262, 18, 20, sfArray[1]);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 15);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(166, 284, 18, 20, sfArray[2]);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 15);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(166, 303, 18, 20, sfArray[3]);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 15);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(166, 325, 18, 20, sfArray[4]);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 15);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(166, 346, 18, 20, sfArray[5]);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 15);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(166, 367, 18, 20, sfArray[6]);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 15);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(166, 388, 18, 20, sfArray[7]);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 15);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(166, 409, 18, 20, sfArray[8]);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 15);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(166, 430, 18, 20, sfArray[9]);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 15);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(166, 450, 18, 20, sfArray[10]);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 15);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(166, 471, 18, 20, sfArray[11]);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 15);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(166, 491, 18, 20, sfArray[12]);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 15);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(166, 513, 18, 20, sfArray[13]);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 15);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(166, 533, 18, 20, sfArray[14]);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 15);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(166, 553, 18, 20, sfArray[15]);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 15);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(166, 574, 18, 20, sfArray[16]);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 15);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(166, 595, 18, 20, sfArray[17]);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 15);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(197, 240, 18, 20, zhArray[0]);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 15);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(197, 261, 18, 20, zhArray[1]);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 15);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(197, 284, 18, 20, zhArray[2]);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 15);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(197, 304, 18, 20, zhArray[3]);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 15);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(197, 325, 18, 20, zhArray[4]);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 15);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(197, 346, 18, 20, zhArray[5]);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 15);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(197, 366, 18, 20, zhArray[6]);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 15);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(197, 388, 18, 20, zhArray[7]);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 15);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(197, 409, 18, 20, zhArray[8]);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 15);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(197, 429, 18, 20, zhArray[9]);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 15);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(197, 450, 18, 20, zhArray[10]);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 15);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(197, 471, 18, 20, zhArray[11]);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 15);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(197, 491, 18, 20, zhArray[12]);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 15);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(197, 513, 18, 20, zhArray[13]);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 15);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(197, 533, 18, 20, zhArray[14]);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 15);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(197, 554, 18, 20, zhArray[15]);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 15);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(197, 574, 18, 20, zhArray[16]);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 15);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(197, 595, 18, 20, zhArray[17]);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 15);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+
+		LODOP.ADD_PRINT_TEXT(110, 616, 126, 15, "档案编号");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_RECT(254, 344, 104, 37, 0, 2);
+		LODOP.ADD_PRINT_TEXT(257, 53, 41, 17, "固定");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(272, 53, 41, 16, "电话");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(268, 364, 74, 15, "电子信箱");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_RECT(325, 195, 55, 85, 0, 2);
+		LODOP.ADD_PRINT_TEXT(336, 198, 57, 68, "申请的准驾车型代号");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(265, 448, 163, 15, email);
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "仿宋_GB2312");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.ADD_PRINT_TEXT(413, 65, 93, 15, "证件损毁换证");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(413, 299, 65, 15, "转入换证");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(413, 538, 93, 15, "有效期满换证");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_RECT(413, 282, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_RECT(412, 48, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_RECT(413, 516, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_RECT(472, 45, 151, 33, 0, 2);
+		LODOP.ADD_PRINT_RECT(430, 344, 204, 43, 0, 2);
+		LODOP.ADD_PRINT_RECT(430, 547, 209, 43, 0, 2);
+		LODOP.ADD_PRINT_TEXT(434, 65, 124, 15, "达到规定年龄换证");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(434, 202, 151, 15, "自愿降低准驾车型换证");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_RECT(434, 48, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_RECT(434, 184, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_TEXT(442, 370, 160, 15, "申请的准驾车型代号");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 11);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_RECT(504, 45, 151, 27, 0, 2);
+		LODOP.ADD_PRINT_RECT(472, 195, 91, 33, 0, 2);
+		LODOP.ADD_PRINT_RECT(472, 285, 132, 33, 0, 2);
+		LODOP.ADD_PRINT_RECT(472, 416, 105, 33, 0, 1);
+		LODOP.ADD_PRINT_RECT(472, 521, 234, 33, 0, 1);
+		LODOP.ADD_PRINT_TEXT(481, 64, 106, 15, "信息变化换证");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(481, 213, 75, 15, "变更事项");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(481, 436, 74, 15, "变更内容");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 11);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_RECT(480, 48, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_RECT(550, 44, 206, 20, 0, 1);
+		LODOP.ADD_PRINT_RECT(613, 44, 206, 40, 0, 1);
+		LODOP.ADD_PRINT_RECT(653, 45, 205, 44, 0, 1);
+		LODOP.ADD_PRINT_RECT(531, 250, 36, 167, 0, 2);
+		LODOP.ADD_PRINT_TEXT(534, 65, 46, 15, "补证");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(552, 64, 45, 15, "注销");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(626, 63, 93, 15, "恢复驾驶资格");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(662, 67, 71, 20, "延期换证");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(682, 66, 151, 20, "延期提交身体条件证明");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_RECT(533, 48, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_RECT(552, 48, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_RECT(625, 48, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_RECT(661, 48, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_RECT(679, 48, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_TEXT(594, 260, 25, 48, "原因");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_RECT(531, 285, 471, 20, 0, 1);
+		LODOP.ADD_PRINT_RECT(550, 285, 471, 20, 0, 2);
+		LODOP.ADD_PRINT_RECT(612, 285, 471, 44, 0, 1);
+		LODOP.ADD_PRINT_RECT(655, 285, 471, 42, 0, 1);
+		LODOP.ADD_PRINT_RECT(533, 288, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_RECT(533, 422, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_RECT(552, 288, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_RECT(616, 289, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_RECT(637, 289, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_RECT(668, 289, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_TEXT(534, 303, 40, 15, "丢失");
+		LODOP.ADD_PRINT_TEXT(535, 438, 44, 14, "其他");
+		LODOP.ADD_PRINT_TEXT(553, 302, 65, 15, "本人申请");
+		LODOP.ADD_PRINT_TEXT(552, 384, 40, 15, "死亡");
+		LODOP.ADD_PRINT_TEXT(554, 452, 100, 15, "身体条件不适合");
+		LODOP.ADD_PRINT_TEXT(552, 579, 113, 15, "丧失民事行为能力");
+		LODOP.ADD_PRINT_TEXT(552, 712, 41, 15, "其他");
+		LODOP.ADD_PRINT_TEXT(618, 304, 379, 15, "超过有效期一年以上未换证被注销未满两年");
+		LODOP.ADD_PRINT_TEXT(639, 304, 437, 15,
+				"未按规定提交体检证明被注销且机动车驾驶证在有效期内或超过有效期不满一年");
+		LODOP.ADD_PRINT_TEXT(670, 307, 50, 15, "服兵役");
+		LODOP.ADD_PRINT_TEXT(670, 426, 79, 14, "出国（境）");
+		LODOP.ADD_PRINT_TEXT(670, 556, 45, 14, "其他");
+		LODOP.ADD_PRINT_RECT(552, 369, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_RECT(552, 430, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_RECT(552, 561, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_RECT(552, 689, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_RECT(668, 409, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_RECT(668, 537, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_TEXT(706, 34, 79, 15, "申请方式");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(770, 30, 89, 15, "监护人信息");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_RECT(530, 44, 206, 20, 0, 1);
+		LODOP.ADD_PRINT_RECT(727, 220, 101, 42, 0, 1);
+		LODOP.ADD_PRINT_RECT(727, 319, 84, 42, 0, 1);
+		LODOP.ADD_PRINT_RECT(727, 401, 100, 42, 0, 1);
+		LODOP.ADD_PRINT_RECT(727, 581, 174, 42, 0, 1);
+		LODOP.ADD_PRINT_TEXT(733, 324, 74, 37, "身份证明\n名    称");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
+		LODOP.ADD_PRINT_RECT(727, 499, 84, 42, 0, 1);
+		LODOP.ADD_PRINT_TEXT(732, 499, 84, 38, "身份证明\n号  码");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
+		LODOP.ADD_PRINT_RECT(769, 113, 109, 27, 0, 1);
+		LODOP.ADD_PRINT_RECT(769, 220, 281, 27, 0, 1);
+		LODOP.ADD_PRINT_RECT(769, 499, 84, 27, 0, 1);
+		LODOP.ADD_PRINT_RECT(769, 581, 174, 27, 0, 1);
+		LODOP.ADD_PRINT_TEXT(776, 515, 74, 15, "联系电话");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.ADD_PRINT_RECT(795, 582, 174, 60, 0, 2);
+		LODOP.ADD_PRINT_RECT(947, 582, 174, 106, 0, 2);
+		LODOP.ADD_PRINT_TEXT(777, 142, 71, 13, "联系地址");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.ADD_PRINT_TEXT(182, 999, 220, 20, "5501775");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 13);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_RECT(613, 150, 59, 41, 0, 2);
+		LODOP.ADD_PRINT_TEXT(619, 151, 68, 31, "准驾车型\n  代号");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(777, 223, 260, 14, "");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 13);
+		LODOP.ADD_PRINT_RECT(254, 447, 167, 37, 0, 2);
+		LODOP.ADD_PRINT_TEXT(262, 93, 220, 19, phone);
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 13);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_RECT(325, 45, 151, 22, 0, 2);
+		LODOP.ADD_PRINT_RECT(346, 45, 151, 22, 0, 2);
+		LODOP.ADD_PRINT_RECT(367, 45, 151, 22, 0, 2);
+		LODOP.ADD_PRINT_RECT(388, 45, 151, 22, 0, 2);
+		LODOP.ADD_PRINT_RECT(325, 344, 412, 44, 0, 2);
+		LODOP.ADD_PRINT_RECT(368, 344, 412, 22, 0, 2);
+		LODOP.ADD_PRINT_RECT(389, 344, 412, 21, 0, 2);
+		LODOP.ADD_PRINT_RECT(409, 45, 711, 22, 0, 2);
+		LODOP.ADD_PRINT_RECT(430, 45, 300, 22, 0, 2);
+		LODOP.ADD_PRINT_RECT(454, 48, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_TEXT(455, 65, 201, 15, "因身体条件变化降低准驾车型");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_RECT(504, 195, 91, 27, 0, 2);
+		LODOP.ADD_PRINT_RECT(504, 285, 471, 27, 0, 2);
+		LODOP.ADD_PRINT_RECT(510, 48, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_TEXT(510, 63, 68, 15, "信息备案");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_TEXT(510, 213, 77, 15, "从业单位");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_RECT(570, 44, 206, 20, 0, 1);
+		LODOP.ADD_PRINT_RECT(572, 48, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_TEXT(573, 63, 159, 15, "注销最高准驾车型");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_RECT(588, 44, 206, 25, 0, 1);
+		LODOP.ADD_PRINT_RECT(594, 48, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_TEXT(595, 63, 146, 15, "注销实习准驾车型");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_RECT(569, 285, 471, 45, 0, 2);
+		LODOP.ADD_PRINT_TEXT(570, 302, 420, 15, "发生交通事故造成人员死亡，承担同等以上责任");
+		LODOP.ADD_PRINT_TEXT(587, 303, 169, 15, "连续三个记分周期不参加审验");
+		LODOP.ADD_PRINT_TEXT(601, 303, 307, 15, "延长的实习期内再次记6分以上但未达到12分");
+		LODOP.ADD_PRINT_RECT(586, 288, 14, 14, 0, 1);
+		LODOP.ADD_PRINT_RECT(597, 288, 14, 14, 0, 1);
+		LODOP.ADD_PRINT_TEXT(587, 491, 100, 14, "记满12分");
+		LODOP.ADD_PRINT_RECT(586, 474, 14, 14, 0, 1);
+		LODOP.ADD_PRINT_RECT(796, 44, 539, 257, 0, 2);
+		LODOP.ADD_PRINT_TEXT(810, 590, 169, 32, "  申请人及代理人对申请材料的真实有效性负责。");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_RECT(661, 149, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_TEXT(662, 167, 73, 15, "延期审验");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+		LODOP.ADD_PRINT_RECT(705, 142, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_RECT(705, 426, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_RECT(705, 283, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_TEXT(706, 168, 90, 15, "本人申请");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.ADD_PRINT_TEXT(706, 310, 100, 15, "监护人申请");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.ADD_PRINT_TEXT(705, 448, 42, 15, "委托");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.ADD_PRINT_TEXT(705, 652, 80, 15, "代理申请");
+		LODOP.SET_PRINT_STYLEA(0, "FontName", "黑体");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+		LODOP.ADD_PRINT_TEXT(704, 482, 157, 14, "                    ");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 12);
+		LODOP.SET_PRINT_STYLEA(0, "Underline", 1);
+		LODOP.ADD_PRINT_RECT(326, 345, 411, 22, 0, 1);
+		LODOP.ADD_PRINT_RECT(346, 345, 411, 22, 0, 1);
+		LODOP.ADD_PRINT_TEXT(332, 414, 67, 20, "驾校培训");
+		LODOP.ADD_PRINT_TEXT(332, 513, 79, 20, "有驾驶经历");
+		LODOP.ADD_PRINT_TEXT(332, 622, 64, 20, "自学直考");
+		LODOP.ADD_PRINT_RECT(330, 398, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_RECT(330, 495, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_RECT(330, 607, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_TEXT(351, 363, 60, 20, "驾校培训");
+		LODOP.ADD_PRINT_TEXT(351, 438, 97, 20, "全日制职业教育");
+		LODOP.ADD_PRINT_TEXT(351, 552, 120, 20, "最高准驾车型被注销");
+
+		LODOP.ADD_PRINT_RECT(350, 347, 15, 15, 0, 1);
+		LODOP.ADD_PRINT_RECT(351, 420, 15, 15, 0, 1);
+
+		LODOP.ADD_PRINT_RECT(350, 536, 15, 15, 0, 1);
+
+		LODOP.ADD_PRINT_TEXT(705, 137, 27, 15, "√");
+		LODOP.SET_PRINT_STYLEA(0, "FontSize", 15);
+		LODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+	};
+	
+	function show() {
+		// 开启打印预览 
+		var Preview = setTimeout("Preview()", 3000);
+		// 启动打印
+		// var print = setTimeout("Print()", 5000);
+	};
+
+	show();
+</script>
+<!-- thymeleaf内联js -->
+<script th:inline="javascript">
+
+var name = [[${student.name}]];
+var sex = [[${student.sex}]];
+var country = [[${student.country}]];
+var nation = [[${student.nation}]];
+var birthDay = [[${student.birthDay}]];
+var certificateCode = [[${student.certificateCode}]];
+var registerAddress = [[${student.registerAddress}]];
+var contactZip = [[${student.contactZip}]];
+var phone = [[${student.phone}]];
+var mobile = [[${student.mobile1}]];
+var email = [[${student.mobile2}]];
+var carModelCode = [[${student.carModelCode}]];
+</script>
+<body>
+	<!-- 测试 -->
+	<input type="button" value="打印预览" name="B3" onclick="Preview()">
+	<input type="button" value="打印设计" name="B3" onclick="Design()">
+	<input type="button" value="打印维护" name="B3" onclick="Setup()">
+	
+	<p style="text-align:center;color:#123456;font-size:30px;">正在准备打印，请稍候。。。</p>
+
+</body>
+</html>

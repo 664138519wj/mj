@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" th:href="@{/lib/lui/css/layui.css}">
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+    <style type="text/css">
+        .layui-table-box {
+            min-height: 450px;
+        }
+    </style>
+</head>
+<body>
+
+
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+    <legend>提现记录</legend>
+</fieldset>
+
+
+<table id="TeacherWithdrawTable" class="layui-table" lay-data="{cellMinWidth: 80, page: true, limit:20, url:'data'}"
+       lay-filter="courseTable">
+    <thead>
+    <tr>
+        <th lay-data="{field:'id',type:'checkbox'}">ID</th>
+        <th lay-data="{field:'teacherName', width:150, sort: true}">申请人</th>
+        <th lay-data="{field:'amount', width: 160}">金额</th>
+        <th lay-data="{field:'reason', width: 300 }">缘由</th>
+        <th lay-data="{field:'bankName', width: 160}">银行名称</th>
+        <th lay-data="{field:'bankNo', width: 160}">银行卡卡号</th>
+        <th lay-data="{field:'cardHolder', width: 160}">持卡人姓名</th>
+        <th lay-data="{field:'createTime', width: 200 ,templet:'#Tdate'}">发起时间</th>
+        <th lay-data="{field:'status', width: 160 ,templet:'#status'}">支付状态</th>
+        <th lay-data="{fixed: 'right', width:178, align:'center', toolbar: '#operation'}"></th>
+    </tr>
+    </thead>
+</table>
+<script id="status" type="text/html">
+    {{#
+    if(d.status == 0){ }}
+    <span>待审批</span>
+    {{#   }
+    else if(d.status == 1){ }}
+    <span>审批待发放</span>
+    {{#   }
+    else if(d.status == 2){ }}
+    <span>提现成功</span>
+    {{#   }
+    else if(d.status == 3){ }}
+    <span>提现失败</span>
+    {{#   }
+    }}
+</script>
+<script id="Tdate" type="text/html">
+    {{# var date = layui.util.toDateString(d.createTime, 'yyyy-MM-dd HH:mm:ss') }}
+    <span>{{date}}</span>
+</script>
+<script id="operation" type="text/html">
+    {{#
+    if(d.status == 0){ }}
+    <a class="layui-btn layui-btn-xs" onclick="approval({{d.id}}, 1)">审批通过</a>
+    {{#   }
+    else if(d.status == 1){ }}
+    <a class="layui-btn layui-btn-xs" onclick="approval({{d.id}}, 2)">发放完毕</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" onclick="approval({{d.id}}, 3)">发放失败</a>
+    {{#   }
+    }}
+</script>
+
+
+<script th:src="@{/lib/jquery/jquery.js}"></script>
+<script th:src="@{/lib/lui/layui.all.js}"></script>
+
+<script type="text/javascript">
+    var table = layui.table;
+    var layer = layui.layer;
+    function approval(id, status) {
+        jQuery.ajax({
+            type: "post",
+            url: 'update',
+            data: {'id': id, 'status': status},
+            success: function (data) {
+                location.reload();
+                if (data === 'success') {
+                    switch (status) {
+                        case 1:
+                            parent.tips(1, "审批完毕，进入发放流程");
+                            break;
+                        case 2:
+                            parent.tips(1, "发放成功，流程关闭");
+                            break;
+                        case 3:
+                            parent.tips(1, "发放失败，流程关闭");
+                            break;
+                    }
+                } else {
+                    parent.tips(0, "服务器异常");
+                }
+            }
+        });
+    }
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "hints": [],
+  "groups": [
+    {
+      "sourceType": "com.migu.online.configuration.CustomConfig",
+      "name": "ssm",
+      "type": "com.migu.online.configuration.CustomConfig"
+    }
+  ],
+  "properties": [
+    {
+      "sourceType": "com.migu.online.configuration.CustomConfig",
+      "name": "ssm.name",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.migu.online.configuration.CustomConfig",
+      "name": "ssm.title",
+      "type": "java.lang.String"
+    }
+  ]
+}

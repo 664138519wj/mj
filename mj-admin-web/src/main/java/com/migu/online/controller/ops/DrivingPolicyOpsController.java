@@ -1,0 +1,108 @@
+package com.migu.online.controller.ops;
+
+import java.util.Date;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.github.pagehelper.Page;
+import com.migu.online.controller.response.ResponsePageData;
+import com.migu.online.model.DrivingPolicy;
+import com.migu.online.service.DrivingPolicyService;
+
+/**
+ * 驾考政策
+ */
+@Controller
+@RequestMapping("/ops/drivingpolicy/")
+public class DrivingPolicyOpsController {
+
+    @Autowired
+    private DrivingPolicyService drivingPolicyService;
+
+    /**
+     *  ------页面跳转 start-----
+     */
+
+
+    @GetMapping("index")
+    public String index(ModelMap modelMap){
+        return "ops/drivingpolicy/index";
+    }
+
+    /**
+     * 编辑，新增，查看 方法，。
+     * @param modelMap
+     * @param id
+     * @param editFlag edit = 1, new = 0 , show = 2
+     * @return
+     */
+    @GetMapping("edit")
+    public String edit(ModelMap modelMap,@RequestParam(value = "id",required = false) Long id,
+                       @RequestParam(value = "flag",defaultValue = "1") Integer editFlag){
+    	DrivingPolicy model = new DrivingPolicy();
+        if(editFlag > 0) {
+        	model = drivingPolicyService.selectById(id);
+        }
+        modelMap.put("drivingpolicy",model);
+        modelMap.put("edit",editFlag != 2);
+        return "ops/drivingpolicy/edit";
+    }
+
+    /**
+     *  ------页面跳转 end------
+     */
+
+
+    /**
+     * 数据处理
+     */
+
+    @SuppressWarnings("rawtypes")
+	@GetMapping("data")
+    @ResponseBody
+    public ResponsePageData data(@RequestParam(value = "page",defaultValue = "0") Integer offset,
+                                    @RequestParam(value = "limit",defaultValue = "20") Integer limit,
+                                 @RequestParam(value = "filter",required = false) String filter){
+        Page<DrivingPolicy> page = (Page<DrivingPolicy>)drivingPolicyService.selectConditonByPage(filter,offset,limit);
+        return new ResponsePageData<DrivingPolicy>(page.getTotal(),page);
+    }
+
+    @PostMapping("save")
+	@ResponseBody
+	public String save(DrivingPolicy model) {
+		if (null == model) {
+			return "error";
+		}
+
+		if (model.getId() != null && model.getId() > 0) {
+			// 更新
+			DrivingPolicy record = drivingPolicyService.selectById(model.getId());
+			if (null == record) {
+				return "error";
+			}
+			record.setTitle(model.getTitle());
+			record.setImagePath(model.getImagePath());
+			record.setSummary(model.getSummary());
+			record.setContent(model.getContent());
+			return drivingPolicyService.createOrUpdate(record) >= 1 ? "success" : "error";
+		} else {
+			model.setUpdateTime(new Date());
+			model.setIsDelete(0);			
+		}
+		return drivingPolicyService.createOrUpdate(model) >= 1 ? "success" : "error";
+	}
+
+    @DeleteMapping("del")
+    @ResponseBody
+    public int del(@RequestParam("id") Long id){
+        return drivingPolicyService.deleteById(id);
+    }
+}

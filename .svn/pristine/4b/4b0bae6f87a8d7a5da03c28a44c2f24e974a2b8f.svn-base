@@ -1,0 +1,94 @@
+<!doctype html>
+
+<!--[if lt IE 7 ]><html xmlns:th="http://www.thymeleaf.org" lang="en" class="no-js ie6"> <![endif]-->
+<!--[if IE 7 ]><html xmlns:th="http://www.thymeleaf.org" lang="en" class="no-js ie7"> <![endif]-->
+<!--[if IE 8 ]><html xmlns:th="http://www.thymeleaf.org" lang="en" class="no-js ie8"> <![endif]-->
+<!--[if IE 9 ]><html xmlns:th="http://www.thymeleaf.org" lang="en" class="no-js ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!-->
+<html xmlns:th="http://www.thymeleaf.org" lang="en" class="no-js">
+<!--<![endif]-->
+<head>
+<meta charset="utf-8" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<script src="js/jquery-1.11.0.min.js"
+	th:src="@{js/jquery-1.11.0.min.js}"></script>
+
+<title>测试页面</title>
+</head>
+
+<body>
+	Blank page .. 最要是演示后台可以通过方法返回String 直接到这个页面。
+
+	<script>
+		$(function() {
+			$.ajaxSetup({
+				contentType : "application/json;charset=UTF-8"
+			});
+			/*  $.get("HomePage/getTeachers/pageIndex/1/pageSize/2", {}, function (data) {
+			     console.log(data);
+			 }, "JSON").error(function(a,b){
+				 debugger
+			 });*/
+
+			/*  $.get("HomePage/getCourseOnlines/pageIndex/1/pageSize/2", {}, function (data) {
+			     debugger
+				 console.log(data);
+			 }, "JSON").error(function(a,b){
+				 debugger
+			 });*/
+
+			/* $.post("SMS/sendSMS", JSON.stringify({mobile:'13918643756',type:1}), function (data) {
+			    debugger
+			 console.log(data);
+			}, "JSON").error(function(a,b){
+			 debugger
+			});  */
+
+			/* $.post("SMS/checkSMSCode", JSON.stringify({mobile:"13918643756",code:"3004",type:1}), function (data) {
+			    debugger
+			 console.log(data);
+			}, "JSON").error(function(a,b){
+			 debugger
+			}); */
+			
+			var geturl="";
+			//获取平台网点的课程
+			geturl="api/PlatformServiceNetwork/getPlatformServiceNetworkCourse/id/1/pageIndex/4/pageSize/1";
+			//获取线上课程
+			geturl="api/CourseOnline/getCourseOnlines/type/2/isRecommended/1/pageIndex/1/pageSize/10";
+			
+			$.get(geturl,{}, function(data) {
+				debugger
+				console.log(data);
+			}, "JSON").error(function(a, b) {
+				debugger
+			});
+
+			/*  $.post("Customer/register", JSON.stringify({mobile:"13918643756",pwd:"123",pwdagain:"123"}), function (data) {
+			     debugger
+				 console.log(data);
+			 }, "JSON").error(function(a,b){
+				 debugger
+			 }); */
+
+			/*   $.get("Teacher/getTeachers?pageIndex=1&pageSize=10", {}, function (data) {
+			 	 debugger
+			       console.log(data);
+			   }, "JSON").error(function(a,b){
+			  	 debugger
+			   }); */
+
+			/*  $.get("HomePage/showData?pageIndex=1&pageSize=10", JSON.stringify({
+			     pageIndex: 1,
+			     pageSize: 10
+			 }), function (data) {
+			     console.log(data);
+			 }, "JSON").error(function(a,b){
+				 debugger
+			 }); */
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+<head>
+    <title>关于我们</title>
+    <style type="text/css">
+        .tab-title{background:#fff;}
+        .tab-title ul{height:60px;line-height:60px;padding-bottom:5px;}
+        .tab-title ul li{float:left;width:160px;text-align: center;}
+        .tab-title ul li:hover{cursor: pointer;}
+        .tab-title ul li.tab-selected{border-bottom:4px solid #fd9938;}
+        .tab-title ul li.tab-selected span{color:#fd9938;}
+        .tab-title ul li a img{width:24px;height:24px;vertical-align: sub}
+    	.per-main{width:1200px;padding:0 0 40px;background:none;}
+    </style>
+</head>
+<body th:fragment="content">
+        <div class="content person-content">
+            <div class="com-width">
+                <div class="tab-title">
+                    <ul class="clear">
+                        <li>
+                            <a th:href="${ctx} + about_us_1">
+                                <img th:src="@{/img/about_1.png}" alt="">
+                                <span>我要考驾照</span>
+                            </a>
+                        </li>
+                        <li class="tab-selected">
+                            <a href="javascript:void(0);">
+                                <img th:src="@{/img/about_2.1.png}" alt="">
+                                <span>我是驾校</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="${ctx} + about_us_3">
+                                <img th:src="@{/img/about_3.png}" alt="">
+                                <span>我是教练</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="xc-about-page">
+                    <div class="xc-top">
+                        <div class="xc-pic"><img th:src="@{/img/about_pic.png}" alt=""></div>
+                        <div class="xc-desc">
+                            <p>      自我介绍一下，“我的学车网”是上海安族电子科技有限公司与新疆复安信息技术有限公司合作研发的全新驾考服务平台。平台面
+                                向准驾驶人、驾校和公安交管部门提供全方位的信息资讯和业务服务。我们既引入了创新的服务理念和服务模式，又充分结合新疆本
+                                地实际情况，立志成为最接地气的、最懂您的驾考服务平台！</p>
+                        </div>
+                    </div>
+                    <div class="xc-line">
+                        <img th:src="@{/img/about_line.png}" alt="">
+                    </div>
+                    <div class="xc-bottom">
+                        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;说到驾校，我们首先想到的是一字排开的几台电脑、同时开着的多个平台、永远都在忙碌的接待人员、不断往返于驾校和车管所办理各项手续的业务人员、和永远都在排队等待的学员......</p>
+                        <p>有了我们，一切将变得不同！我们为您提供：</p>
+                        <div class="xc-title">
+                            <img th:src="@{/img/about_tip.png}" alt=""><span>01</span><b>信息发布和推广：</b>
+                            <p>我们提供驾校信息的发布和推荐服务，学员随时可以看到您的驾校并进行报名，优质的服务也将为您带来良好的口碑、 赢得更多学员的亲赖。</p>
+                        </div>
+                        <div class="xc-title">
+                            <img th:src="@{/img/about_tip.png}" alt=""><span>02</span><b>代接收报名服务：</b>
+                            <p>学员报名时要录入详细信息、采集照片和指纹、打印表格进行签字，还要在多个平台中重复操作，效率低、效益更低。往后这样的工作就交给我们吧，我们代您接收学员报名、进行身份核实、完成信息录入、导入您的系统、提交到车管所完成后再把学员交还给您。</p>
+                        </div>
+                        <div class="xc-title">
+                            <img th:src="@{/img/about_tip.png}" alt=""><span>03</span><b>科一科四代培训服务：</b>
+                            <p>驾校的核心竞争力在于车辆驾驶的实操培训，我们可以代您完成学员科目一、四考试的培训和指导，学员通过科一考试后交给您、通过科三考试后交给我，我们负责指导学员完成科四考试，让您可以把人力和时间用在“刀刃”上，让专业的人做专业的事！</p>
+                        </div>
+                        <div class="xc-title">
+                            <p>看了这么多，是不是很动心啦？赶快体验一下吧！</p>
+                        </div>
+                        <div class="xc-title">
+                            <p>如果您已经明智的选择了我们，请记得经常“回来”关注您的报名情况，经常更新信息、发布动态也会赢得更多关注哦！</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</body>
+</html>

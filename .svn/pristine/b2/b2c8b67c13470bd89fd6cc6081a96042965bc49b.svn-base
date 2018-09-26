@@ -1,0 +1,169 @@
+package com.migu.online.service;
+
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.migu.online.common.UserCourseTypeEnum;
+import com.migu.online.mapper.DrivingSchoolLessonMapper;
+import com.migu.online.mapper.DrivingSchoolMapper;
+import com.migu.online.mapper.UserCourseInfoMapper;
+import com.migu.online.mapper.UserCourseMapper;
+import com.migu.online.model.DrivingSchool;
+import com.migu.online.model.DrivingSchoolLesson;
+import com.migu.online.model.UserCourse;
+import com.migu.online.model.UserCourseInfo;
+import com.migu.online.param.DrivingRegisterParam;
+import com.migu.online.utils.DateUtil;
+import com.migu.online.vo.DrivingSchoolSignVo;
+
+import tk.mybatis.mapper.entity.Example;
+import tk.mybatis.mapper.entity.Example.Criteria;
+
+@Service
+public class UserCourseInfoService {
+
+	@Autowired
+	private UserCourseMapper userCourseMapper;
+	@Autowired
+	private UserCourseInfoMapper userCourseInfoMapper;	
+	@Autowired
+	private DrivingSchoolLessonMapper drivingSchoolLessonMapper;
+	@Autowired
+	private DrivingSchoolMapper drivingSchoolMapper;
+	
+	/**
+	 * 出事化报名驾校数据
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public DrivingSchoolSignVo toSign(Long id) {
+		DrivingSchoolSignVo result = new DrivingSchoolSignVo();
+		// 获取驾校课程信息
+		DrivingSchoolLesson lesson = new DrivingSchoolLesson();
+		lesson.setId(id);
+		lesson.setIsDelete(0);
+		lesson = drivingSchoolLessonMapper.selectOne(lesson);
+		// 查询驾校
+		DrivingSchool record = new DrivingSchool();
+		record.setId(lesson.getSchoolId());
+		record = drivingSchoolMapper.selectOne(record);
+		result.setCourseId(id);
+		result.setBeginTime(DateUtil.dateToDateString(lesson.getStartTime(), DateUtil.DATAFORMAT_STR));
+		result.setLicence(lesson.getName());
+		result.setPrice(lesson.getPrice());
+		result.setName(record.getNameL());
+		return result;
+	}
+	
+	/**
+	 * 用户报名驾校情况
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public UserCourseInfo getUserCourseInfoByScId(Long scId, Long userId) {	
+		// 单表自定义查询
+		Example example = new Example(UserCourseInfo.class);
+		Criteria criteria = example.createCriteria();
+		criteria.andCondition("is_delete = 0");
+		criteria.andCondition("school_lesson_id=" + scId);
+		criteria.andCondition("user_id=" + userId);
+		example.and(criteria);
+		example.setOrderByClause("update_time desc");
+		//单表自定义查询
+        List<UserCourseInfo> pageList = userCourseInfoMapper.selectByExample(example);
+        if (null != pageList && pageList.size() > 0) {
+        	return pageList.get(0);
+        }
+		return null;
+	}
+	
+	/**
+	 * 报名驾校
+	 * 
+	 * @param pageIndex
+	 * @param pageSize
+	 * @param platId
+	 * @return
+	 * @throws Exception
+	 */
+	public DrivingRegisterParam register(DrivingRegisterParam param, Long userId, String userName) throws Exception {
+		// 获取驾校课程信息
+		DrivingSchoolLesson record = new DrivingSchoolLesson();
+		record.setId(param.getCourseId());
+		record = drivingSchoolLessonMapper.selectOne(record);
+		if (null == record) {
+			// 课程不存在
+			return null;
+		}		
+        // 插入usercoure表
+		UserCourse course = new UserCourse();
+		course.setUserId(userId);
+		course.setUserName(userName);
+		course.setCourseId(param.getCourseId());
+		course.setCourseType(UserCourseTypeEnum.lesson.code);
+		course.setPrice(record.getPrice());
+		course.setIsDelete(0);
+		course.setCreateTime(new Date());
+		course.setPayStatus(0);
+		course.setRefundStatus(0);
+		course.setUpdateTime(new Date());
+		userCourseMapper.insert(course);
+		// 插入用户信息表
+		UserCourseInfo info = new UserCourseInfo();
+		info.setCreateTime(new Date());
+		info.setUpdateTime(new Date());
+		info.setFirstApply(param.getFirstApply());
+		info.setIdDown(param.getIdDownDir());
+		info.setIdUp(param.getIdUpDir());
+		info.setSex(param.getSex());
+		info.setUserCourseId(course.getId());
+		info.setTelNo(param.getTelNo());
+		info.setUserName(param.getUserName());
+		info.setUserId(userId);
+		info.setPayType(param.getPayType());
+		info.setStatus(0); 
+		userCourseInfoMapper.insertSelective(info);
+		param.setCourseId(course.getId());
+		param.setPrice(record.getPrice().toString());
+		return param;
+	}
+	
+	/**
+     * 改&插
+     * @param model
+     * @return
+     */
+    public int createOrUpdate(UserCourseInfo model) {
+    	if (null != model.getId() && model.getId() > 0) {
+    		// update
+    		return userCourseInfoMapper.updateByPrimaryKeySelective(model);
+    	} else {
+    		return userCourseInfoMapper.insert(model);
+    	}
+    }
+    
+    /**
+     * 查
+     * @param id
+     * @return
+     */
+    public UserCourseInfo selectById(Long id) {
+    	return userCourseInfoMapper.selectByPrimaryKey(id);
+    }
+    
+    /**
+     * 查
+     * @param id
+     * @return
+     */
+    public UserCourseInfo selectByCourseId(Long courseId) {
+    	UserCourseInfo record = new UserCourseInfo();
+    	record.setUserCourseId(courseId);
+    	return userCourseInfoMapper.selectOne(record);
+    }
+}

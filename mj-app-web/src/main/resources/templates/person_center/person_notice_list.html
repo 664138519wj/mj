@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="head_center"><head>
+<head>
+<title>个人中心</title>
+</head>
+<body>
+<div class="tab" th:fragment="content">
+	<div class="plat-title">
+        <h2>服务通知</h2>
+    </div>
+    <div class="xc-notice-list" th:if="dataList">
+        <ul class="notice-box">
+            <li th:each="data:${dataList}">
+                <div class="left-time fl">
+                    <a th:href="${baseUrl} + ${data.url}"><p th:text="${#dates.format(data.createTime, 'yyyy-MM-dd HH:mm:ss')}"></p></a>
+                </div>
+                <div class="xc-notice fr">
+                    <p class="xc-notice-title">
+                      <b th:if="${data.type == 1}">购买线上课程成功通知</b>
+                      <b th:if="${data.type == 2}">购买线下课程成功通知</b>
+                      <b th:if="${data.type == 3}">报名驾校成功通知</b>
+                      <b th:if="${data.type == 4}">购买练习卡成功通知</b>
+                      <b th:if="${data.type == 5}">预约成功通知</b>
+                      <b th:if="${data.type == 6}">购买私教服务成功通知</b>
+                      <b th:if="${data.type == 7}">购买VIP服务成功通知</b>
+                      
+                    </p>
+                    <a th:href="${baseUrl} + ${data.url}"><p th:text="${data.content}"></p></a>
+                </div>
+            </li>
+          </ul>
+     </div>
+     <div th:unless="dataList">没有通知</div>
+   </div>
+</body>	
+</html>

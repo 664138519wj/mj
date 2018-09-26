@@ -1,0 +1,44 @@
+package com.migu.online.controller.ops;
+
+import com.migu.online.model.system.SysUser;
+import com.migu.online.service.SysUserManageService;
+import org.apache.shiro.SecurityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.*;
+
+
+@Controller
+@RequestMapping("/ops/schoolpasswd")
+public class PasswdSchController {
+
+    @Autowired
+    private SysUserManageService sysUserService;
+
+    private Long currentUserID() {
+        SysUser currentUser = (SysUser) SecurityUtils.getSubject().getPrincipal();
+        return currentUser.getId();
+    }
+
+
+    @GetMapping("index")
+    public String index(ModelMap modelMap) {
+        return "ops/school/modify_pwd";
+    }
+
+    @PostMapping("update")
+    @ResponseBody
+    public int update(ModelMap modelMap, @RequestParam(value = "old_passwd") String oldPasswd,
+                      @RequestParam(value = "new_passwd") String newPasswd) throws Exception {
+        SysUser currentUser = sysUserService.selectById(currentUserID());
+        if (!currentUser.getPassword().equals(oldPasswd)) {
+            return 0;
+        }
+        currentUser.setPassword(newPasswd);
+        sysUserService.createOrUpdate(currentUser);
+        return 1;
+    }
+
+
+}

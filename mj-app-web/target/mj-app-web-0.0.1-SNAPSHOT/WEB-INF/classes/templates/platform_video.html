@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+<head>
+    <title>公开课</title>
+</head>
+<body th:fragment="content">
+        <!--content-->
+        <div class="content">         
+            <div class="index-video" style="padding: 60px 0 80px;margin-top:0;background:none">
+                <div class="plat-title">
+                    <h2>公开课</h2>
+                    <p>—</p>
+                </div>
+               <form id="free_practice_form" method="post" th:action="${ctx} + 'platform_video'">
+                <div class="xc-filter com-width">
+                    <ul class="clear">
+                        <li class="xc-li350">
+                            <span style="display:inline-block;">发布人</span>
+                            <div class="xc-select select200">
+                            <select name="teacherId" id="teacherId" class="">
+                                <option value="">全部</option>
+                                <option th:each="tData:${teachers}" th:value="${tData.id}" th:selected="${teacherId==tData.id}" th:text="@{${tData.name} + '(id=' + ${tData.id} + ')'}"></option>
+                            </select>
+                        </div>
+                        </li>
+                        <li class="xc-li280">
+                            <span>科目</span>
+                            <div class="xc-select select200">
+                                <select name="kemu" id="kemu">
+                                    <option value="">全部</option>
+                                    <option value="1" th:selected="${kemu == 1}" >科目一</option>
+                                    <option value="2" th:selected="${kemu == 2}">科目二</option>
+                                    <option value="3" th:selected="${kemu == 3}">科目三</option>
+                                    <option value="4" th:selected="${kemu == 4}">科目四</option>
+                                </select>
+                            </div>
+                        </li>
+                        <li class="xc-li280">
+                            <span>类型</span>
+                            <div class="xc-select select200">
+                                <select name="payType" id="payType">
+                                    <option value="">全部</option>
+                                    <option value="1" th:selected="${payType == 1}">免费</option>
+                                    <option value="2" th:selected="${payType == 2}">付费</option>
+                                </select>
+                            </div>
+                        </li>
+                        <li>
+                            <button class="xc-found-btn" type="submit">查询</button>
+                        </li>
+                    </ul>
+                </div>
+              </form>
+                <div class="video-box com-width clear">
+                    <div class="video fl" th:each="onlineCourse:${onlineCourseList}">
+                        <a th:href="@{${ctx} + 'platform_video_detail?id=' + ${onlineCourse.id}}">
+                            <div class="video-img">
+                                <img th:src="${imageUrl} + ${onlineCourse.imagePath}" alt="">
+                                 <div class="video-label">
+                                    <img th:if="${onlineCourse.isHotAndCharge == 1 || onlineCourse.isHotAndCharge == 3}" th:src="@{/img/index-pic7.png}" alt="">
+                                    <img th:if="${onlineCourse.isHotAndCharge == 2 || onlineCourse.isHotAndCharge == 3}" th:src="@{/img/index-pic8.png}" alt="">                                  
+                                </div>
+                            </div>
+                            <div class="video-name">
+                                <h3><span th:text="${onlineCourse.title}"></span></h3>
+                                <p class="clear">
+                                    <span th:text="@{'上传时间：'+${onlineCourse.updateTime}}"></span>
+                                    <img class="video-pic1" th:src="@{/img/index-pic9.png}" alt="">
+                                    <img class="video-pic2" th:src="@{/img/index-pic9.1.png}" alt="">
+                                </p>
+                            </div>
+                        </a>
+                    </div>                                      
+                </div>
+                <div class="box clear">
+		                  <div id="pagination_platform_video" class="page"></div>
+		            </div> 
+            </div>
+        </div>
+ <script> 
+$("#pagination_platform_video").pagination({
+    currentPage: [[${pageIndex}]],
+    totalPage: [[${totalPage}]],
+    isShow: false,
+    count: [[${total}]],
+    prevPageText: "<",
+    nextPageText: ">",
+    callback: function(current) {
+        this.location.href ="[[${ctx}]]platform_video?pageIndex=" + current;
+    }
+});
+
+</script>

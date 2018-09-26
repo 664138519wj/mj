@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" th:href="@{/lib/lui/css/layui.css}">
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+</head>
+<body>
+<div class="layui-container">
+<div th:html="${platformNetwork.id}"></div>
+<div th:if="${edit}">
+</div>
+<form id="platformNetworkForm" class="layui-form" action="edit" method="post">
+    <input type="hidden" name="id" th:value="${platformNetwork.id}"/>
+    <div class="layui-form-item">
+        <label class="layui-form-label">图片</label>
+         <div class="layui-upload" th:if="${edit}">
+			  <button type="button" class="layui-btn" id="test1">上传图片</button>
+			  <div class="layui-upload-list">
+			    <img class="layui-upload-img" id="demo1" th:if="${platformNetwork.imagePath != ''}" th:src="@{${baseUrl} + ${platformNetwork.imagePath}}">
+			    <p id="demoText"></p>
+			    <input name="imagePath" type="hidden" id="imagePath" th:value="${platformNetwork.imagePath}"/>			    			    
+			  </div>
+		</div>  
+		<div th:unless="${edit}" class="layui-input-block">
+			 <img th:src="@{${baseUrl} + ${platformNetwork.imagePath}}"/>
+		</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">轮播图片</label>
+        <div class="layui-upload" th:if="${edit}">
+		  <button type="button" class="layui-btn" id="test2">多图片上传</button> 
+		  <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+		    预览图：
+		    <div class="layui-upload-list" id="demo2"></div>
+		 </blockquote>
+		 <span th:text="${platformNetwork.shufflingImage}" id="uploadifyDir2"></span>
+			<input name="shufflingImage" type="hidden" id="shufflingImage" th:value="${platformNetwork.shufflingImage}"/>
+		</div>
+		<div th:unless="${edit}" class="layui-input-block">
+			 <img th:each="imageUrl:${platformNetwork.shufflingImageList}" th:src="@{${baseUrl} + ${imageUrl}}"/>
+		</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">名称</label>
+        <div th:if="${edit}" class="layui-input-block">
+            <input  type="text" name="name" id="name" lay-verify="name" autocomplete="off" th:value="${platformNetwork.name}" placeholder="请输入名称" class="layui-input">
+        </div>
+        <div class="layui-form-mid" th:unless="${edit}" th:text="${platformNetwork.name}"></div>
+    </div>
+    
+    <div class="layui-form-item">
+				<label class="layui-form-label">所属驾校</label>
+				<div th:if="${edit}" class="layui-input-block">
+					<select id="schoolId" name="schoolId">
+					    <option th:if="${platformNetwork.schoolId == 0}" value="0">无</option>
+						<option th:each="school : ${schoolMap}" th:value="${school.key}"
+							th:text="${school.value}"
+							th:selected="${school.key == platformNetwork.schoolId}"></option>
+					</select>
+				</div>
+				<div class="layui-form-mid" th:unless="${edit}"
+					th:text="${platformNetwork.schoolName}"></div>
+	</div>
+     
+ 	<div class="layui-form-item">
+        <label class="layui-form-label">电话</label>
+        <div th:if="${edit}" class="layui-input-block">
+            <input  type="text" name="tel" id="tel" lay-verify="tel" autocomplete="off" th:value="${platformNetwork.tel}" placeholder="请输入电话" class="layui-input">
+        </div>
+        <div class="layui-form-mid" th:unless="${edit}" th:text="${platformNetwork.tel}"></div>
+    </div>
+     
+     <div class="layui-form-item">
+        <label class="layui-form-label">地址</label>
+        <div th:if="${edit}" class="layui-input-block">
+            <input  type="text" name="address" id="address" lay-verify="address" autocomplete="off" th:value="${platformNetwork.address}" placeholder="请输入地址" class="layui-input">
+        </div>
+        <div class="layui-form-mid" th:unless="${edit}" th:text="${platformNetwork.address}"></div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">地区</label>
+        <div th:if="${edit}" class="layui-input-block">
+          <select id="areaId" name="areaId">
+						<option th:each="area: ${areaList}" th:value="${area.id}"
+							th:text="${area.city}"
+							th:selected="${area.id == platformNetwork.areaId}"></option>
+		  </select>
+        </div>
+        <div class="layui-form-mid" th:unless="${edit}" th:text="${platformNetwork.areaName}"></div>
+    </div>
+</form>
+</div>
+<script th:src="@{/lib/jquery/jquery.js}"></script>
+<script th:src="@{/lib/jquery/jquery.forms.js}"></script>
+<script th:src="@{/lib/lui/layui.all.js}"></script>
+<script type="text/javascript">
+    $.fn.serializeObject = function()
+    {
+        var o = {};
+        var a = this.serializeArray();
+        $.each(a, function() {
+            if (o[this.name] !== undefined) {
+                if (!o[this.name].push) {
+                    o[this.name] = [o[this.name]];
+                }
+                o[this.name].push(this.value || '');
+            } else {
+                o[this.name] = this.value || '';
+            }
+        });
+        return o;
+    };
+</script>
+<script type="text/javascript">
+   
+function checkForm(arr){
+	  for(var i=0;i<arr.length;i++){
+	  if($("#"+arr[i][0]).val()==''){
+	    alert(arr[i][1]);
+	    $("#"+arr[i][0]).focus();
+	    return false;
+	  }
+	  }
+	  return true;
+	};
+	//调用方式
+	var arr=new Array(
+	  new Array('name','平台名字不可为空!'),
+	  new Array('address','地址不能为空!'),
+	  new Array('tel','电话不能为空!'),
+	  new Array('imagePath','请上传网点图片!'),
+	);
+	
+  function doSave(fn){
+  	
+      $("#price").val($("#priceNum").val());
+      if(!checkForm(arr)){
+		  return false;
+     } 
+      var dataParam = $("#platformNetworkForm").serialize();
+
+      jQuery.ajax({
+          type:"post",
+          url: '[[${baseUrl}]]ops/platformnetwork/save.html',
+          data: dataParam,
+          success:function(data){
+       	    if(data) {
+                  parent.tips(1, "保存成功！");
+                  fn.call();
+              }else{
+                  parent.tips(0, "保存信息失败！");
+              }  
+          }
+	    
+       })  
+
+  }
+</script>
+
+<script>
+layui.use('upload', function(){
+  var $ = layui.jquery
+  ,upload = layui.upload;
+  
+  //普通图片上传
+  var uploadInst = upload.render({
+    elem: '#test1'
+    ,url: '[[${baseUrl}]]upload/doUploadImg'
+    ,before: function(obj){
+      //预读本地文件示例，不支持ie8
+      obj.preview(function(index, file, result){
+        $('#demo1').attr('src', result); //图片链接（base64）
+      });
+    }
+    ,done: function(res){
+      //如果上传失败
+      if(res.code > 0){
+        return layer.msg('上传失败');
+      }
+      // success
+      $("#imagePath").val(res.path);
+    }
+    ,error: function(){
+      //演示失败状态，并实现重传
+      var demoText = $('#demoText');
+      demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+      demoText.find('.demo-reload').on('click', function(){
+        uploadInst.upload();
+      });
+    }
+  });
+  
+  //多图片上传
+  upload.render({
+    elem: '#test2'
+    ,url: '[[${baseUrl}]]upload/doUploadImg'
+    ,multiple: true
+    ,before: function(obj){
+      //预读本地文件示例，不支持ie8
+      obj.preview(function(index, file, result){
+        $('#demo2').append('<img src="'+ result +'" alt="'+ file.name +'" class="layui-upload-img">')
+      });
+    }
+    ,done: function(res){
+      //上传完毕
+       if(res.code > 0){
+         return layer.msg('上传失败');
+       }
+       var url = $("#shufflingImage").val();
+       if (url == '' || url == undefined) {
+       	// add
+       	$("#uploadifyDir2").html(res.path);   
+        $("#shufflingImage").val(res.path); 
+       } else {
+    	   $("#uploadifyDir2").html(url + ";" + res.path);   
+           $("#shufflingImage").val(url + ";" + res.path);  
+       }
+    }
+  });
+});
+</script>
+
+</body>
+</html>

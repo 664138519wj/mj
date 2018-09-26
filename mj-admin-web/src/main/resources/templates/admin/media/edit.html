@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" th:href="@{/lib/lui/css/layui.css}">
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+        <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        /*图片上传*/
+        
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .container {
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            clear: both;
+        }
+        
+        .z_photo {
+            width: 5rem;
+            height: 5rem;
+            padding: 0.3rem;
+            overflow: auto;
+            clear: both;
+            margin: 1rem auto;
+            border: 1px solid #555;
+        }
+        
+        .z_photo img {
+            width: 1rem;
+            height: 1rem;
+        }
+        
+        .z_addImg {
+            float: left;
+            margin-right: 0.2rem;
+        }
+        
+        .z_file {
+            width: 1rem;
+            height: 1rem;
+            background: url(../img/z_add.png) no-repeat;
+            background-size: 100% 100%;
+            float: left;
+            margin-right: 0.2rem;
+        }
+        
+        .z_file input::-webkit-file-upload-button {
+            width: 1rem;
+            height: 1rem;
+            border: none;
+            position: absolute;
+            outline: 0;
+            opacity: 0;
+        }
+        
+        .z_file input#file {
+            display: block;
+            width: auto;
+            border: 0;
+            vertical-align: middle;
+        }
+        /*遮罩层*/
+        
+        .z_mask {
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, .5);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 999;
+            display: none;
+        }
+        
+        .z_alert {
+            width: 3rem;
+            height: 2rem;
+            border-radius: .2rem;
+            background: #fff;
+            font-size: .24rem;
+            text-align: center;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            margin-left: -1.5rem;
+            margin-top: -2rem;
+        }
+        
+        .z_alert p:nth-child(1) {
+            line-height: 1.5rem;
+        }
+        
+        .z_alert p:nth-child(2) span {
+            display: inline-block;
+            width: 49%;
+            height: .5rem;
+            line-height: .5rem;
+            float: left;
+            border-top: 1px solid #ddd;
+        }
+        
+        .z_cancel {
+            border-right: 1px solid #ddd;
+        }
+
+    </style>
+</head>
+<body>
+<div class="layui-container">
+<div th:html="${model.id}" id="modelId"></div>
+<div th:if="${edit}"> </div>
+<div th:html="${baseUrl}" id="baseUrl"></div>
+
+
+<form id="form" class="layui-form" action="edit" method="post">
+    <input type="hidden" name="id" id="id" th:value="${model.id}"/>
+    <div class="layui-form-item">
+        <label class="layui-form-label">名称</label>
+        <div th:if="${edit}" class="layui-input-block">
+            <input  type="text" name="name" id="name" autocomplete="off" th:value="${model.name}" placeholder="名称" class="layui-input">
+        </div>
+        <div class="layui-form-mid" th:unless="${edit}" th:text="${model.name}"></div>
+    </div>
+    <input name="imgUrls" type="hidden" id="imgUrls" th:value="${model.imgUrls}"/>
+    
+    
+     <!-- <div class="layui-form-item">
+        <label class="layui-form-label">图片</label>
+        <div class="layui-upload" th:if="${edit}">
+			  <button type="button" class="layui-btn" id="test1">上传图片</button>
+			  <div class="layui-upload-list">
+			    <img class="layui-upload-img" id="demo1" th:if="${model.imgUrl != ''}" th:src="@{${baseUrl} + ${model.imgUrl}}">
+			    <p id="demoText"></p>
+			    <input name="imgUrl" type="hidden" id="imgUrl" th:value="${model.imgUrl}"/>			    			    
+			  </div>
+		</div>  
+		<div th:unless="${edit}" class="layui-input-block">
+			 <img th:src="@{${baseUrl} + ${model.imgUrl}}"/>
+		</div>
+    </div> -->
+    
+     <div class="container">
+        <!--    照片添加    -->
+        <div class="z_photo" id="photoDiv">
+        <div  th:if="${edit}">
+			  <div class="z_file" >
+                <!-- <input type="file" name="file" id="file" value="" accept="image/*" multiple onchange="imgChange('z_photo','z_file');" /> -->
+ 				
+				
+					<input type="file" name="file" id="file" value="" accept="image/*" multiple />
+				
+            </div>
+		</div>  
+		
+       <div th:unless="${edit}"  style="display:none">
+            <div class="z_file" >
+                <!-- <input type="file" name="file" id="file" value="" accept="image/*" multiple onchange="imgChange('z_photo','z_file');" /> -->
+ 				
+				
+					<input type="file" name="file" id="file" value="" accept="image/*" multiple />
+				
+            </div>
+	</div>
+        </div>
+
+        <!--遮罩层-->
+        <div class="z_mask">
+            <!--弹出框-->
+            <div class="z_alert">
+                <p>确定要删除这张图片吗？</p>
+                <p>
+                    <span class="z_cancel">取消</span>
+                    <span class="z_sure">确定</span>
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    
+  
+
+</form>
+</div>
+<script th:src="@{/lib/jquery/jquery.js}"></script>
+<script th:src="@{/lib/jquery/jquery.forms.js}"></script>
+<script th:src="@{/lib/lui/layui.all.js}"></script>
+<script type="text/javascript">
+    $.fn.serializeObject = function()
+    {
+        var o = {};
+        var a = this.serializeArray();
+        $.each(a, function() {
+            if (o[this.name] !== undefined) {
+                if (!o[this.name].push) {
+                    o[this.name] = [o[this.name]];
+                }
+                o[this.name].push(this.value || '');
+            } else {
+                o[this.name] = this.value || '';
+            }
+        });
+        return o;
+    };
+    function CheckInputIntFloat(oInput){
+		if('' != oInput.value.replace(/\d{1,}\.{0,1}\d{0,}/,'')){
+		        oInput.value = oInput.value.match(/\d{1,}\.{0,1}\d{0,}/) == null ? '' :oInput.value.match(/\d{1,}\.{0,1}\d{0,}/);
+		 }
+	}
+
+    
+</script>
+<script type="text/javascript">
+     function checkForm(arr){
+	  for(var i=0;i<arr.length;i++){
+	  if($("#"+arr[i][0]).val()==''){
+	    alert(arr[i][1]);
+	    $("#"+arr[i][0]).focus();
+	    return false;
+	  }
+	  }
+	  return true;
+	};
+	//调用方式
+	var arr=new Array(
+	  new Array('cnName','名称不能为空!'),
+	  new Array('imgUrl','请上传图片!'),
+	);
+	
+    function doSave(fn){    	
+    	
+        if(!checkForm(arr)){
+  		  return false;
+        } 
+        
+        var dataParam = $("#form").serialize();
+
+        jQuery.ajax({
+            type:"post",
+            url: '[[${baseUrl}]]media/save.html',
+            data: dataParam,
+            success:function(data){
+         	    if(data) {
+                    parent.tips(1, "保存成功！");
+                    fn.call();
+                }else{
+                    parent.tips(0, "保存信息失败！");
+                }  
+            }
+ 	    
+         })  
+
+    }
+
+</script>
+<script th:src="@{/js/uploadify/jquery-1.3.2.min.js}"></script>
+<script th:src="@{/js/uploadify/jquery.uploadify.v2.1.0.js}"></script>
+<script th:src="@{/js/uploadify/swfobject.js}"></script>
+
+<script>
+layui.use('upload', function(){
+  var $ = layui.jquery
+  ,upload = layui.upload;
+  
+  //普通图片上传
+  var uploadInst = upload.render({
+    elem: '#file'
+    ,url: '[[${baseUrl}]]upload/doUploadImg'
+    ,before: function(obj){
+      //预读本地文件示例，不支持ie8
+      obj.preview(function(index, file, result){
+      	 imgChange('z_photo','z_file',result);
+       // $('#demo1').attr('src', result); //图片链接（base64）
+      });
+    }
+    ,done: function(res){
+      //如果上传失败
+      if(res.code > 0){
+        return layer.msg('上传失败');
+      }
+      // success
+      //$("#imgUrl").val(res.path);
+       var url = $("#imgUrls").val();
+       if (url == '' || url == undefined) {
+       	// add
+       //	$("#uploadifyDir2").html(res.path);   
+        $("#imgUrls").val(res.path); 
+       } else {
+    	   // $("#uploadifyDir2").html(url + ";" + res.path);   
+           $("#imgUrls").val(url + ";" + res.path);  
+       }
+       
+    }
+    ,error: function(){
+      //演示失败状态，并实现重传
+      var demoText = $('#demoText');
+      demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+      demoText.find('.demo-reload').on('click', function(){
+        uploadInst.upload();
+      });
+    }
+  });
+ 
+});
+  
+</script>
+
+	   <script type="text/javascript">
+        //px转换为rem
+        (function(doc, win) {
+            var docEl = doc.documentElement,
+                resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                recalc = function() {
+                    var clientWidth = docEl.clientWidth;
+                    if (!clientWidth) return;
+                    if (clientWidth >= 640) {
+                        docEl.style.fontSize = '100px';
+                    } else {
+                        docEl.style.fontSize = 100 * (clientWidth / 640) + 'px';
+                    }
+                };
+
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
+        
+        initImg();
+        
+        function initImg() {
+        	if ($("#modelId").attr("html") != undefined) {
+        		// alert($("#imgUrls").val());
+        		var imgUrls = $("#imgUrls").val();
+        		//切割多个图片地址
+				var imgArys = imgUrls.split(";");
+				$.each( imgArys, function( index, item ) {
+					//var baseUrl =$("#baseUrl").attr("html");
+					//imgChange('z_photo','z_file',baseUrl+item);	
+					appendImg('z_photo','z_file',item);	
+				});
+        	}
+        }
+        
+          function appendImg(obj1, obj2,path) {
+            //获取点击的文本框
+            var file = document.getElementById("file");
+            //存放图片的父级元素
+            var imgContainer = document.getElementsByClassName(obj1)[0];
+            //获取的图片文件
+            var fileList = file.files;
+            //文本框的父级元素
+            var input = document.getElementsByClassName(obj2)[0];
+            
+            var img = document.createElement("img");
+                //alert(path);
+                img.setAttribute("src", path);
+               
+               //alert($("#photoDiv").children("div.z_addImg").length);
+                var imgAdd = document.createElement("div");
+                var myID = "static" + guid();
+                 imgAdd.setAttribute("id", myID);
+                imgAdd.setAttribute("class", "z_addImg");
+                imgAdd.appendChild(img);
+                imgContainer.appendChild(imgAdd);
+                
+                imgRemove();
+                
+        };
+
+        function imgChange(obj1, obj2,path) {
+            //获取点击的文本框
+            var file = document.getElementById("file");
+            //存放图片的父级元素
+            var imgContainer = document.getElementsByClassName(obj1)[0];
+            //获取的图片文件
+            var fileList = file.files;
+            //文本框的父级元素
+            var input = document.getElementsByClassName(obj2)[0];
+            var imgArr = [];
+            //遍历获取到得图片文件
+            for (var i = 0; i < fileList.length; i++) {
+               // var imgUrl = window.URL.createObjectURL(file.files[i]);
+                //imgArr.push(imgUrl);
+                var img = document.createElement("img");
+                //alert(path);
+                img.setAttribute("src", path);
+               
+               //alert($("#photoDiv").children("div.z_addImg").length);
+                var imgAdd = document.createElement("div");
+                var myID = "static" + guid();
+                 imgAdd.setAttribute("id", myID);
+                imgAdd.setAttribute("class", "z_addImg");
+                imgAdd.appendChild(img);
+                imgContainer.appendChild(imgAdd);
+            };
+            imgRemove();
+        };
+
+        function imgRemove() {
+            var imgList = document.getElementsByClassName("z_addImg");
+            var mask = document.getElementsByClassName("z_mask")[0];
+            var cancel = document.getElementsByClassName("z_cancel")[0];
+            var sure = document.getElementsByClassName("z_sure")[0];
+            for (var j = 0; j < imgList.length; j++) {
+                imgList[j].index = j;
+                imgList[j].onclick = function() {
+                    var t = this;
+                    mask.style.display = "block";
+                    cancel.onclick = function() {
+                        mask.style.display = "none";
+                    };
+                    sure.onclick = function() {
+                        mask.style.display = "none";
+                        t.style.display = "none";
+                      
+                        
+                        
+                      //更新imgUrls
+                      var imgUrls = $("#imgUrls").val();  
+                      //切割多个图片地址
+						var imgArys = imgUrls.split(";");
+						var newImgUrls = "";
+						 var url = $("#imgUrls").val();
+						 var imgDivs = $("#photoDiv").children("div.z_addImg");
+						 
+						 var currentIndex ;
+						 $.each( imgDivs, function( index, item ) {
+							if ($(t).attr("id") === item.id) {
+								currentIndex = index;
+							} 
+							
+							/* if ($(t).context.is(item)) {
+								currentIndex = index;
+							} */
+							
+							
+						});
+						//alert(currentIndex);
+						$.each( imgArys, function( subIndex, subItem ) {
+							if (currentIndex === subIndex) {
+							
+							} else {
+							
+								newImgUrls = newImgUrls+subItem+";";
+							}
+							
+						});
+						newImgUrls = newImgUrls.substr(0, newImgUrls.length-1);
+						$("#imgUrls").val(newImgUrls); 
+						//alert(newImgUrls);
+						  $(t).remove();
+                    };
+
+                }
+            };
+        };
+        
+        function S4() {
+   			return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+		}
+		
+		function guid() {
+		   return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
+		}
+
+    </script>
+</body>
+</html>

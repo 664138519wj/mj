@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+<head>
+    <title>驾考资讯</title>
+</head>
+<body th:fragment="content">
+        <!--content-->
+        <div class="content plat-info">
+            <div class="plat-title">
+                <h2>驾考相关政策规定</h2>
+                <p>—</p>
+            </div>
+            <ul class="policy-info com-width clear">
+                <li th:each="policy:${policyList}">
+                    <div class="plat-img">
+                        <img th:src="${imageUrl} + ${policy.imagePath}" alt="">
+                    </div>
+                    <div class="policy-desc">
+                        <p><b th:text="${policy.title}"></b></p>
+                        <div class="figcaption">
+                            <p th:utext="${policy.content}"></p>
+                        </div>
+                        <a th:href="@{${ctx} + 'policy_regulations_detail?id=' + ${policy.id}}">查看更多</a>
+                    </div>
+                </li>
+            </ul>
+            <div class="box clear">
+                  <div id="pagination_policy" class="page"></div>
+                </div>
+        </div>
+ <script> 
+        
+ $("#pagination_policy").pagination({
+     currentPage: [[${pageIndex}]],
+     totalPage: [[${totalPage}]],
+     isShow: false,
+     count: [[${total}]],
+     prevPageText: "<",
+     nextPageText: ">",
+     callback: function(current) {
+         this.location.href ="[[${ctx}]]policy_regulations?pageIndex=" + current;
+     }
+ });
+</script>
+</body>
+</html>

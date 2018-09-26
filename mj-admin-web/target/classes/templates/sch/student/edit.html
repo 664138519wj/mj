@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+<link rel="stylesheet" th:href="@{/lib/lui/css/layui.css}">
+<!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+</head>
+<body>
+	<div class="layui-container">
+		<div th:html="${student.id}"></div>
+		<div th:if="${edit}"></div>
+		<form id="studentForm" class="layui-form" action="edit" method="post">
+			<input type="hidden" name="id" th:value="${student.id}" />
+		 
+			<div class="layui-form-item">
+				<label class="layui-form-label">姓名</label>
+				<div th:if="${edit}" class="layui-input-block">
+					<input type="text" name="name" lay-verify="title"
+						autocomplete="off" th:value="${student.name}" placeholder="请输入姓名"
+						class="layui-input">
+				</div>
+				<div class="layui-form-mid" th:unless="${edit}"
+					th:text="${student.name}"></div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label">民族</label>
+				<div th:if="${edit}" class="layui-input-block">
+					<input type="text" name="nation" lay-verify="title"
+						autocomplete="off" th:value="${student.nation}"
+						placeholder="请输入民族" class="layui-input">
+				</div>
+				<div class="layui-form-mid" th:unless="${edit}"
+					th:text="${student.nation}"></div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label">性别</label>
+				<div class="layui-form-mid sex" th:unless="${edit}"
+					th:text="${student.sex}"></div>
+			</div>
+  
+
+			<div class="layui-form-item">
+				<label class="layui-form-label">驾照</label>
+				<div class="layui-form-mid carModelCode" th:unless="${edit}"
+					th:text="${student.carModelCode}"></div>
+			</div>
+			
+			<div class="layui-form-item">
+				<label class="layui-form-label">住址</label>
+				<div class="layui-form-mid registerAddress" th:unless="${edit}"
+					th:text="${student.registerAddress}"></div>
+			</div>
+		</form>
+	</div>
+	<script th:src="@{/lib/jquery/jquery.js}"></script>
+	<script th:src="@{/lib/jquery/jquery.forms.js}"></script>
+	<script th:src="@{/lib/lui/layui.all.js}"></script>
+	<script type="text/javascript">
+		$.fn.serializeObject = function() {
+			var o = {};
+			var a = this.serializeArray();
+			$.each(a, function() {
+				if (o[this.name] !== undefined) {
+					if (!o[this.name].push) {
+						o[this.name] = [ o[this.name] ];
+					}
+					o[this.name].push(this.value || '');
+				} else {
+					o[this.name] = this.value || '';
+				}
+			});
+			return o;
+		};
+	</script>
+	<script type="text/javascript">
+		layui.laydate.render({
+			elem : '#date'
+		});
+		//layui.layedit.build('LAY_demo_editor');
+
+		function doSave(fn) {
+
+			var data = $("#studentForm").serializeObject();
+
+			$.ajax("edit", {
+				method : "post",
+				contentType : "application/json; charset=utf-8",
+				data : JSON.stringify(data),
+				success : function(data) {
+					if (data) {
+						parent.tips(1, "保存成功！");
+						fn.call();
+					} else {
+						parent.tips(0, "保存信息失败！");
+					}
+				},
+				error : function(e) {
+					parent.tips(0, e);
+				}
+			});
+
+		}
+	</script>
+<script>
+$(function(){
+	var sex=$("div.sex").html().trim();
+	if(sex=='1'){
+		$("div.sex").html('男');
+	}
+	else{
+		$("div.sex").html('女');
+	}
+});
+</script>
+</body>
+</html>

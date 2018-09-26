@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+<link rel="stylesheet" th:href="@{/lib/lui/css/layui.css}">
+<link rel="stylesheet" th:href="@{/js/uploadify/uploadify.css}">
+<!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+</head>
+<body>
+	<div class="layui-container">
+		<div th:html="${teacher.id}"></div>
+		<div th:if="${edit}"></div>
+		<form id="teacherForm" class="layui-form" action="edit" method="post">
+			<input type="hidden" name="id" th:value="${teacher.id}" />
+
+			<div class="layui-form-item">
+				<label class="layui-form-label">姓名</label>
+				<div th:if="${edit}" class="layui-input-block">
+					<input type="text" name="name" lay-verify="title"
+						autocomplete="off" th:value="${teacher.name}" placeholder="请输入姓名"
+						class="layui-input" id="name">
+				</div>
+				<div class="layui-form-mid" th:unless="${edit}"
+					th:text="${teacher.name}"></div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label">身份证号</label>
+				<div th:if="${edit}" class="layui-input-block">
+					<input type="text" name="idNo" lay-verify="title"
+						   autocomplete="off" th:value="${teacher.idNo}" placeholder="请输入身份证号"
+						   class="layui-input" id="idNo">
+				</div>
+				<div class="layui-form-mid" th:unless="${edit}"
+					 th:text="${teacher.idNo}"></div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label">所属驾校</label>
+				<div th:if="${edit}" class="layui-input-block">
+					<select id="schoolId" name="schoolId">
+						<option th:each="school : ${schoolMap}" th:value="${school.key}"
+							th:text="${school.value}"
+							th:selected="${school.key == teacher.schoolId}"></option>
+					</select>
+				</div>
+				<div class="layui-form-mid" th:unless="${edit}"
+					th:text="${teacher.schoolName}"></div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label">教龄</label>
+				<div th:if="${edit}" class="layui-input-block">
+					<input type="number" name="ageNum"  th:value="${teacher.teachingAge}"
+						placeholder="请输入教龄" class="layui-input" id="ageNum"/>
+						<input type="hidden" th:value="${teacher.teachingAge}" name="teachingAge" id="teachingAge"/>
+				</div>
+				<div class="layui-form-mid" th:unless="${edit}"
+					th:text="${teacher.teachingAge}"></div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label">视频课程分润比例</label>
+				<div th:if="${edit}" class="layui-input-block">
+					<input type="number" name="onlineBenefitShare"  th:value="${teacher.onlineBenefitShare}"
+						   placeholder="请输入视频课程分润比例" class="layui-input" id="onlineBenefitShareNum"/>
+					<input type="hidden" th:value="${teacher.onlineBenefitShare}" name="onlineBenefitShare" id="onlineBenefitShare"/>
+				</div>
+				<div class="layui-form-mid" th:unless="${edit}"
+					 th:text="${teacher.onlineBenefitShare}"></div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label">网点课程分润比例</label>
+				<div th:if="${edit}" class="layui-input-block">
+					<input type="number" name="offlineBenefitShare"  th:value="${teacher.offlineBenefitShare}"
+						   placeholder="请输入网点课程分润比例" class="layui-input" id="offlineBenefitShareNum"/>
+					<input type="hidden" th:value="${teacher.offlineBenefitShare}" name="offlineBenefitShare" id="offlineBenefitShare"/>
+				</div>
+				<div class="layui-form-mid" th:unless="${edit}"
+					 th:text="${teacher.offlineBenefitShare}"></div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label">标签</label>
+				<div th:if="${edit}" class="layui-input-block">
+					<input type="checkbox" name="checkTag" th:each="tagData:${tagList}"
+						th:text="${tagData.name}" th:value="${tagData.id}" th:checked="${tagData.isSelected}"/>
+					<input type="hidden" name="tag" id="tag"/>
+				</div>
+				<div class="layui-form-mid" th:unless="${edit}"
+					th:text="${teacher.tags}"></div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label">头像</label>
+				<div class="layui-upload" th:if="${edit}">
+				  <button type="button" class="layui-btn" id="test1">上传图片</button>
+				  <div class="layui-upload-list">
+				    <img class="layui-upload-img" id="demo1" th:if="${teacher.avator != ''}" th:src="@{${baseUrl} + ${teacher.avator}}">
+				    <p id="demoText"></p>
+				    <input name="avator" type="hidden" id="avator" th:value="${teacher.avator}"/>			    			    
+				  </div>
+				</div> 
+				<div th:unless="${edit}" class="layui-input-block">
+					 <img th:src="@{${baseUrl} + ${teacher.avator}}"/>
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label">教学地址</label>
+				<div th:if="${edit}" class="layui-input-block">
+					<input type="text" name="teachingAddress" lay-verify="title"
+						autocomplete="off" th:value="${teacher.teachingAddress}"
+						placeholder="请输入教学地址" class="layui-input">
+				</div>
+				<div class="layui-form-mid" th:unless="${edit}"
+					th:text="${teacher.teachingAddress}"></div>
+			</div>
+			
+			<div class="layui-form-item">
+				<label class="layui-form-label">是否首页推荐</label>
+				<div th:if="${edit}" class="layui-input-block">
+					<input type="radio" name="recommand" value="0" checked="checked">否	
+					<input type="radio" name="recommand" value="1" th:checked="${teacher.recommand == 1}">是								
+				</div>
+				<div class="layui-form-mid" th:unless="${edit}"
+					th:if="${teacher.recommand == 1}" th:text="是"></div>
+				<div class="layui-form-mid" th:unless="${edit}"
+					th:if="${teacher.recommand == 0}" th:text="否"></div>
+			</div>
+
+			<div class="layui-form-item layui-form-text">
+				<label class="layui-form-label">简介</label>
+				<div th:if="${edit}" class="layui-input-block">
+					<textarea class="layui-textarea" name="introduce"
+						th:text="${teacher.introduce}">
+            </textarea>
+				</div>
+				<div class="layui-form-mid" th:unless="${edit}"
+					th:text="${teacher.introduce}"></div>
+			</div>
+
+		</form>
+	</div>
+	<script th:src="@{/lib/jquery/jquery.js}"></script>
+	<script th:src="@{/lib/jquery/jquery.forms.js}"></script>
+	<script th:src="@{/lib/lui/layui.all.js}"></script>
+	
+
+	<script type="text/javascript">
+    $.fn.serializeObject = function()
+    {
+        var o = {};
+        var a = this.serializeArray();
+        $.each(a, function() {
+            if (o[this.name] !== undefined) {
+                if (!o[this.name].push) {
+                    o[this.name] = [o[this.name]];
+                }
+                o[this.name].push(this.value || '');
+            } else {
+                o[this.name] = this.value || '';
+            }
+        });
+        return o;
+    };
+    
+    function checkForm(arr){
+  	  for(var i=0;i<arr.length;i++){
+  	  if($("#"+arr[i][0]).val()==''){
+  	    alert(arr[i][1]);
+  	    $("#"+arr[i][0]).focus();
+  	    return false;
+  	  }
+  	  }
+  	  return true;
+  	};
+  	//调用方式
+  	var arr=new Array(
+  	  new Array('name','教师名字不可为空!'),
+  	  new Array('schoolId','请选择所属驾校!'),
+  	  new Array('teachingAge','教龄不能为空!'),
+  	  new Array('tags','请选择标签!'),
+  	);
+  
+    function doSave(fn){
+        // 选中标签
+    	var chenked=$("input[type='checkbox']:checked").val([]);//此为重点  
+        var names = "";  
+        for(var i=0;i<chenked.length;i++){  
+           names += chenked[i].value +",";  
+        }  
+        $("#tag").val(names.substring(0,names.length-1));
+        $("#teachingAge").val($("#ageNum").val());
+    	if(!checkForm(arr)){
+    		  return false;
+        } 
+    	var dataParam = $("#teacherForm").serialize();
+
+        jQuery.ajax({
+           type:"post",
+           url: '[[${baseUrl}]]ops/teacher/save.html',
+           data: dataParam,
+           success:function(data){
+        	    if(data) {
+                   parent.tips(1, "保存成功！");
+                   fn.call();
+               }else{
+                   parent.tips(0, "保存信息失败！");
+               }  
+           }
+	    
+        })  
+    }
+</script>
+<script>
+layui.use('upload', function(){
+  var $ = layui.jquery
+  ,upload = layui.upload;
+  
+  //普通图片上传
+  var uploadInst = upload.render({
+    elem: '#test1'
+    ,url: '[[${baseUrl}]]upload/doUploadImg'
+    ,before: function(obj){
+      //预读本地文件示例，不支持ie8
+      obj.preview(function(index, file, result){
+        $('#demo1').attr('src', result); //图片链接（base64）
+      });
+    }
+    ,done: function(res){
+      //如果上传失败
+      if(res.code > 0){
+        return layer.msg('上传失败');
+      }
+      // success
+      $("#avator").val(res.path);
+    }
+    ,error: function(){
+      //演示失败状态，并实现重传
+      var demoText = $('#demoText');
+      demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+      demoText.find('.demo-reload').on('click', function(){
+        uploadInst.upload();
+      });
+    }
+  });
+});
+</script>
+<!-- <script th:src="@{/js/uploadify/jquery-1.3.2.min.js}"></script> -->
+<!-- <script th:src="@{/js/uploadify/jquery.uploadify.v2.1.0.js}"></script> -->
+<!-- <script th:src="@{/js/uploadify/swfobject.js}"></script> -->
+<!-- <script type="text/javascript"> -->
+<!-- //     layui.laydate.render({
+//         elem: '#date'
+//     });
+//     //layui.layedit.build('LAY_demo_editor');
+// 	//批量验证表单非空
+    
+//     $("#uploadify").uploadify({
+//         'uploader': '[[${baseUrl}]]js/uploadify/uploadify.swf',
+//         'script': '[[${baseUrl}]]upload/doUploadImg.html',
+//         'cancelImg': '[[${baseUrl}]]js/uploadify/cancel.png',
+//         'folder': 'upload',
+//         'queueID' : 'fileQueue',
+//         'buttonText': 'select',
+//         'auto':true,
+//         'multi':true,
+//         'simUploadLimit' : 1,
+//         'queueSizeLimit' : 1,
+//         'fileExt': '*.jpg;*.gif;*.jpeg;*.png;*.bmp',
+//         'fileDataName':'Filedata',
+//         'onComplete': function(event, queueID, fileObj, response, data) {
+//             //转换为json对象
+//              $("#uploadifyDir").html(response);   
+//              $("#avator").val(response);            
+//         },
+//         'onSelect':function(){
+//         },
+//         'onError': function(event, queueID, fileObj) {
+//             alert("文件:" + fileObj.name + "上传失败");
+//         }
+//     }); -->
+    
+<!-- </script> -->
+
+</body>
+</html>

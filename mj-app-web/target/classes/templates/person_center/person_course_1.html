@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="head_center"><head>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+	content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>个人中心</title>
+</head>
+<body>
+
+	<!--已购买网点课程-->
+	<div class="tab" th:fragment="content">
+		<div class="plat-title">
+			<h2>已购买网点课程</h2>
+		</div>
+		<div class="course-box">
+			<ul>
+				<li th:each="offlineCourse:${offlineCourseList}"><a
+					th:href="@{${ctx} + 'platform_course_detail?id=' + ${offlineCourse.id}}">
+						<div class="course-left fl">
+							<h2>
+								<span th:text="${offlineCourse.title}"></span>
+							</h2>
+							<div class="figcaption">
+								<p th:text="${offlineCourse.content}"></p>
+							</div>
+							<p>
+								授课地点：<span th:text="${offlineCourse.address}"></span>
+							</p>
+							<div class="price">
+								<span>价格:</span> <b>¥<b th:text="${offlineCourse.price}"></b></b>
+							</div>
+						</div>
+						<div class="course-right fr">
+							<img th:src="${imageUrl} + ${offlineCourse.imagePath}" alt="">
+						</div>
+				</a></li>
+			</ul>
+		</div>
+	</div>
+</html>

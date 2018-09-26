@@ -1,0 +1,106 @@
+####shiro####
+shiro.loginUrl=/login
+shiro.userNativeSessionManager =true
+shiro.sessionManager.sessionIdUrlRewritingEnabled=false
+#############
+#自定义属性#
+# 类中使用@Value引用
+uuid=${random.uuid}
+
+ssm.name=ssmProject
+ssm.title=hello world!
+##########
+
+#debug=true
+spring.thymeleaf.cache=false
+spring.thymeleaf.mode=LEGACYHTML5
+
+
+## 数据库访问配置
+spring.datasource.type=com.alibaba.druid.pool.DruidDataSource
+spring.datasource.driver-class-name = com.mysql.jdbc.Driver
+spring.datasource.url = jdbc:mysql://121.40.28.152:3306/ssm?useUnicode=true&characterEncoding=utf-8
+spring.datasource.username = root
+spring.datasource.password = Yuen5317
+
+# 初始化大小，最小，最大
+spring.datasource.initialSize=5
+spring.datasource.minIdle=5
+spring.datasource.maxActive=20
+# 获取连接等待超时
+spring.datasource.maxWait=60000
+# 间隔检测需要关闭的空闲连接，单位毫秒
+spring.datasource.timeBetweenEvictionRunsMillis=60000
+# 连接在池中最小生存的时间，单位是毫秒
+spring.datasource.minEvictableIdleTimeMillis=300000
+spring.datasource.validationQuery=SELECT 1 FROM DUAL
+spring.datasource.testWhileIdle=true
+spring.datasource.testOnBorrow=false
+spring.datasource.testOnReturn=false
+# 打开PSCache，并且指定每个连接上PSCache的大小
+spring.datasource.poolPreparedStatements=true
+spring.datasource.maxPoolPreparedStatementPerConnectionSize=20
+# 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+spring.datasource.filters=stat,wall,log4j
+# 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+#spring.datasource.connectionProperties=druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+# 合并多个DruidDataSource的监控数据
+#spring.datasource.useGlobalDataSourceStat=true
+
+
+
+#指定bean所在包
+mybatis.type-aliases-package=com.migu.online.model
+#指定映射文件
+mybatis.mapperLocations=classpath*:mapper/*.xml
+#指定字段映射时自动转换下划线和驼峰
+mybatis.configuration.map-underscore-to-camel-case=true
+
+#mapper
+#mappers 多个接口时逗号隔开
+mapper.mappers=tk.mybatis.mapper.common.Mapper
+mapper.not-empty=false
+#mapper.identity=MYSQL
+
+#pagehelper
+pagehelper.auto-dialect=true
+pagehelper.reasonable=true
+pagehelper.supportMethodsArguments=true
+pagehelper.params=count=countSql
+
+server.port=8081
+server.context-path=/admin
+#日志
+logging.level.root = error
+logging.level.com.example.demo= error
+logging.path=/var/logs/
+
+# Redis数据库索引（默认为0）
+spring.redis.database=0
+# Redis服务器地址
+spring.redis.host=localhost
+# Redis服务器连接端口
+spring.redis.port=6379
+# Redis服务器连接密码（默认为空）
+spring.redis.password=
+# 连接池最大连接数（使用负值表示没有限制）
+spring.redis.pool.max-active=8
+# 连接池最大阻塞等待时间（使用负值表示没有限制）
+spring.redis.pool.max-wait=-1
+# 连接池中的最大空闲连接
+spring.redis.pool.max-idle=8
+# 连接池中的最小空闲连接
+spring.redis.pool.min-idle=0
+# 连接超时时间（毫秒）
+spring.redis.timeout=0
+
+#短信认证
+accessKeyId=LTAIWvS9DxXNZYaW
+accessKeySecret=zcrKMYSO8sPp5RfUZRQKRXEK48q2JM
+#视频存放路径
+video.base.path=/opt/upload/video
+image.upload.path=/opt/upload/image
+video.upload.path=/opt/upload/video
+
+spring.http.multipart.maxFileSize=-1
+spring.http.multipart.maxRequestSize=-1

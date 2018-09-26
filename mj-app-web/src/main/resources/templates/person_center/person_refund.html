@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="head_center">
+<head>
+<title>个人中心-退款</title>
+</head>
+<body th:fragment="content">
+    <!--已报名驾校-->
+    <span th:unless="${userCourse}">订单数据异常，无法退款，请重试</span>
+	<div class="tab" th:if="${userCourse}">
+		<div class="buy-card-box tips">
+	        <div class="pay-fade" style="height:185px!important;">
+	            <p>温馨提示</p>
+	            <div class="tips-word">你确定要申请退款吗？</div>
+	            <div class="pay-btn clear" style="padding:12px 0;">
+	                <button class="cancel" id="cancel" type="button">取消</button>
+	                <button class="sure" type="button">确定</button>
+	            </div>
+	        </div>
+	    </div>	
+		<!--申请退款-->
+		<!-- <div id="refund" class="fade">
+			<div class="login">
+				<h3>申请退款</h3>
+				<img class="fork" th:src="@{/img/app-pic1.png}" alt="">
+				<div class="login-info">
+					<form method="post" id="refund_form" th:action="@{${ctx} + 'person_center/person_refund_submit'}">
+					   <input type="hidden" name="courseId" th:value="${courseId}">
+						<div class="input-box">
+							<label for="">请输入持卡人姓名</label><br> <input type="text"
+								name="refundBankUserName" id="refundBankUserName" placeholder="请输入持卡人姓名">
+						</div>
+						<div class="input-box">
+							<label for="">请输入银行卡号</label><br> <input type="text"
+								name="refundBankNo" id="refundBankNo" placeholder="例如：工商银行、农业银行、建设银行">
+						</div>
+						<p class="refund-num clear">
+							<span>退款金额:</span><b th:text="@{'￥' + ${userCourse.price}}"></b>
+						</p>
+						<input class="login-btn" type="button" value="确认退款">
+					</form>
+				</div>
+			</div>
+		</div> -->
+		 <script>
+    $(function(){
+    	$('#cancel').click(function(){
+    		//点击取消跳转到个人中心已报名驾校
+    		window.location.href="@{${ctx} + 'person_center/person_sign_up_1";
+    	})
+    	/* $(".login-btn").click(function(){
+    		if(confirm("请确定要退款")) {
+    			var name = $('#refundBankUserName').val();
+    			var carNo = $('#refundBankNo').val();
+    			if (name == '' || name == undefined) {
+    				alert("持卡人姓名不能为空");
+    			}
+    			if (carNo == '' || carNo == undefined) {
+    				alert("卡号不能为空");
+    			}
+    			$('#refund_form').submit();
+    		}
+    	}); */
+    })
+</script>
+	</div>
+	
+</html>

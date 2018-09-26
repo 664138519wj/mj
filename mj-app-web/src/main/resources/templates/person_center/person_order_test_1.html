@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="head_center">
+<head>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+	content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>个人中心</title>
+</head>
+<body>
+	<!--自主预约考试-->
+	<div class="tab" th:fragment="content">
+	   <form id="appointment_form" th:action="@{${baseUrl} + 'user/appointment'}" method="post"> 
+			<div class="plat-title">
+				<h2>自主预约考试</h2>
+			</div>
+			<div class="test-subject clear">
+				<div class="fill-name fl">
+					<p>
+						<b>填写姓名</b><b class="required">*</b>
+					</p>
+					<input type="text" placeholder="姓名" name="userName" id="userName" maxlength="20">
+				</div>
+				<div class="fill-name fr">
+					<p>
+						<b>填写身份证号码</b><b class="required">*</b>
+					</p>
+					<input type="text" placeholder="身份证号码" name="idNo" id="idNo" maxlength="18">
+					<div class="mark"></div>
+				</div>
+			</div>
+			<div class="test-subject pay-method">
+				<p>
+					<b>付费方式</b>
+				</p>
+				<ul class="clear" id="payType_class">
+					<li class="active" value="0">在线支付</li>
+					<li value="1">线下支付</li>
+				</ul>
+				<input type="hidden" id="payType" name="payType" value="0">			
+			</div>
+			<div class="submit-btn clear">
+			 	<input type="hidden" id="relocationUrl" th:value="@{${ctx} + 'person_center/person_order_record'}">
+				<button type="button" id="submit_appointment_button">提交考试申请</button>
+			</div>
+		</form>
+	</div>
+</html>

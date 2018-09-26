@@ -1,0 +1,145 @@
+package com.migu.online.controller.tch;
+
+import java.util.Date;
+import java.util.Map;
+
+import org.apache.shiro.SecurityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSON;
+import com.github.pagehelper.Page;
+import com.google.common.base.Strings;
+import com.google.common.collect.Maps;
+import com.migu.online.common.Constants;
+import com.migu.online.controller.response.ResponsePageData;
+import com.migu.online.model.CourseOnline;
+import com.migu.online.model.system.SysUser;
+import com.migu.online.ops.vo.CourseOnlineOpsVo;
+import com.migu.online.ops.vo.TeacherOpsVo;
+import com.migu.online.service.CourseOnlineService;
+import com.migu.online.service.TeacherService;
+
+
+@Controller
+@RequestMapping("/tch/video")
+public class VideoTchController {
+
+    @Autowired
+    private CourseOnlineService courseOnlineService;
+    @Autowired
+    private TeacherService teacherService;
+
+    private Long currentTeacherId() {
+        SysUser currentUser = (SysUser) SecurityUtils.getSubject().getPrincipal();
+        return currentUser.getRelateId();
+    }
+
+    @GetMapping("index")
+    public String index(ModelMap modelMap) {
+        return "tch/video/index";
+    }
+
+    @SuppressWarnings("rawtypes")
+    @GetMapping("data")
+    @ResponseBody
+    public ResponsePageData data(@RequestParam(value = "page", defaultValue = "0") Integer offset,
+                                 @RequestParam(value = "limit", defaultValue = "10") Integer limit,
+                                 @RequestParam(value = "filters", required = false) String _filters) throws Exception {
+        Map<String, String> filters = Maps.newHashMap();
+        filters.put("teacher_id", currentTeacherId().toString());
+//        filters.put("release", "true");
+
+        if (_filters != null) {
+            Map maps = (Map) JSON.parse(_filters);
+            for (Object key : maps.keySet()) {
+                filters.put((String) key, (String) maps.get(key));
+            }
+        }
+
+        Page<CourseOnlineOpsVo> page = (Page<CourseOnlineOpsVo>) courseOnlineService
+                .selectConditionsByPage(offset, limit, filters);
+        return new ResponsePageData<CourseOnlineOpsVo>(page.getTotal(), page);
+    }
+
+
+    @GetMapping("edit")
+    public String edit(ModelMap modelMap, @RequestParam(value = "id", required = false) Long id,
+                       @RequestParam(value = "flag", defaultValue = "1") Integer editFlag) throws Exception {
+        if (editFlag == 2) {
+            // show
+            modelMap.put("courseOnline", courseOnlineService.selectOpsOne(id));
+        } else {
+            // new
+            modelMap.put("courseOnline", new CourseOnline());
+        }
+        modelMap.put("edit", editFlag != 2);
+        return "tch/video/edit";
+
+    }
+
+
+    @PostMapping("save")
+    @ResponseBody
+    public String save(CourseOnline model) throws Exception{
+        if (null == model) {
+            return "error";
+        }
+        if (Strings.isNullOrEmpty(model.getImagePath())) {
+            model.setImagePath(Constants.USER_DEFAULT_AVATAR);
+        }
+        if (Strings.isNullOrEmpty(model.getSmallVideoPath())) {
+            model.setSmallVideoPath(model.getVideoPath());
+        }
+        if (model.getId() != null && model.getId() > 0) {
+            // 更新
+            CourseOnline record = courseOnlineService.selectById(model.getId());
+            if (null == record) {
+                return "error";
+            }
+            record.setPrice(model.getPrice());
+            record.setType(model.getType());
+            record.setTitle(model.getTitle());
+            record.setContent(model.getContent());
+            record.setVideoPath(model.getVideoPath());
+            record.setSmallVideoPath(model.getSmallVideoPath());
+            record.setImagePath(model.getImagePath());
+            record.setUpdateTime(new Date());
+            record.setIsHotAndCharge(model.getIsHotAndCharge());
+            record.setHour(model.getHour() == null ? 0 : model.getHour());
+            record.setMinute(model.getMinute() == null ? 0:model.getMinute());
+            record.setSecond(model.getSecond() == null ? 0:model.getSecond());
+            return courseOnlineService.createOrUpdate(record) >= 1 ? "success" : "error";
+        } else {
+            model.setSort(1);
+            model.setTeacherId(currentTeacherId());
+            // 获取老师名字
+            TeacherOpsVo teacher = teacherService.selectOpsOne(currentTeacherId());
+            if (null != teacher) {
+                model.setTeacherName(teacher.getName());
+            }
+            model.setCreateTime(new Date());
+            model.setUpdateTime(new Date());
+            model.setIsDelete(0);
+            model.setHour(model.getHour() == null ? 0 : model.getHour());
+            model.setMinute(model.getMinute() == null ? 0:model.getMinute());
+            model.setSecond(model.getSecond() == null ? 0:model.getSecond());
+            model.setPlayNumber(0L);
+        }
+        return courseOnlineService.createOrUpdate(model) >= 1 ? "success" : "error";
+    }
+    
+    @DeleteMapping("del")
+	@ResponseBody
+	public int del(@RequestParam("id") Long id) {
+		return courseOnlineService.deleteById(id);
+	}
+
+}

@@ -1,0 +1,16 @@
+数据库IP:117.41.235.203
+
+生产账户
+账户：xjti_admin
+密码：phuan_xjti_admin
+
+测试账户：
+账户：xjti_app
+密码：xjti_app
+
+请在xjti_admin账户下根据测试需要为xjti_app授权，请勿在生产环境下测试。
+
+39.104.86.61
+
+远程连接密码：446432
+

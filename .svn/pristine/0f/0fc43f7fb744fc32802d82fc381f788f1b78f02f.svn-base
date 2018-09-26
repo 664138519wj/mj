@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" th:href="@{/lib/lui/css/layui.css}">
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+</head>
+<body>
+<fieldset class="layui-elem-field">
+    <div class="site-text site-block">
+        <div class="layui-row">
+            <div class="layui-col-xs8">
+                <div class="grid-demo grid-demo-bg1">
+                    <form class="layui-form" action="">
+                    <div class="layui-form-item">
+                            <label class="layui-form-label">驾校名称</label>
+                            <div class="layui-input-block">
+                               <input type="text" name="schoolName" id="schoolName"
+							class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">驾照类型</label>
+                            <div class="layui-input-block">
+                               <select name="licence" id="licence">
+                               		<option value="">全部</option>
+								 	<option value="A1">A1(大型客车)</option>
+				                    <option value="A2">A2(牵引车)</option>
+				                    <option value="A3">A3(城市公共汽车)</option>
+				                    <option value="B1">B1(中型客车)</option>
+				                    <option value="B2">B2(大型货车)</option>
+				                    <option value="C1">C1(小型汽车)</option>
+				                    <option value="C2">C2(小型自动档汽车)</option>
+				                    <option value="C3">C3(低速载货汽车)</option>
+				                    <option value="C4">C4(三轮汽车)</option>
+				                    <option value="C5">C5(残疾人专用小型自动挡载客汽车)</option>
+				                    <option value="D">D(三轮摩托车)</option>
+				                    <option value="E">E(二轮摩托车)</option>
+				                    <option value="F">F(轻便摩托车)</option>
+				                    <option value="M">M(轮式自行机械车)</option>
+				                    <option value="N">N(无轨电车)</option>
+				                    <option value="P">P(有轨电车)</option>
+								 </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">班级编号</label>
+                            <div class="layui-input-block">
+                               <input type="text" name="classNo" id="classNo"
+							 class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">班级名称</label>
+                            <div class="layui-input-block">
+                               <input type="text" name="className" id="className"
+							class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">开班时间</label>
+                            <div class="layui-input-block">
+                               <input type="text" name="startTime" id="startTime"
+							placeholder="yyyy-MM-dd"  class="layui-input">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="layui-col-xs4">
+                <div class="grid-demo">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" onclick="filter()">查询</button>
+                        <button class="layui-btn" onclick="add()">新增</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</fieldset>
+<table id="schoolTable" class="layui-table" lay-data="{cellMinWidth: 80, page: true, limit:10, url:'allData'}" lay-filter="courseTable">
+    <thead>
+    <tr>
+        <th lay-data="{field:'id',type:'checkbox'}">ID</th>
+        <th lay-data="{field:'schoolName',  sort: true}">驾校名称</th>
+        <th lay-data="{field:'name',  sort: true}">驾照类型</th>
+         <th lay-data="{field:'classNo',  sort: true}">班级编号</th>
+         <th lay-data="{field:'className',  sort: true}">班级名称</th>
+        <th lay-data="{field:'startTime' , sort: true,templet:'#dateTpl'}">开班时间</th>
+        <th lay-data="{field:'price', sort: true}">报名费用</th>
+        <th lay-data="{field:'limitNum', sort: true}">可接受报名人数</th>
+         <th lay-data="{field:'userCourseNum', sort: true}" lay-event="sudentDetail">已报名人数</th>
+        <th lay-data="{field:'createTime', sort: true,templet:'#dateTpl'}">创建时间</th>
+    </tr>
+    </thead>
+</table>
+
+
+<script th:src="@{/lib/jquery/jquery.js}"></script>
+<script th:src="@{/lib/lui/layui.all.js}"></script>
+
+<script type="text/javascript">
+layui.laydate.render({
+        elem: '#startTime'
+        ,type: 'date'
+    });
+    
+    
+    var table = layui.table;
+    var layer = layui.layer;
+
+  
+
+    function filter(){
+    	var schoolName = $("#schoolName").val();
+        var licence = $("#licence").val();
+        var classNo = $("#classNo").val();
+        var className = $("#className").val();
+        var startTime = $("#startTime").val();
+         table.reload("schoolTable",{
+             where:{
+             		schoolName:schoolName,
+             		licence:licence,
+             		classNo:classNo,
+             		className:className,
+             		startTime:startTime}
+         })
+        
+    }
+</script>
+<script id="dateTpl" type="text/html">
+    {{# var date = layui.util.toDateString(d.startTime, 'yyyy-MM-dd') }}
+    <span>{{date}}</span>
+</script>
+
+</body>
+</html>

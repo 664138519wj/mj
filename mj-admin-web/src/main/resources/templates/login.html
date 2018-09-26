@@ -1,0 +1,45 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>登录</title>
+    <link rel="stylesheet" href="css/common.css" th:href="@{css/common.css}">
+    <link rel="stylesheet" href="css/style.css" th:href="@{css/style.css}">
+</head>
+<body>
+    <div class="content">
+        <div class="bg-pic">
+            <div class="login-box clear">
+                <div class="logo-box fl">
+                    <div class="logo-pic">
+                        <img src="img/logo.jpg" alt="">
+                    </div>
+                    <h2>迈尖设计研究室</h2>
+                </div>
+                <div class="login-form fl">
+                    <h2>后台管理系统</h2>
+                    <p>Background system</p>
+                    <form name="loginForm" action="auth/login" method="post">
+                        <ul>
+                            <li>
+                                <img src="img/user.png" alt="">
+                                <input type="text" name="username" placeholder="请输入用户名">
+                            </li>
+                            <li>
+                                <img src="img/password.png" alt="">
+                                <input type="password" name="password" placeholder="请输入密码">
+                            </li>
+                        </ul>
+                        <input type="submit" value="登录"><b style="color:red" th:text="${message}"></b>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+<script th:src="@{webjars/jquery/jquery.min.js}"></script>
+</html>

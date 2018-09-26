@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="head_center">
+<head>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+	content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>个人中心</title>
+</head>
+<body>
+
+	<!--查看各科目考试成绩-->
+	<div class="tab" th:fragment="content">
+		<div class="plat-title">
+			<h2>查看各科目考试成绩</h2>
+		</div>
+		<div class="see-score">
+			<table border="1" cellspacing="0">
+				<thead>
+					<tr>
+						<th>科目</th>
+						<th>成绩</th>
+						<th>考试地点</th>
+						<th>考试时间</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="appointment:${appointmentList}">
+						<td th:if="${appointment.kemu == 1}">科目一</td>
+						<td th:if="${appointment.kemu == 2}">科目二</td>
+						<td th:if="${appointment.kemu == 3}">科目三</td>
+						<td th:if="${appointment.kemu == 4}">科目四</td>						
+						<td><span th:text="${appointment.score}"></span></td>
+						<td><span th:text="${appointment.examPlaceAddress}"></span></td>
+						<td>[[${#dates.format(appointment.startTime, 'yyyy-MM-dd')}]]</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</html>

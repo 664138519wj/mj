@@ -1,0 +1,45 @@
+package com.migu.online.controller.ops;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.github.pagehelper.Page;
+import com.migu.online.controller.BaseController;
+import com.migu.online.controller.response.ResponsePageData;
+import com.migu.online.model.DrivingSchoolLesson;
+import com.migu.online.model.system.SysUser;
+import com.migu.online.ops.vo.SchoolLessonVo;
+import com.migu.online.service.DrivingSchoolService;
+import com.migu.online.utils.DateUtil;
+
+@Controller
+@RequestMapping("/")
+public class PreEntryController extends BaseController{
+	
+    @Autowired
+    private DrivingSchoolService drivingSchoolService;
+    
+    
+    /**
+     *  ------页面跳转 start-----
+     */
+    @GetMapping("pre_entry")
+    public String index(ModelMap modelMap){
+        return "pre_entry";
+    }
+    
+  
+}

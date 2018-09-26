@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+<link rel="stylesheet" th:href="@{/lib/lui/css/layui.css}">
+<!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+<style type="text/css">
+</style>
+</head>
+<body>
+	<div th:html="${lessonId}" id="lessonId"></div>
+
+	<fieldset class="layui-elem-field">
+		<div class="site-text site-block">
+			<div class="layui-row">
+				<div class="layui-col-xs8">
+					<div class="grid-demo grid-demo-bg1">
+						<form class="layui-form" action="">
+							<div class="layui-form-item">
+								<label class="layui-form-label">驾照类型</label>
+								<div class="layui-input-block">
+									<select name="licence" id="licence">
+										<option value="">全部</option>
+										<option value="A1">A1-大型客车</option>
+										<option value="A2">A2-牵引车</option>
+										<option value="A3">A3-城市公共汽车</option>
+										<option value="B1">B1-中型客车</option>
+										<option value="B2">B2-大型货车</option>
+										<option value="C1">C1-小型汽车</option>
+										<option value="C2">C2-小型自动档汽车</option>
+										<option value="C3">C3-低速载货汽车</option>
+										<option value="C4">C4-三轮汽车</option>
+										<option value="C5">C5-残疾人专用小型自动挡载客汽车</option>
+										<option value="D">D-三轮摩托车</option>
+										<option value="E">E-二轮摩托车</option>
+										<option value="F">F-轻便摩托车</option>
+										<option value="M">M-轮式自行机械车</option>
+										<option value="N">N-无轨电车</option>
+										<option value="P">P-有轨电车</option>
+									</select>
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">开班时间</label>
+								<div class="layui-input-block">
+									<input type="text" name="startTime" id="startTime"
+										placeholder="yyyy-MM-dd" class="layui-input">
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">支付方式</label>
+								<div class="layui-input-block">
+									<select name="payType" id="payType">
+										<option value="">全部</option>
+										<option value="0">线上</option>
+										<option value="1">线下</option>
+									</select>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="layui-col-xs4">
+					<div class="grid-demo">
+						<div class="layui-input-block">
+							<button class="layui-btn" onclick="filter()">查询</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</fieldset>
+	<table id="schoolStudentTable" class="layui-table"
+		lay-filter="courseTable">
+		<thead>
+			<tr>
+				<th lay-data="{field:'id',type:'checkbox'}">ID</th>
+				<th lay-data="{field:'licenceName', width:150, sort: true}">驾照类型</th>
+				<th
+					lay-data="{field:'status', width:100, sort: true, templet:'#Tstatus'}">状态</th>
+				<th
+					lay-data="{field:'payStatus', width:100, sort: true, templet:'#TpayStatus'}">付款状态</th>
+				<th
+					lay-data="{field:'startTime', width:100, sort: true,templet:'#dateTpl'}">开班时间</th>
+				<th lay-data="{field:'price', width:100, sort: true}">报名费用</th>
+				<th lay-data="{field:'userName', width:100, sort: true}">学生姓名</th>
+				<th lay-data="{field:'sex', width:100, sort: true,templet:'#sex'}">性别</th>
+				<th
+					lay-data="{field:'firstApply', width:150, sort: true,templet:'#firstApply'}">是否初次领证</th>
+				<th
+					lay-data="{field:'payType', width:100, sort: true,templet:'#payType2'}">付费方式</th>
+				<th lay-data="{field:'telNo', width:150, sort: true}">手机号码</th>
+				<th lay-data="{field:'idUp', width:200, sort: true}">身份证正面照片</th>
+				<th lay-data="{field:'idDown', width:200, sort: true}">身份证反面照片</th>
+				<th
+					lay-data="{fixed: 'right', width:178, align:'center', toolbar: '#operation'}"></th>
+			</tr>
+		</thead>
+	</table>
+
+	<script id="firstApply" type="text/html">
+				{{#  
+			if(d.firstApply == 0){ }}
+			     <span>否/span>
+ 				 {{#   }
+			else if(d.firstApply == 1){ }}
+			     <span>是</span>
+ 				 {{#   }
+			
+				}}
+</script>
+
+	<script id="sex" type="text/html">
+				{{#  
+			if(d.sex == 0){ }}
+			     <span>男</span>
+ 				 {{#   }
+			else if(d.sex == 1){ }}
+			     <span>女</span>
+ 				 {{#   }
+			
+				}}
+</script>
+
+	<script id="payType2" type="text/html">
+				{{#  
+			if(d.payType == 0){ }}
+			     <span>在线支付</span>
+ 				 {{#   }
+			else if(d.payType == 1){ }}
+			     <span>线下支付</span>
+ 				 {{#   }
+			
+				}}
+</script>
+
+	<script id="TpayStatus" type="text/html">
+				{{#  
+			if(d.payStatus == 0){ }}
+			     <span>未付款</span>
+ 				 {{#   }
+			else if(d.payStatus == 2){ }}
+			     <span>付款完成</span>
+ 				 {{#   }
+				}}
+</script>
+	<script id="operation" type="text/html">
+           {{#  
+			if(d.status == 0){ }}
+			    <a class="layui-btn layui-btn-xs" lay-event="approve">通过</a>
+			    <a class="layui-btn layui-btn-xs" lay-event="deny">拒绝</a>
+ 				 {{#   }    
+				}}
+       
+</script>
+
+
+	<script th:src="@{/lib/jquery/jquery.js}"></script>
+	<script th:src="@{/lib/lui/layui.all.js}"></script>
+
+	<script type="text/javascript">
+		layui.laydate.render({
+			elem : '#startTime',
+			type : 'date'
+		});
+	
+	
+		/* var table = layui.table;
+		var layer = layui.layer; */
+	
+	
+	
+		var lessonId = $("#lessonId").attr("html");
+		var licence = $("#licence").val();
+		var startTime = $("#startTime").val();
+		var payType = $("#payType").val();
+	
+			//加载列表的后端 url
+			var getListUrl = '';
+			//对于任意一个 table，按照官方的说法，有三种不同的初始化渲染方式，不多介绍，而这里使用的方式姑且看做第三种：转换静态表格 方式
+			//转换静态表格方式，自然首先需要有一个已经存在的表格，然后再通过 js 方式转化为 Layui 表格
+			//无论哪种方式的 Layui table 初始化自然需要配置项
+			//通过转化的方式初始化 Layui table，配置项部分可以在 源table中，部分在js中，源 table 的源代码上文已经给出，下面给出一个示例的 js 中的配置项
+			var tableOptions = {
+				url : getListUrl, //请求地址
+				method : 'POST', //方式
+				id : 'listReload', //生成 Layui table 的标识 id，必须提供，用于后文刷新操作，笔者该处出过问题
+				page : false, //是否分页
+				where : {
+					lessonId : lessonId,
+							licence : licence,
+							startTime : startTime,
+							payType : payType
+				}, //请求后端接口的条件，该处就是条件错误点，按照官方给出的代码示例，原先写成了 where: { key : { type: "all" } }，结果并不是我想的那样，如此写，key 将是后端的一个类作为参数，里面有 type 属性，如果误以为 key 是 Layui 提供的格式，那就大错特错了
+				response : { //定义后端 json 格式，详细参见官方文档
+					statusName : 'Code', //状态字段名称
+					statusCode : '200', //状态字段成功值
+					msgName : 'Message', //消息字段
+					countName : 'Total', //总数字段
+					dataName : 'Result' //数据字段
+				}
+			};
+			//
+			var layer;
+			var table;
+			layui.use([ 'table', 'layer' ], function() { //layui 模块引用，根据需要自行修改
+				layer = layui.layer,
+				table = layui.table;
+				//表初始化
+				var createTable = function() {
+					table.init('courseTable', tableOptions); // table lay-filter
+				};
+				//表刷新方法
+				var reloadTable = function(item) {
+					table.reload("listReload", { //此处是上文提到的 初始化标识id
+						where : {
+							//key: { //该写法上文已经提到
+							lessonId : lessonId,
+							licence : licence,
+							startTime : startTime,
+							payType : payType
+						//}
+						}
+					});
+				};
+				//表初始化
+				createTable();
+			//其他和 tree 相关的方法，其中包括 点击 tree 项调用刷新方法
+			});
+	
+	
+		var iframeWin = null;
+	
+		function openWin(title, isShow, id) {
+			var url = 'ops/schoolStudent/edit';
+			if (!!id) {
+				url += "?id=" + id;
+				if (isShow) {
+					url += "&flag=2";
+				} else {
+					url += "&flag=1";
+				}
+			} else {
+				url += "?flag=0";
+			}
+			var option = {
+				type : 2,
+				title : [ title, "color:green" ],
+				success : function(layero, index) {
+					iframeWin = parent.window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+				},
+				content : url,
+				area : [ '800px', '600px' ]
+			};
+			var btn = [ '保存', '关闭' ];
+			var okFun = function() {
+				parent.layer.close(index);
+			};
+			if (isShow) {
+				btn = [ '关闭' ]
+			}
+			if (btn.length > 1) {
+				okFun = function() {
+					if (iframeWin != null) {
+						iframeWin.doSave(function() {
+							parent.layer.close(index);
+							// 刷新table数据
+							table.reload("schoolStudentTable");
+						});
+					}
+				};
+				option['btn2'] = function() {
+					parent.layer.close(index);
+				}
+			}
+			option['btn'] = btn;
+			option['yes'] = okFun ;
+			var index = parent.layer.open(option);
+		}
+	
+		function add() {
+			openWin("新增", false);
+		}
+		//table点击事件
+		table.on("tool(courseTable)", function(obj) {
+			var data = obj.data;
+			if (obj.event === 'detail') {
+				openWin("详细", true, data.id);
+			} else if (obj.event === 'del') {
+				parent.layer.confirm('确定删除？', function(index) {
+					parent.layer.close(index);
+					$.ajax("del?id=" + data.id, {
+						method : "delete",
+						contentType : "application/json;charset=utf-8",
+						success : function(data) {
+							if (data) {
+								parent.tips(1, "删除成功！");
+								table.reload("schoolTable");
+	
+							} else {
+								parent.tips(0, "删除失败！");
+							}
+						},
+						error : function(e) {
+							parent.tips(0, "删除失败！");
+						}
+					});
+	
+				});
+			} else if (obj.event === 'edit') {
+				openWin("编辑", false, data.id);
+			} else if (obj.event === 'approve') {
+				$.ajax("approve?id=" + data.id, {
+					method : "get",
+					contentType : "application/json;charset=utf-8",
+					success : function(data) {
+						if (data) {
+							parent.tips(1, "通过成功！");
+							table.reload("schoolStudentTable");
+	
+						} else {
+							parent.tips(0, "通过失败！");
+						}
+					},
+					error : function(e) {
+						parent.tips(0, "通过失败！");
+					}
+				});
+	
+			} else if (obj.event === 'deny') {
+				openDenyWin("拒绝", false, data.id);
+			}
+		});
+	
+		function openDenyWin(title, isShow, id) {
+			var url = 'ops/schoolStudent/toDeny?id=' + id;
+			var option = {
+				type : 2,
+				title : [ title, "color:green" ],
+				success : function(layero, index) {
+					iframeWin = parent.window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+				},
+				content : url,
+				area : [ '500px', '200px' ]
+			};
+			var btn = [ '保存', '关闭' ];
+			var okFun = function() {
+				parent.layer.close(index);
+			};
+			if (isShow) {
+				btn = [ '关闭' ]
+			}
+			if (btn.length > 1) {
+				okFun = function() {
+					if (iframeWin != null) {
+						iframeWin.doSave(function() {
+							parent.layer.close(index);
+							// 刷新table数据
+							table.reload("schoolStudentTable");
+						});
+					}
+				};
+				option['btn2'] = function() {
+					parent.layer.close(index);
+				}
+			}
+			option['btn'] = btn;
+			option['yes'] = okFun ;
+			var index = parent.layer.open(option);
+		}
+	
+		function filter() {
+			var licence = $("#licence").val();
+			var startTime = $("#startTime").val();
+			var payType = $("#payType").val();
+			table.reload("schoolStudentTable", {
+				where : {
+					lessonId : lessonId,
+					licence : licence,
+					startTime : startTime,
+					payType : payType
+				}
+			})
+	
+		}
+	</script>
+	<script id="dateTpl" type="text/html">
+    {{# var date = layui.util.toDateString(d.startTime, 'yyyy-MM-dd') }}
+    <span>{{date}}</span>
+</script>
+
+</body>
+</html>

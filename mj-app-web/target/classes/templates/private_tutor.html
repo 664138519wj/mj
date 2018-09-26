@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+<head>
+    <title>私教陪练</title>
+</head>
+<body th:fragment="content">
+    <!-- content -->
+        <div class="content xc-content">
+          
+            <form id="appoint_school_form" th:action="@{${ctx} + 'private_tutor'}" method="get">           
+            <div class="xc-platform xc-private com-width">
+                <ul class="choose-ul clear">
+                    <li class="xc-select320 fl">
+                        <span style="display:inline-block;">老师</span>
+                        <div class="xc-info-box xc-w210">
+                            <select name="teacherId" id="teacherId" class="">
+                                <option value="">全部</option>
+                                <option th:each="tData:${teachers}" th:value="${tData.id}" th:selected="${teacherId==tData.id}" th:text="@{${tData.name} + '(id=' + ${tData.id} + ')'}"></option>
+                            </select>
+                        </div>
+                    </li>
+                    <li class="xc-select320 fl">
+                        <span style="display:inline-block;">科目</span>
+                        <div class="xc-info-box xc-w210">
+                            <select name="kemu" id="kemu" class="">
+                                <option value="">全部</option>
+                                <option value="2" th:selected="${kemu == 2}">科目二</option>
+                                <option value="3" th:selected="${kemu == 3}">科目三</option>
+                            </select>
+                        </div>
+                    </li>
+                    <li class="xc-select430 fl">
+                        <span style="display:inline-block;">类型</span>
+                        <div class="xc-info-box xc-w210">
+                            <select name="payType" id="payType" class="">
+                                <option value="">全部</option>
+                                <option value="1" th:selected="${payType == 1}">免费</option>
+                                <option value="2" th:selected="${payType == 2}">付费</option>
+                            </select>
+                        </div>
+                    </li>
+                    <li class="xc-found-btn fl">
+                        <button type="submit">查询</button>
+                    </li>
+                </ul>
+            </div>
+            </form>
+            
+<!-- 			<div class="plat-title"> -->
+<!--                 <h2>私教陪练课程</h2> -->
+<!--                 <p>—</p> -->
+<!--             </div> -->
+<!--             <div class="xc-tutor-main xc-all-tutor com-width"> -->
+<!--                 <ul class="clear"> -->
+<!--                     <li> -->
+<!--                         <a href=""> -->
+<!--                             <div class="xc-tutor-course clear"> -->
+<!--                                 <div class="xc-pic fl"> -->
+<!--                                     <img src="img/xc-1.png" alt=""> -->
+<!--                                 </div> -->
+<!--                                 <div class="xc-tutor-desc fl"> -->
+<!--                                     <h3>【科目二】私教陪练课程标题</h3> -->
+<!--                                     <div class="xc-kemu clear"> -->
+<!--                                         <p class="xc-mr80">对应科目：<span>科目二</span></p> -->
+<!--                                         <p>授课老师：<span>安道尔</span></p> -->
+<!--                                         <ul class="xc-start xc-mr80 clear"> -->
+<!--                                             <li class="xc-start-active">★</li> -->
+<!--                                             <li class="xc-start-active">★</li> -->
+<!--                                             <li class="xc-start-active">★</li> -->
+<!--                                             <li>★</li> -->
+<!--                                             <li>★</li> -->
+<!--                                         </ul> -->
+<!--                                         <p>开课时间：<span>2018-04-28</span></p> -->
+<!--                                     </div> -->
+<!--                                     <p>教学地址：新疆维吾尔自治区克拉玛依市克拉玛依区天池路</p> -->
+<!--                                     <p class="xc-price">价格：<span>￥3860</span></p> -->
+<!--                                 </div> -->
+<!--                             </div> -->
+<!--                         </a> -->
+<!--                     </li> -->
+<!--                     <li> -->
+<!--                         <a href=""> -->
+<!--                             <div class="xc-tutor-course clear"> -->
+<!--                                 <div class="xc-pic fl"> -->
+<!--                                     <img src="img/xc-1.png" alt=""> -->
+<!--                                 </div> -->
+<!--                                 <div class="xc-tutor-desc fl"> -->
+<!--                                     <h3>【科目二】私教陪练课程标题</h3> -->
+<!--                                     <div class="xc-kemu clear"> -->
+<!--                                         <p class="xc-mr80">对应科目：<span>科目二</span></p> -->
+<!--                                         <p>授课老师：<span>安道尔</span></p> -->
+<!--                                         <ul class="xc-start xc-mr80 clear"> -->
+<!--                                             <li class="xc-start-active">★</li> -->
+<!--                                             <li class="xc-start-active">★</li> -->
+<!--                                             <li class="xc-start-active">★</li> -->
+<!--                                             <li>★</li> -->
+<!--                                             <li>★</li> -->
+<!--                                         </ul> -->
+<!--                                         <p>开课时间：<span>2018-04-28</span></p> -->
+<!--                                     </div> -->
+<!--                                     <p>教学地址：新疆维吾尔自治区克拉玛依市克拉玛依区天池路</p> -->
+<!--                                     <p class="xc-price">价格：<span>￥3860</span></p> -->
+<!--                                 </div> -->
+<!--                             </div> -->
+<!--                         </a> -->
+<!--                     </li> -->
+<!--                 </ul> -->
+<!--             </div> -->
+
+			<div class="plat-title" style="padding-top:40px;">
+                <h2>平台推荐教练课程</h2>
+                <p>—</p>
+            </div>
+            <div class="xc-tutor-main com-width">
+                <ul class="clear">
+                    <li th:each="data:${dataList}">
+                        <a th:href="@{${ctx} + 'private_tutor_detail?id=' + ${data.id}}">
+                            <div class="xc-tutor-course clear">
+                                <div class="xc-pic fl">
+                                    <img th:src="${imageUrl} + ${data.imagePath}" alt="">
+                                </div>
+                                <div class="xc-tutor-desc fl">
+                                    <h3 th:text="${data.title}"></h3>
+                                    <div class="xc-kemu clear">
+                                        <p class="xc-mr80">对应科目：<span th:text="${data.kemu}"></span></p>
+                                        <p>授课老师：<span th:text="${data.teacherName}"></span></p>
+                                        <ul class="xc-start xc-mr80 clear">
+                                            <li th:class="${data.score >=1 ? 'xc-start-active':''}">★</li>
+				                            <li th:class="${data.score >=2 ? 'xc-start-active':''}">★</li>
+				                            <li th:class="${data.score >=3 ? 'xc-start-active':''}">★</li>
+				                            <li th:class="${data.score >=4 ? 'xc-start-active':''}">★</li>
+				                            <li th:class="${data.score >=5 ? 'xc-start-active':''}">★</li>
+                                        </ul>
+                                        <p>开课时间：<span th:text="${#dates.format(data.beginTime, 'yyyy-MM-dd HH:mm:ss')}"></span></p>
+                                    </div>
+                                    <p th:text="@{'教学地址：' + ${data.address}}"></p>
+                                    <p class="xc-price">价格：<span th:text="@{'￥' + ${data.price}}"></span></p>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+ <!-- 分页 -->
+	<div class="box clear">
+       <div id="pagination_privateTutor" class="page"></div>
+	</div>
+        
+           <!-- --------------分页------------------- -->
+<script> 
+$("#pagination_privateTutor").pagination({
+    currentPage: [[${pageIndex}]],
+    totalPage: [[${totalPage}]],
+    isShow: false,
+    count: [[${total}]],
+    prevPageText: "<",
+    nextPageText: ">",
+    callback: function(current) {
+        this.location.href ="[[${ctx}]]private_tutor?pageIndex=" + current;
+    }
+});
+
+</script>
+</html>

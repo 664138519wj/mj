@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" th:href="@{/lib/lui/css/layui.css}">
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+</head>
+<body>
+<div class="layui-container">
+<div th:html="${school.id}"></div>
+<div th:if="${edit}">
+</div>
+<form id="schoolForm" class="layui-form" action="edit" method="post">
+    <input type="hidden" name="id" id="school_id" th:value="${school.id}"/>
+    <div class="layui-form-item">
+        <label class="layui-form-label">图片</label>
+        <div class="layui-upload" th:if="${edit}">
+			  <button type="button" class="layui-btn" id="test1">上传图片</button>
+			  <div class="layui-upload-list">
+			    <img class="layui-upload-img" id="demo1" th:if="${school.imagePath != ''}" th:src="@{${baseUrl} + ${school.imagePath}}">
+			    <p id="demoText"></p>
+			    <input name="imagePath" type="hidden" id="imagePath" th:value="${school.imagePath}"/>			    			    
+			  </div>
+		</div>  
+		<div th:unless="${edit}" class="layui-input-block">
+			 <img th:src="@{${baseUrl} + ${school.imagePath}}"/>
+		</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">轮播图片</label>
+        <div class="layui-upload" th:if="${edit}">
+		  <button type="button" class="layui-btn" id="test2">多图片上传</button> 
+		  <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+		    预览图：
+		    <div class="layui-upload-list" id="demo2"></div>
+		 </blockquote>
+		 <span th:text="${school.shufflingImage}" id="uploadifyDir2"></span>
+			<input name="shufflingImage" type="hidden" id="shufflingImage" th:value="${school.shufflingImage}"/>
+		</div>
+<!--         <div th:if="${edit}" class="layui-input-block"> -->
+<!-- 			<input type="file" id="uploadify2" /> -->
+<!-- 			<div id="fileQueue2"></div> -->
+<!-- 			<span th:text="${school.shufflingImage}" id="uploadifyDir2"></span> -->
+<!-- 			<input name="shufflingImage" type="hidden" id="shufflingImage" th:value="${school.shufflingImage}"/> -->
+<!-- 		</div> -->
+		<div th:unless="${edit}" class="layui-input-block">
+			 <img th:each="imageUrl:${school.shufflingImageList}" th:src="@{${baseUrl} + ${imageUrl}}"/>
+		</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">名称缩略</label>
+        <div th:if="${edit}" class="layui-input-block">
+            <input  type="text" name="nameS" id="nameS" autocomplete="off" th:value="${school.nameS}" placeholder="请输入驾校缩略名称" class="layui-input">
+        </div>
+        <div class="layui-form-mid" th:unless="${edit}" th:text="${school.nameS}"></div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">名称详情</label>
+        <div th:if="${edit}" class="layui-input-block">
+            <input  type="text" name="nameL" id="nameL" autocomplete="off" th:value="${school.nameL}" placeholder="请输入驾校详情名称" class="layui-input">
+        </div>
+        <div class="layui-form-mid" th:unless="${edit}" th:text="${school.nameL}"></div>
+    </div>
+    
+    <div class="layui-form-item">
+        <label class="layui-form-label">地区</label>
+        <div th:if="${edit}" class="layui-input-block">
+          <select id="areaId" name="areaId">
+						<option th:each="area: ${areaList}" th:value="${area.id}"
+							th:text="${area.city}"
+							th:selected="${area.id == school.areaId}"></option>
+		  </select>
+        </div>
+        <div class="layui-form-mid" th:unless="${edit}" th:text="${school.areaName}"></div>
+    </div>
+    
+     <div class="layui-form-item">
+        <label class="layui-form-label">分润比例</label>
+        <div class="layui-form-mid"  th:text="${school.profitRatio}"></div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">驾校联系人</label>
+        <div th:if="${edit}" class="layui-input-block">
+            <input  type="text" name="contractPerson" id="contractPerson" autocomplete="off" th:value="${school.contractPerson}" placeholder="请输入驾校联系人" class="layui-input">
+        </div>
+        <div class="layui-form-mid" th:unless="${edit}" th:text="${school.contractPerson}"></div>
+    </div>
+     <div class="layui-form-item">
+        <label class="layui-form-label">电话</label>
+        <div th:if="${edit}" class="layui-input-block">
+            <input  type="text" name="tel" id="tel" autocomplete="off" th:value="${school.tel}" placeholder="请输入驾校电话" class="layui-input">
+        </div>
+        <div class="layui-form-mid" th:unless="${edit}" th:text="${school.tel}"></div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">法人代表</label>
+        <div th:if="${edit}" class="layui-input-block">
+            <input  type="text" name="lawPerson" id="lawPerson" autocomplete="off" th:value="${school.lawPerson}" placeholder="请输入驾校法人代表" class="layui-input">
+        </div>
+        <div class="layui-form-mid" th:unless="${edit}" th:text="${school.lawPerson}"></div>
+    </div>
+    
+    <div class="layui-form-item">
+        <label class="layui-form-label">地址</label>
+        <div th:if="${edit}" class="layui-input-block">
+            <input  type="text" name="address" lay-verify="title" autocomplete="off" th:value="${school.address}" placeholder="请输入地址" class="layui-input">
+        </div>
+        <div class="layui-form-mid" th:unless="${edit}" th:text="${school.address}"></div>
+    </div>
+    
+    <!-- <div class="layui-form-item">
+        <label class="layui-form-label">课程价格</label>
+        <div th:if="${edit}" class="layui-input-block">
+            <input type="number" id="priceNum"  autocomplete="off" th:value="${school.price}" placeholder="请输入价格" class="layui-input">
+            <input type="hidden" name="price" id="price" autocomplete="off" th:value="${school.price}">           
+        </div>
+        <div class="layui-form-mid" th:unless="${edit}" th:text="${school.price}"></div>
+    </div> -->
+    
+    <div class="layui-form-item">
+        <label class="layui-form-label">驾照类型</label>
+        <div th:if="${edit}" class="layui-input-block">
+            <input type="checkbox" name="cbx_licence" value="A1(大型客车)" title="A1"/>
+            <input type="checkbox" name="cbx_licence" value="A2(牵引车)" title="A2"/>
+            <input type="checkbox" name="cbx_licence" value="A3(城市公共汽车)" title="A3"/>
+            <input type="checkbox" name="cbx_licence" value="B1(中型客车)" title="B1"/>
+            <input type="checkbox" name="cbx_licence" value="B2(大型货车)" title="B2"/>
+            <input type="checkbox" name="cbx_licence" value="C1(小型汽车)" title="C1"/>
+            <input type="checkbox" name="cbx_licence" value="C2(小型自动挡汽车)" title="C2"/>
+            <input type="checkbox" name="cbx_licence" value="C3(三轮汽车)" title="C3"/>
+            
+			<input type="hidden" name="licence" id="licence"/>
+        </div>
+        <div class="layui-form-mid" th:unless="${edit}" th:text="${school.licence}"></div>
+    </div>
+
+</form>
+ <a class="layui-btn" onclick="doSave()">修改</a>
+</div>
+<script th:src="@{/lib/jquery/jquery.js}"></script>
+<script th:src="@{/lib/jquery/jquery.forms.js}"></script>
+<script th:src="@{/lib/lui/layui.all.js}"></script>
+<script type="text/javascript">
+    $.fn.serializeObject = function()
+    {
+        var o = {};
+        var a = this.serializeArray();
+        $.each(a, function() {
+            if (o[this.name] !== undefined) {
+                if (!o[this.name].push) {
+                    o[this.name] = [o[this.name]];
+                }
+                o[this.name].push(this.value || '');
+            } else {
+                o[this.name] = this.value || '';
+            }
+        });
+        return o;
+    };
+    function CheckInputIntFloat(oInput){
+		if('' != oInput.value.replace(/\d{1,}\.{0,1}\d{0,}/,'')){
+		        oInput.value = oInput.value.match(/\d{1,}\.{0,1}\d{0,}/) == null ? '' :oInput.value.match(/\d{1,}\.{0,1}\d{0,}/);
+		 }
+	}
+
+    
+    $(function(){
+    	var licence = '[[${school.licence}]]';
+    	$(function (){
+    		if (licence != '' && licence != undefined) {
+    			var strs = new Array();
+    			strs = licence.split(",");
+    			$("input[type=checkbox][name=cbx_licence]").each(function(){
+        			var value=$(this).val();
+        			for (var i=0; i<strs.length;i++) {
+        				if(strs[i]==value){
+            				$(this).next().find("i").click();
+            			}
+        			}       			
+        		});
+    		}  		
+    	});
+    });
+    
+</script>
+<script type="text/javascript">
+     function checkForm(arr){
+	  for(var i=0;i<arr.length;i++){
+	  if($("#"+arr[i][0]).val()==''){
+	    alert(arr[i][1]);
+	    $("#"+arr[i][0]).focus();
+	    return false;
+	  }
+	  }
+	  return true;
+	};
+	//调用方式
+	var arr=new Array(
+	  new Array('name','教师名字不可为空!'),
+	  new Array('schoolId','请选择所属驾校!'),
+	  new Array('teachingAge','教龄不能为空!'),
+	  new Array('tags','请选择标签!'),
+	  new Array('contractPerson', '请输入驾校联系人！'),
+	  new Array('lawPerson', '请输入驾校法人代表！')
+	);
+	
+    function doSave(){
+    	var chenked=$("input[type='checkbox']:checked").val([]);//此为重点  
+        var names = "";  
+        for(var i=0;i<chenked.length;i++){  
+           names += chenked[i].value +",";  
+        }  
+        $("#licence").val(names.substring(0,names.length-1));
+        $("#price").val($("#priceNum").val());
+        if(!checkForm(arr)){
+  		  return false;
+       } 
+        var dataParam = $("#schoolForm").serialize();
+
+        jQuery.ajax({
+            type:"post",
+            url: '[[${baseUrl}]]ops/school/save.html',
+            data: dataParam,
+            success:function(data){
+         	    if(data) {
+                    parent.tips(1, "保存成功！");
+                    fn.call();
+                }else{
+                    parent.tips(0, "保存信息失败！");
+                }  
+            }
+ 	    
+         })  
+
+    }
+
+</script>
+<script th:src="@{/js/uploadify/jquery-1.3.2.min.js}"></script>
+<script th:src="@{/js/uploadify/jquery.uploadify.v2.1.0.js}"></script>
+<script th:src="@{/js/uploadify/swfobject.js}"></script>
+<script type="text/javascript">
+     
+    $("#uploadify").uploadify({
+        'uploader': '[[${baseUrl}]]js/uploadify/uploadify.swf',
+        'script': '[[${baseUrl}]]upload/doUploadImg.html',
+        'cancelImg': '[[${baseUrl}]]js/uploadify/cancel.png',
+        'folder': 'upload',
+        'queueID' : 'fileQueue',
+        'buttonText': 'select',
+        'auto':true,
+        'multi':true,
+        'simUploadLimit' : 1,
+        'queueSizeLimit' : 1,
+        'fileExt': '*.jpg;*.gif;*.jpeg;*.png;*.bmp',
+        'fileDataName':'Filedata',
+        'onComplete': function(event, queueID, fileObj, response, data) {
+            //转换为json对象
+             $("#uploadifyDir").html(response);   
+             $("#imagePath").val(response);            
+        },
+        'onSelect':function(){
+        },
+        'onError': function(event, queueID, fileObj) {
+            alert("文件:" + fileObj.name + "上传失败");
+        }
+    });
+    
+    $("#uploadify2").uploadify({
+        'uploader': '[[${baseUrl}]]js/uploadify/uploadify.swf',
+        'script': '[[${baseUrl}]]upload/doUploadImg.html',
+        'cancelImg': '[[${baseUrl}]]js/uploadify/cancel.png',
+        'folder': 'upload',
+        'queueID' : 'fileQueue2',
+        'buttonText': 'select',
+        'auto':true,
+        'multi':true,
+        'simUploadLimit' : 1,
+        'queueSizeLimit' : 5,
+        'fileExt': '*.jpg;*.gif;*.jpeg;*.png;*.bmp',
+        'fileDataName':'Filedata',
+        'onComplete': function(event, queueID, fileObj, response, data) {
+            //转换为json对象
+            var url = $("#shufflingImage").val();
+            if (url == '' || url == undefined) {
+            	// add
+            	$("#uploadifyDir2").html(response);   
+                $("#shufflingImage").val(response); 
+            } else {
+            	$("#uploadifyDir2").html(url + ";" + response);   
+                $("#shufflingImage").val(url + ";" + response);  
+            }                      
+        },
+        'onSelect':function(){
+        },
+        'onError': function(event, queueID, fileObj) {
+            alert("文件:" + fileObj.name + "上传失败");
+        }
+    });
+    
+</script>
+<script>
+layui.use('upload', function(){
+  var $ = layui.jquery
+  ,upload = layui.upload;
+  
+  //普通图片上传
+  var uploadInst = upload.render({
+    elem: '#test1'
+    ,url: '[[${baseUrl}]]upload/doUploadImg'
+    ,before: function(obj){
+      //预读本地文件示例，不支持ie8
+      obj.preview(function(index, file, result){
+        $('#demo1').attr('src', result); //图片链接（base64）
+      });
+    }
+    ,done: function(res){
+      //如果上传失败
+      if(res.code > 0){
+        return layer.msg('上传失败');
+      }
+      // success
+      $("#imagePath").val(res.path);
+    }
+    ,error: function(){
+      //演示失败状态，并实现重传
+      var demoText = $('#demoText');
+      demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+      demoText.find('.demo-reload').on('click', function(){
+        uploadInst.upload();
+      });
+    }
+  });
+  
+  //多图片上传
+  upload.render({
+    elem: '#test2'
+    ,url: '[[${baseUrl}]]upload/doUploadImg'
+    ,multiple: true
+    ,before: function(obj){
+      //预读本地文件示例，不支持ie8
+      obj.preview(function(index, file, result){
+        $('#demo2').append('<img src="'+ result +'" alt="'+ file.name +'" class="layui-upload-img">')
+      });
+    }
+    ,done: function(res){
+      //上传完毕
+       if(res.code > 0){
+         return layer.msg('上传失败');
+       }
+       var url = $("#shufflingImage").val();
+       if (url == '' || url == undefined) {
+       	// add
+       	$("#uploadifyDir2").html(res.path);   
+        $("#shufflingImage").val(res.path); 
+       } else {
+    	   $("#uploadifyDir2").html(url + ";" + res.path);   
+           $("#shufflingImage").val(url + ";" + res.path);  
+       }
+    }
+  });
+});
+</script>
+
+</body>
+</html>

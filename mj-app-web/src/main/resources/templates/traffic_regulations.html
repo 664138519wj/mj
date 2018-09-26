@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+<head>
+    <title>交通法规</title>
+</head>
+<body th:fragment="content">
+        <!--content-->
+        <div class="content traffic-content">
+            <div class="plat-title">
+                <h2>交通安全法律法规</h2>
+                <p>—</p>
+            </div>
+            <div class="traffic-main com-width">
+                <ul>
+                    <li class="clear" th:each="law:${lawList}">
+                        <a th:href="@{${ctx} + 'traffic_regulations_detail?id=' + ${law.id}}">
+                            <div class="traffic-img fl">
+                                <img th:src="@{${imageUrl} + ${law.imagePath}}" alt="">
+                            </div>
+                            <div class="traffic-desc fr">
+                                <h3 th:text="@{${law.topicStr} +' '+ ${law.title}}"></h3>
+                                <span th:utext="${law.content}"></span>
+                            </div>
+                        </a>
+                    </li>                  
+                </ul>
+                 <div class="box clear">
+                  <div id="pagination_traffic_law" class="page"></div>
+                </div>
+            </div>
+        </div>
+   <!-- --------------分页------------------- -->
+<script>
+    $("#pagination_traffic_law").pagination({
+        currentPage: [[${pageIndex}]],
+        totalPage: [[${totalPage}]],
+        isShow: false,
+        count: [[${total}]],
+        prevPageText: "<",
+        nextPageText: ">",
+        callback: function(current) {
+            this.location.href ="[[${ctx}]]traffic_regulations?pageIndex=" + current;
+        }
+    });
+</script>
+</html>

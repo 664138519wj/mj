@@ -1,0 +1,180 @@
+package com.migu.online.service;
+
+import java.util.List;
+
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.alibaba.druid.util.StringUtils;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.migu.online.mapper.SysRoleMapper;
+import com.migu.online.mapper.SysUserMapper;
+import com.migu.online.mapper.SysUserRoleMapper;
+import com.migu.online.model.system.SysRole;
+import com.migu.online.model.system.SysUser;
+import com.migu.online.model.system.SysUserRole;
+import com.migu.online.ops.vo.SysUserOpsVo;
+
+import tk.mybatis.mapper.entity.Example;
+import tk.mybatis.mapper.entity.Example.Criteria;
+
+@Service
+public class SysUserManageService {
+
+	@Autowired
+	private SysUserMapper sysUserMapper;
+	@Autowired
+	private SysRoleMapper sysRoleMapper;
+	@Autowired
+	private SysUserRoleMapper sysUserRoleMapper;
+
+	/**
+	 * 用户角色列表
+	 * @param customerid
+	 * @return
+	 */
+	public List<SysRole> getSysRoles() {
+		Example example = new Example(SysRole.class);
+        Criteria criteria = example.createCriteria();
+        criteria.andCondition("available = 'true'");
+		return sysRoleMapper.selectByExample(example);
+	}
+	
+	 /**
+     * 删除
+     * @param id
+     * @return
+     */
+    public int deleteById(Long id) {
+    	SysUser record = sysUserMapper.selectByPrimaryKey(id);
+    	if (null != record) {
+        	record.setState(0);
+        	return sysUserMapper.updateByPrimaryKey(record);
+    	}
+    	return 0;
+    }
+    
+    /**
+     * 查
+     * @param id
+     * @param edit true 编辑 false 新增查询
+     * @return
+     */
+	public SysUserOpsVo selectOpsById(Long id) {
+		SysUserOpsVo vo = new SysUserOpsVo();
+		SysUser user = sysUserMapper.selectByPrimaryKey(id);
+		if (null != user) {
+			List<SysRole> sysRoleList = getSysRoles();
+			// 获取用户权限
+			SysUserRole userRole = new SysUserRole();
+			userRole.setUserId(id);
+			List<SysUserRole> roleList = sysUserRoleMapper.select(userRole);
+			if (null != roleList && roleList.size() > 0) {
+				for (SysRole role : sysRoleList) {
+					role.setAvailable(false);
+					for (SysUserRole ur : roleList) {
+						if (ur.getRoleId() == role.getId()) {
+							role.setAvailable(true);
+						}
+					}
+				}
+			}
+			user.setRoles(sysRoleList);
+			BeanUtils.copyProperties(user, vo);
+		}
+		return vo;
+	}
+    
+    /**
+     * 查
+     * @param id
+     * @return
+     */
+    public SysUser selectById(Long id) {
+    	return sysUserMapper.selectByPrimaryKey(id);
+    }
+      
+    /**
+     * 改&插
+     * @param model
+     * @return
+     */
+    public int createOrUpdate(SysUser model) {
+    	if (null != model.getId() && model.getId() > 0) {
+    		// update
+    		return sysUserMapper.updateByPrimaryKey(model);
+    	} else {
+    		// add
+    		return sysUserMapper.insert(model);
+    	}
+    }
+    
+    /**
+     * 用户角色变更
+     * @param model
+     * @return
+     */
+    public void updateUserRole(List<SysUserRole> model, Long userId) {
+    	// 清空角色权限
+    	SysUserRole role = new SysUserRole();
+    	role.setUserId(userId);
+    	sysUserRoleMapper.delete(role);
+    	for (SysUserRole data : model) {
+    		sysUserRoleMapper.insert(data);
+    	}
+    }
+    
+    /**
+     * 分页查询 
+     * @param pageIndex
+     * @param pageSize
+     * @param platId
+     * @return
+     * @throws Exception
+     */
+    public Page<SysUser> selectConditionByPage(Integer pageIndex, Integer pageSize, String filters) {
+        // 单表分页
+        PageHelper.startPage(pageIndex,pageSize,true);
+
+        //单表自定义查询
+        Example example = new Example(SysUser.class);
+        Criteria criteria = example.createCriteria();
+        if (!StringUtils.isEmpty(filters)) {
+            criteria.andLike("userName", "%" + filters + "%");
+        }
+        return (Page<SysUser>)sysUserMapper.selectByExample(example);
+    }
+    
+    /**
+     * 校验名字唯一
+     * @param id
+     * @return
+     */
+    public List<SysUser> checkExitUserName(String userName, Long id) {
+    	Example example = new Example(SysUser.class);
+        Criteria criteria = example.createCriteria();
+        if (null != id && id > 0) {
+            criteria.andNotEqualTo("id", id);
+        }
+        criteria.andCondition("user_name=", userName);
+    	return sysUserMapper.selectByExample(example);
+    }
+    
+    /**
+     * 校验名字唯一
+     * @param id
+     * @return
+     */
+    public SysUser selectByLoginName(String userName) {
+    	Example example = new Example(SysUser.class);
+        Criteria criteria = example.createCriteria();
+        criteria.andCondition("user_name=", userName);
+        List<SysUser> list = sysUserMapper.selectByExample(example);
+        if (null == list || list.size() <=0) {
+        	return null;
+        }
+    	return list.get(0);
+    }
+}

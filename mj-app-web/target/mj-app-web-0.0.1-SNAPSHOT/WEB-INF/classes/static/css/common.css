@@ -1,0 +1,137 @@
+*{
+	padding: 0;
+	margin: 0;
+}
+ul li,ol li {
+	list-style: none;
+}
+a{
+	text-decoration: none;
+	color:#666;
+}
+html,body{
+	font-family: Arial,"microsoft yahei";
+	font-size:18px;
+	color:#333;
+	background:#fff;
+    overflow-x: hidden;
+    -moz-user-select: none; 
+	-webkit-user-select: none; 
+	-ms-user-select: none; 
+	-khtml-user-select: none; 
+	user-select: none; 
+}
+img{
+	border:0;
+	vertical-align: middle;
+}
+input,textarea{
+	border:0;
+	outline: none;
+	background: none;
+}
+textarea{
+	resize: none;
+}
+button{
+	border:0;
+	background:none;
+	outline: none;
+}
+select{
+	outline: none;
+	font-size: 18px;
+	appearance:none;
+	-moz-appearance:none;
+	-webkit-appearance:none;
+	padding-left:10px;
+	border:none;
+	/* background: url("../img/arrow-down.png") no-repeat scroll right center transparent; */
+}
+select::-ms-expand { display: none; }
+p{
+    margin:0;
+}
+.fl{
+	float: left;
+}
+.fr{
+	float: right;
+}
+.clear{
+	zoom: 1;
+}
+.clear:after{
+	content: '';
+	display: block;
+	height: 0;
+	clear: both;
+}
+.com-width{
+	width:1200px;
+	margin:0 auto;
+}
+
+/*头部*/
+.header{
+    height:70px;
+    line-height:69px;
+}
+.header .left-menu{
+    margin-left:30px;
+}
+.header .left-menu>li{
+    float: left;
+	padding:0 20px;
+}
+.header .left-menu>li:first-child{
+	margin-right:100px;
+}
+.header .left-menu>li.active>a{
+	font-weight: 600;
+}
+.header .left-menu>li:hover{
+	background:#eee;
+}
+.header .left-menu li.father-menu{
+	position:relative;
+}
+.header .left-menu .child-menu{
+    display: none;
+	position:absolute;
+	top:70px;
+    left:-70px;
+    width:258px;
+    background:#fff;
+	border:1px solid #eee;
+    z-index:100;
+}
+.header .left-menu .child-menu li{
+    height:58px;
+    line-height:58px;
+    text-align: center;
+	border-bottom:1px solid #eee;
+}
+.header .left-menu .father-menu:hover .child-menu{
+    display: block;
+}
+.header .left-menu .father-menu .child-menu li:hover a{
+    color:#fd9938;
+}
+.header .right-menu li{
+    float: left;
+    width:68px;
+    text-align: center;
+}
+.header .left-menu li a{
+	font-size: 20px;
+}
+.header .right-menu li .img-2{
+    display: none;
+}
+.header .right-menu li a{
+	color:#fff;
+}
+.header .right-menu .header-person{
+    background:#fd9938;
+}

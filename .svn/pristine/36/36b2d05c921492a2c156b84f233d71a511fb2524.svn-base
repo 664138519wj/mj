@@ -1,0 +1,75 @@
+package com.migu.online.controller;
+
+import java.io.Serializable;
+
+import org.apache.shiro.SecurityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.migu.online.common.Constants;
+import com.migu.online.model.User;
+import com.migu.online.service.RedisService;
+import com.migu.online.service.UserService;
+
+/**
+ * 
+ * @author fanyunlong
+ *
+ */
+
+public class BaseController implements Serializable {
+	
+	private static final long serialVersionUID = -9202969636192115508L;
+
+	public final Integer pageIndex = 1;
+    
+    public final Integer pageSize = 10;
+    
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private RedisService redisService;
+ 
+           
+    public User getCurrentUser() {
+    	User user = (User)SecurityUtils.getSubject().getPrincipal();
+    	return user;
+    }
+    
+    public Long getCurrentUserId() {
+    	User user = (User)SecurityUtils.getSubject().getPrincipal();
+    	if (null != user) {
+    		return user.getId();
+    	}
+    	return 0L;
+    }
+    
+	/**
+	 * 更新最新的user
+	 * @return
+	 */
+	public User getCacheUser(Long userId) {
+		User cacheUser = (User)redisService.get(Constants.USER_INFO + userId);
+		if (null == cacheUser) {
+			cacheUser = userService.selectById(userId);
+			if (null != cacheUser) {
+				redisService.set(Constants.USER_INFO + userId, cacheUser);
+			}
+		}
+		return cacheUser;		
+	}
+    
+    /**
+     * 更新最新的user
+     * @return
+     */
+    public User updateCacheUser(Long userId) {  	
+		// db 获取
+		User data = userService.selectById(userId);
+		if (null != data) {
+			redisService.set(Constants.USER_INFO + userId, data);
+		}
+		return data;
+    		
+    }
+    
+}

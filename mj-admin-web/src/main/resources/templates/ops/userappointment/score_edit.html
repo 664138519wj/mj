@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" th:href="@{/lib/lui/css/layui.css}">
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+</head>
+<body>
+<div class="layui-container">
+<div th:html="${userAppointment.id}"></div>
+<form id="userAppointmentForm" class="layui-form" action="edit" method="post">
+    <input type="hidden" name="id" th:value="${userAppointment.id}"/>  
+    
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">分数</label>
+        <div th:if="${edit}" class="layui-input-block">
+			<input type="text" name="score" lay-verify="title" autocomplete="off" th:value="${userAppointment.score}" placeholder="分数" class="layui-input">
+        </div>
+    </div>
+    </div>
+
+</form>
+<script th:src="@{/lib/jquery/jquery.js}"></script>
+<script th:src="@{/lib/jquery/jquery.forms.js}"></script>
+<script th:src="@{/lib/lui/layui.all.js}"></script>
+<script type="text/javascript">
+    $.fn.serializeObject = function()
+    {
+        var o = {};
+        var a = this.serializeArray();
+        $.each(a, function() {
+            if (o[this.name] !== undefined) {
+                if (!o[this.name].push) {
+                    o[this.name] = [o[this.name]];
+                }
+                o[this.name].push(this.value || '');
+            } else {
+                o[this.name] = this.value || '';
+            }
+        });
+        return o;
+    };
+</script>
+<script type="text/javascript">
+   
+    //layui.layedit.build('LAY_demo_editor');
+
+     function checkForm(arr){
+  	  for(var i=0;i<arr.length;i++){
+  	  if($("#"+arr[i][0]).val()==''){
+  	    alert(arr[i][1]);
+  	    $("#"+arr[i][0]).focus();
+  	    return false;
+  	  }
+  	  }
+  	  return true;
+  	};
+  	//调用方式
+  	var arr=new Array(
+  	  new Array('score','分数不可为空!'),
+  	);
+    function doSave(fn){
+    	if(!checkForm(arr)){
+    		  return false;
+        } 
+        var dataParam = $("#userAppointmentForm").serialize();
+        jQuery.ajax({
+            type:"post",
+            url: '[[${baseUrl}]]ops/userappointment/save.html',
+            data: dataParam,
+            success:function(data){
+         	    if(data) {
+                    parent.tips(1, "保存成功！");
+                    fn.call();
+                }else{
+                    parent.tips(0, "保存信息失败！");
+                }  
+            },
+            error:function(e){
+                parent.tips(0,e);
+            }	    
+         })  
+
+    }
+
+</script>
+
+</body>
+</html>

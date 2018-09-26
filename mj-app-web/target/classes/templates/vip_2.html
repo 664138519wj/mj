@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+<head>
+    <title>找教练</title>
+</head>
+<body th:fragment="content" >
+        <!--content-->
+        <div class="content teacher-info">
+            <div class="tab-title com-width">
+                <ul class="clear">
+                    <li>
+                        <a th:href="${ctx} + vip_2.html">
+                            <img th:src="@{/img/xc-icon2.1.png}" alt="">
+                            <span>找教练</span>
+                        </a>
+                    </li>
+                    <li class="tab-selected">
+                        <a href="javascript:void(0);">
+                            <img th:src="@{/img/xc-icon3.png}" alt="">
+                            <span>找陪练</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="xc-platform xc-private com-width" style="margin-top:0;">
+                <ul class="choose-ul clear" style="padding:30px 0 30px 0;">
+                    <li class="xc-select320 fl" style="position: relative;padding-left: 30px">
+                        <span style="display:inline-block;">时间</span>
+                        <div class="xc-info-box xc-w220">
+                            <input type="button" id="dt" value="2018-2-5">
+                            <div id="dd"></div>  
+                        </div>
+                    </li>
+                    <li class="xc-select320 fl">
+                        <span style="display:inline-block;">科目</span>
+                        <div class="xc-info-box xc-w210">
+                            <select name="" id="" class="">
+                                <option value="">科目一</option>
+                                <option value="">科目二</option>
+                                <option value="">科目三</option>
+                                <option value="">科目四</option>
+                            </select>
+                        </div>
+                    </li>
+                    <li class="xc-found-btn fr" style="margin-right: 30px;">
+                        <button type="button">查询</button>
+                    </li>
+                </ul>
+            </div>
+            <div class="plat-teacher">
+                <div class="teacher-box com-width clear" style="margin-top:40px;">             
+                    <div class="plat-box fl" th:each="teacher:${teacherList}">
+                        <a th:href="@{${ctx} + 'platform_teacher_detail?id=' + ${teacher.id}}">
+                            <div class="teacher-img">
+                                <img th:src="${imageUrl} + ${teacher.avator}" alt="">
+                            </div>
+                            <div class="teacher-desc">
+                                <h3><span th:text="${teacher.name}"/></h3>
+                                <p>教龄：<span th:text="${teacher.teachingAge}"/></p>
+                                <img class="pic1" th:src="@{/img/index-pic2.png}"  alt="">
+                                <img class="pic2" th:src="@{/img/index-pic2.1.png}" alt="">
+                            </div>
+                        </a>
+                    </div>                   
+                </div>
+                 <div class="box clear">
+                  <div id="pagination_platformteacher" class="page"></div>
+                </div>
+            </div>
+        </div>
+        <!-- --------------分页------------------- -->
+<script> 
+    $("#pagination_platformteacher").pagination({
+        currentPage: [[${pageIndex}]],
+        totalPage: [[${totalPage}]],
+        isShow: false,
+        count: [[${total}]],
+        prevPageText: "<",
+        nextPageText: ">",
+        callback: function(current) {
+            this.location.href ="[[${ctx}]]platform_teacher?pageIndex=" + current;
+        }
+    });
+
+</script>
+</body>
+</html>

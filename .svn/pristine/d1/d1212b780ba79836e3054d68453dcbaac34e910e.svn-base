@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>法律法规详情</title>
+    <script type="text/javascript" th:src="@{/js/rem.js}"></script>
+    <link rel="stylesheet" href="css/h5/common.css" th:href="@{/css/h5/common.css}"/>
+    <link rel="stylesheet" href="css/h5/style.css" th:href="@{/css/h5/style.css}"/>
+</head>
+<body>
+	<div class="com-width">
+		<h2 class="title"><span th:text="${data.topicStr}"/>&nbsp;&nbsp;<span th:text="${data.title}"/></h2>
+		<span th:utext="${data.content}"/>
+	</div>
+</body>
+</html>

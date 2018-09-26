@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+<head>
+    <title>关于我们</title>
+    <style type="text/css">
+        .tab-title{background:#fff;}
+        .tab-title ul{height:60px;line-height:60px;padding-bottom:5px;}
+        .tab-title ul li{float:left;width:160px;text-align: center;}
+        .tab-title ul li:hover{cursor: pointer;}
+        .tab-title ul li.tab-selected{border-bottom:4px solid #fd9938;}
+        .tab-title ul li.tab-selected span{color:#fd9938;}
+        .tab-title ul li a img{width:24px;height:24px;vertical-align: sub}
+    	.per-main{width:1200px;padding:0 0 40px;background:none;}
+    </style>
+</head>
+<body th:fragment="content">
+
+        <div class="content person-content">
+            <div class="com-width">
+                <div class="tab-title">
+                    <ul class="clear">
+                        <li class="tab-selected">
+                            <a href="javascript:void(0);">
+                                <img th:src="@{/img/about_1.1.png}" alt="">
+                                <span>我要考驾照</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="${ctx} + about_us_2">
+                                <img th:src="@{/img/about_2.png}" alt="">
+                                <span>我是驾校</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="${ctx} + about_us_3">
+                                <img th:src="@{/img/about_3.png}" alt="">
+                                <span>我是教练</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="xc-about-page">
+                    <div class="xc-top">
+                        <div class="xc-pic"><img th:src="@{/img/about_pic.png}" alt=""></div>
+                        <div class="xc-desc">
+                            <p>      自我介绍一下，“我的学车网”是上海安族电子科技有限公司与新疆复安信息技术有限公司合作研发的全新驾考服务平台。平台面
+                                向准驾驶人、驾校和公安交管部门提供全方位的信息资讯和业务服务。我们既引入了创新的服务理念和服务模式，又充分结合新疆本
+                                地实际情况，立志成为最接地气的、最懂您的驾考服务平台！</p>
+                        </div>
+                    </div>
+                    <div class="xc-line">
+                        <img th:src="@{/img/about_line.png}" alt="">
+                    </div>
+                    <div class="xc-bottom">
+                        <p>我们为您准备了：</p>
+                        <div class="xc-title">
+                            <img th:src="@{/img/about_tip.png}" alt=""><span>01</span><b>随时随地进行考试练习的环境：</b>
+                            <p>通过网页或手机App（扫描页面下方二维码下载）都可以进行理论考试的自由练习或模拟考试，支持汉、维、哈、蒙四个语种，题库均为实时更新，只要您用心练习考试成绩一定棒棒哒！</p>
+                        </div>
+                        <div class="xc-title">
+                            <img th:src="@{/img/about_tip.png}" alt=""><span>02</span><b>可自由选择的各科目考试指导：</b>
+                            <p>我们在全市设置了多个培训网点，邀请了驾培经验丰富的教练，准备了丰富的在线课程和线下课程，课程内容绝对精品！如果您是忙碌的上班族，随时可以收看的在线课程很适合您，如果您可以自由安排时间，就来我们的培训网点与教练面对面吧，收获会更丰富哦！</p>
+                        </div>
+                        <div class="xc-title">
+                            <img th:src="@{/img/about_tip.png}" alt=""><span>03</span><b>真实全面的驾校信息：</b>
+                            <p>全市驾校那么多，到底哪家适合我？我们为您准备了真实全面的驾校信息，从位置到课程到价格再到学员评价，每一条信息都可以帮助您做出最佳选择！</p>
+                        </div>
+                        <div class="xc-title">
+                            <img th:src="@{/img/about_tip.png}" alt=""><span>04</span><b>VIP陪练服务：</b>
+                            <p>我的时间很有限，到驾校练车等不起，怎么办？别急，我们有专业教练带车陪练服务呢，根据您的时间来安排练车时间，还有贴心的接送服务，练车也可以很舒服！</p>
+                        </div>
+                        <div class="xc-title">
+                            <p>看了这么多，是不是很动心啦？赶快<a th:href="@{${ctx} + 'auth/toRegister'}">&nbsp;“注册”&nbsp;</a>一下开启你的学车之旅吧！</p>
+                        </div>
+                        <div class="xc-title">
+                            <p>如果您已经成为我们的VIP会员，<a th:href="@{${ctx} + 'auth/toLogin'}">&nbsp;“登录”&nbsp;</a> 开始练习吧！</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</body>
+</html>

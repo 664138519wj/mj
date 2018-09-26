@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+<head>
+    <title>vip服务</title>
+    <style type="text/css">
+        .date-items li{height:250px!important;}
+        .xc-true-btn,.xc-true-btn input{width: 380px;height: 56px;background:#fd9938;color:#fff;font-size: 18px;}
+        .xc-true-btn{margin: 6px auto;}
+    </style>
+</head>
+<body th:fragment="content">
+        <!--content-->
+        <div class="content xc-content">
+            <div class="com-width">
+                <div class="xc-choose-course">
+                    <h3>选择课程</h3>
+                    <div class="xc-course-main">
+                        <p>我的学车网提供四种服务模式，您可以根据自己的需要进行选择：</p>
+                        <p class="xc-course-title">一.私教/陪练服务（VIP客户专享）</p>
+                        <p>适合有点忙、无法固定练车时间的您，平台为您安排经验丰富的私教/陪练，一对一为您服务，根据您的时间安排练习时间，教练车接车送，课前、考前还有短信通知和提醒，助您顺利通过考试。</p>
+                        <p>服务价格：</p>
+                        <p class="xc-span">
+                            <input type="checkbox" name="chk_vip_course" th:each="vipData:${vipList}" th:value="${vipData.kemu}" 
+                            th:text="@{${vipData.title} + ':' + ${vipData.price} + '元   '}"/>
+                        </p>
+                        <p class="xc-click">
+                            <a href="#"  id="xcOrder">【预约VIP服务】</a>
+                        </p>
+                        <p class="xc-course-title">二.私教陪练服务</p>
+                        <p>如果您想要和小伙伴一起练车，可以预约科目二和科目三的私教/陪练服务，同样是专业教练为您培训指导，有伴不会累哦！</p>
+                        <p class="xc-click">
+                            <a href="platform_teacher.html">【我要找教练】</a><span>|</span>
+                            <a href="private_tutor.html">【我要找陪练】</a>
+                        </p>
+                        <p class="xc-course-title">三.驾校培训</p>
+                        <p>本平台与全市各大驾校都有合作，通过本平台报名驾校可以享受优惠价格，还可以获得联盟驾校信用保障。</p>
+                        <p class="xc-click">
+                            <a href="school_sign_up.html">【我要选驾校】</a>
+                        </p>
+                        <p class="xc-course-title">四.视频培训课程</p>
+                        <p>本平台提供多元化的视频培训课程和考试相关资讯，有利于提高考试成绩，助您顺利通过考试。</p>
+                        <p class="xc-click">
+                                <a href="platform_video.html?kemu=1">【科目一视频】</a><span>|</span>
+                                <a href="platform_video.html?kemu=2">【科目二视频】</a><span>|</span>
+                                <a href="platform_video.html?kemu=3">【科目三视频】</a><span>|</span>
+                                <a href="platform_video.html?kemu=4">【科目四视频】</a><span>|</span>
+                                <a href="policy_regulations.html">【考试资讯】</a>
+                        </p>
+                        <p class="xc-course-title">五.网点培训课程</p>
+                        <p>我们在全市设置了多个培训网点，每个网点都提供丰富的各科目考前指导培训课程，您可以预先了解各网点的地址和课程安排，根据您的需要购买网点的课程并按时参加培训，相信对您一定有所帮助。</p>
+                        
+                        <p class="xc-click">
+                            <a href="platform_course.html">【了解网点及课程内容】</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 预约vip服务 -->
+	    <!-- <div id="vipService" class="fade" style="display: none;">
+	        <div class="xc-vip-service">
+	        <img class="fork" style="position: absolute;top:20px;right: 20px;" src="img/app-pic1.png" alt="">
+	            <h3>预约VIP服务</h3>
+	            <p><b>您选择的科目：</b></p>
+	            <ul class="xc-kemu-list clear">
+	                <li>科目一</li>
+	                <li>科目二</li>
+	            </ul>
+	            选择组合套餐的话这里只会出现组合套餐和组合套餐的价格
+	            <ul class="xc-price-list">
+	                <li><span>科目一</span><span>￥3860</span></li>
+	                <li><span>科目二</span><span>￥3860</span></li>
+	            </ul>
+	            <div class="xc-total clear">
+	                <p class="fr">共<span>2</span>个服务，商品总价：<b>9550.00</b>元</p>
+	            </div>
+	            <div class="xc-apily-btn">
+	                <input type="button" value="去支付">
+	            </div>
+	        </div>    
+	    </div> -->
+	    <!-- 支付成功  选择时间 -->
+	    <!-- <div class="fade" style="display:none;">
+	        <div class="xc-vip-service" style="width: 420px;height:520px;padding:0!important;">
+	            <p style="text-align: center;padding-top:18px;"><b>支付成功！请选择您希望开始练习的时间</b></p>
+	            <input type="hidden" id="dt" value="2018-2-5">
+	            <div id="dd"></div>
+	            <div class="xc-true-btn">
+	                <input type="button" value="确定">
+	            </div>
+	        </div>
+	    </div> -->
+	    <script type="text/javascript">
+		    
+		    $(function(){
+		        $('#xcOrder').click(function(){
+		            // vip课程选择
+		            var course = '';
+		        	var groupCheckbox=$("input[name='chk_vip_course']");
+		            for(i=0;i<groupCheckbox.length;i++){
+		                if(groupCheckbox[i].checked){
+		                    var val =groupCheckbox[i].value;
+		                    course += val + ',';
+		                }
+		            }
+		            if (course  == undefined || course == '') {
+						alert("请选择vip课程");
+						return;
+					}
+		            if (course.indexOf("5") != -1 && course.length >= 3) {
+		            	alert("组合课程已经包含其他单项课程，无法重复选择");
+						return;
+				    }
+		            course = course.substring(0, course.length -1);
+		            window.location.href="[[${ctx}]]choose_course_1?course=" + course;
+		        });
+		    });
+		</script>
+   </body>
+   
+</html>

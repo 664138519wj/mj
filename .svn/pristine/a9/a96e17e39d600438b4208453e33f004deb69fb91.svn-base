@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" th:href="@{/lib/lui/css/layui.css}">
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+</head>
+<body>
+<div class="layui-container">
+    <div th:html="${user.id}"></div>
+    <div th:if="${edit}">
+    </div>
+    <div>
+        <!--教练和驾校基础信息表-->
+        <input type="hidden" name="school_relation" th:each="school:${schools}"
+               th:value="${school.id} + '@@fucking_separator@' + ${school.nameL}"/>
+        <input type="hidden" name="teacher_relation" th:each="teacher:${teachers}"
+               th:value="${teacher.id} + '@@fucking_separator@' + ${teacher.name}"/>
+    </div>
+    <form id="sysUserForm" class="layui-form" action="edit" method="post">
+        <input type="hidden" name="id" th:value="${user.id}"/>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户名</label>
+            <div th:if="${edit}" class="layui-input-block">
+               <input type="text" name="userName" lay-verify="title" id="userName" autocomplete="off"
+                       th:value="${user.userName}" placeholder="请输入用户名" class="layui-input">
+            </div>
+            <div class="layui-form-mid" th:unless="${edit}" th:text="${user.userName}"></div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">密码</label>
+            <div th:if="${edit}" class="layui-input-block">
+                <input type="password" name="password" id="password" lay-verify="topic" autocomplete="off"
+                       th:value="${user.password}" placeholder="请输入密码" class="layui-input">
+            </div>
+            <div class="layui-form-mid" th:unless="${edit}" th:text="${user.password}"></div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">权限角色</label>
+            <div th:if="${edit}" class="layui-input-block">
+                <input type="radio" name="cbx_user_role" th:each="roles:${user.roles}" lay-filter="change_role"
+                       th:value="${roles.id}" th:checked="${roles.available}" th:title="${roles.description}"/>
+                <input type="hidden" id="roleStr" name="roleStr" value=""/>
+            </div>
+            <div class="layui-form-mid" th:unless="${edit}" th:each="roles:${user.roles}" th:if="${roles.available}"
+                 th:text="${roles.description}"></div>
+        </div>
+
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">对应关系</label>
+            <div th:if="${edit}" class="layui-input-block">
+
+                <select name="relateId" id="relateSelection">
+                    <div th:if="${user.userType == 1}">
+                        <option th:each="school:${schools}"
+                                th:selected="${user.relateId == school.id}"
+                                th:value="${school.id}"
+                                th:text="${school.nameL}"/>
+                    </div>
+                    <div th:if="${user.userType == 2}">
+                        <option th:each="teacher:${teachers}"
+                                th:selected="${user.relateId == teacher.id}"
+                                th:value="${teacher.id}"
+                                th:text="${teacher.name}"/>
+                    </div>
+                </select>
+            </div>
+            <div class="layui-form-mid" th:unless="${edit}" th:text="${relation}"></div>
+        </div>
+
+
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">别名</label>
+            <div th:if="${edit}" class="layui-input-block">
+                <input type="text" name="nickName" id="nickName" lay-verify="topic" autocomplete="off"
+                       th:value="${user.nickName}" placeholder="请输入别名" class="layui-input">
+            </div>
+            <div class="layui-form-mid" th:unless="${edit}" th:text="${user.nickName}"></div>
+        </div>
+
+    </form>
+</div>
+<script th:src="@{/lib/jquery/jquery.js}"></script>
+<script th:src="@{/lib/jquery/jquery.forms.js}"></script>
+<script th:src="@{/lib/lui/layui.all.js}"></script>
+<script type="text/javascript">
+    $.fn.serializeObject = function () {
+        var o = {};
+        var a = this.serializeArray();
+        $.each(a, function () {
+            if (o[this.name] !== undefined) {
+                if (!o[this.name].push) {
+                    o[this.name] = [o[this.name]];
+                }
+                o[this.name].push(this.value || '');
+            } else {
+                o[this.name] = this.value || '';
+            }
+        });
+        return o;
+    };
+</script>
+<script type="text/javascript">
+
+
+    function checkForm(arr) {
+        for (var i = 0; i < arr.length; i++) {
+            if ($("#" + arr[i][0]).val() == '') {
+                alert(arr[i][1]);
+                $("#" + arr[i][0]).focus();
+                return false;
+            }
+        }
+        return true;
+    }
+    ;
+    //调用方式
+    var arr = new Array(
+            new Array('userName', '用户名不可为空!'),
+            new Array('password', '密码不能为空!'),
+            new Array('nickName', '别名不能为空!'),
+            new Array('roleStr', '请选择权限!')
+    );
+    function doSave(fn) {
+        $("#roleStr").val($("input[type='radio']:checked").val());
+        if (!checkForm(arr)) {
+            return false;
+        }
+        var dataParam = $("#sysUserForm").serialize();
+        jQuery.ajax({
+            type: "post",
+            url: 'save',
+            data: dataParam,
+            success: function (data) {
+                if (data) {
+                	if (data != "success") {
+                        parent.tips(0, data);
+                	} else {
+                		parent.tips(1, "保存成功！");
+                        fn.call();
+                	}                   
+                } else {
+                    parent.tips(0, "保存信息失败！");
+                }
+            },
+            error: function (e) {
+                parent.tips(0, e);
+            }
+        })
+
+    }
+
+    var form = layui.form;
+    form.on('radio(change_role)', function (data) {
+        var role_id = data.value;
+        var options = $("#relateSelection");
+        options.empty();
+        if (role_id === '2') {
+            var school_options = $("[name='school_relation']");
+            for (var i = 0; i < school_options.length; i++) {
+                var id_name = school_options[i].value.split("@@fucking_separator@", 2);
+                options.append("<option value='" + id_name[0] + "'>" + id_name[1] + "</option>");
+            }
+        } else if (role_id === '3') {
+            var teacher_options = $("[name='teacher_relation']");
+            for (var i = 0; i < teacher_options.length; i++) {
+                var id_name = teacher_options[i].value.split("@@fucking_separator@", 2);
+                options.append("<option value='" + id_name[0] + "'>" + id_name[1] + "</option>");
+            }
+        }
+        form.render();
+
+
+    });
+
+</script>
+</body>
+</html>

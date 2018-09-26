@@ -1,0 +1,22 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>报错error</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+	 <div class="container">
+        <div class="img-box" style="margin:50px auto;text-align: center">
+            <img th:src="@{/img/error-page.png}" alt="" style="width:392px;height:500px;">
+        </div>
+        <div style="width:120px;height:40px;line-height:40px;text-align:center;border-radius:10px;background:#fd9938;margin:0 auto">
+            <a th:href="${ctx} + index" style="color:#fff">返回首页</a>
+        </div>
+    </div>
+</body>
+</html>

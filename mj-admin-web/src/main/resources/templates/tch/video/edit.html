@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" th:href="@{/lib/lui/css/layui.css}">
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+</head>
+<body>
+<div class="layui-container">
+    <div th:html="${courseOnline.id}"></div>
+    <div th:if="${edit}">
+    </div>
+    <form id="courseOnlineForm" class="layui-form" action="edit" method="post">
+        <input type="hidden" name="id" th:value="${courseOnline.id}"/>
+        <div class="layui-form-item">
+            <label class="layui-form-label">图片</label>
+            <div class="layui-upload" th:if="${edit}">
+                <button type="button" class="layui-btn" id="test1">上传图片</button>
+                <div class="layui-upload-list">
+                    <img class="layui-upload-img" id="demo1" th:if="${courseOnline.imagePath != ''}"
+                         th:src="@{${baseUrl} + ${courseOnline.imagePath}}">
+                    <p id="demoText"></p>
+                    <input name="imagePath" type="hidden" id="imagePath" th:value="${courseOnline.imagePath}"/>
+                </div>
+            </div>
+            <div th:unless="${edit}" class="layui-input-block">
+                <img th:src="@{${imageUrl} + ${courseOnline.imagePath}}"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">完整视频</label>
+            <div th:if="${edit}" class="layui-input-block">
+                <button type="button" class="layui-btn" id="video_button"><i class="layui-icon"></i>上传视频</button>
+                <div class="layui-upload-list">
+                    <p id="videoText"></p>
+                    <span th:text="${courseOnline.videoPath}" id="uploadifyVideoDir"></span>
+                </div>
+                <input name="videoPath" type="hidden" id="videoPath" th:value="${courseOnline.videoPath}"/>
+                <input type="number" name="hourNum" id="hourNum" th:value="${courseOnline.hour}" placeholder="视频小时"
+                       class="layui-input">
+                <input type="number" name="minuteNum" id="minuteNum" th:value="${courseOnline.minute}"
+                       placeholder="视频分钟" class="layui-input">
+                <input type="number" name="secondNum" id="secondNum" th:value="${courseOnline.second}" placeholder="视频秒"
+                       class="layui-input">
+                <input type="hidden" name="hour" id="hour" th:value="${courseOnline.hour}" placeholder="视频小时"
+                       class="layui-input">
+                <input type="hidden" name="minute" id="minute" th:value="${courseOnline.minute}" placeholder="视频分钟"
+                       class="layui-input">
+                <input type="hidden" name="second" id="second" th:value="${courseOnline.second}" placeholder="视频秒"
+                       class="layui-input">
+
+            </div>
+            <div th:unless="${edit}" class="layui-input-block">
+                <span th:text="@{${videoUrl} + ${courseOnline.videoPath}}"></span>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">预览视频</label>
+            <div th:if="${edit}" class="layui-input-block">
+                <button type="button" class="layui-btn" id="preview_video_button"><i class="layui-icon">
+                </i>上传预览视频</button>
+                <div class="layui-upload-list">
+                    <p id="PreviewvideoText"></p>
+                    <span th:text="${courseOnline.smallVideoPath}" id="uploadifyPreviewVideoDir"></span>
+                </div>
+                <input name="smallVideoPath" type="hidden" id="smallVideoPath" th:value="${courseOnline.smallVideoPath}"/>
+            </div>
+            <div th:unless="${edit}" class="layui-input-block">
+                <span th:text="@{${videoUrl} + ${courseOnline.smallVideoPath}}"></span>
+            </div>
+        </div>
+
+
+
+        <div class="layui-form-item" th:unless="${edit}">
+            <label class="layui-form-label">发布老师</label>
+            <div class="layui-form-mid" th:text="${courseOnline.teacherName}"></div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">科目</label>
+            <div th:if="${edit}" class="layui-input-block">
+                <select name="type" lay-filter="kemu">
+                    <option value="1" th:selected="${courseOnline.type == 1}">科目一</option>
+                    <option value="2" th:selected="${courseOnline.type == 2}">科目二</option>
+                    <option value="3" th:selected="${courseOnline.type == 3}">科目三</option>
+                    <option value="4" th:selected="${courseOnline.type == 4}">科目四</option>
+                </select>
+            </div>
+            <div class="layui-form-mid" th:unless="${edit}" th:text="${courseOnline.type}"></div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">标题</label>
+            <div th:if="${edit}" class="layui-input-block">
+                <input type="text" name="title" id="title" lay-verify="title" autocomplete="off"
+                       th:value="${courseOnline.title}" placeholder="请输入标题" class="layui-input">
+            </div>
+            <div class="layui-form-mid" th:unless="${edit}" th:text="${courseOnline.title}"></div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">价格</label>
+            <div th:if="${edit}" class="layui-input-block">
+                <input type="number" id="priceNum" autocomplete="off" th:value="${courseOnline.price}"
+                       placeholder="请输入价格" class="layui-input">
+                <input type="hidden" name="price" id="price" autocomplete="off" th:value="${courseOnline.price}">
+            </div>
+            <div class="layui-form-mid" th:unless="${edit}" th:text="${courseOnline.price}"></div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">是否热点</label>
+            <div th:if="${edit}">
+                <div>
+                    <input type="radio" name="isHotAndCharge" value="0" title="否" checked="checked">
+                    <input type="radio" name="isHotAndCharge" value="1" title="热点"
+                           th:checked="${courseOnline.isHotAndCharge == 1}">
+                    <input type="radio" name="isHotAndCharge" value="2" title="收费"
+                           th:checked="${courseOnline.isHotAndCharge == 2}">
+                    <input type="radio" name="isHotAndCharge" value="3" title="热点且收费"
+                           th:checked="${courseOnline.isHotAndCharge == 3}">
+                </div>
+            </div>
+            <div th:unless="${edit}" th:if="${courseOnline.isHotAndCharge == 0}" th:text="否"></div>
+            <div th:unless="${edit}" th:if="${courseOnline.isHotAndCharge == 1}" th:text="热点"></div>
+            <div th:unless="${edit}" th:if="${courseOnline.isHotAndCharge == 2}" th:text="收费"></div>
+            <div th:unless="${edit}" th:if="${courseOnline.isHotAndCharge == 3}" th:text="热点且收费"></div>
+        </div>
+
+
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">内容</label>
+            <div th:if="${edit}" class="layui-input-block">
+            <textarea class="layui-textarea" name="content" th:text="${courseOnline.content}">
+            </textarea>
+            </div>
+            <div class="layui-form-mid" th:unless="${edit}" th:text="${courseOnline.content}"></div>
+        </div>
+
+    </form>
+</div>
+<script th:src="@{/lib/jquery/jquery.js}"></script>
+<script th:src="@{/lib/jquery/jquery.forms.js}"></script>
+<script th:src="@{/lib/lui/layui.all.js}"></script>
+<script type="text/javascript">
+    $.fn.serializeObject = function () {
+        var o = {};
+        var a = this.serializeArray();
+        $.each(a, function () {
+            if (o[this.name] !== undefined) {
+                if (!o[this.name].push) {
+                    o[this.name] = [o[this.name]];
+                }
+                o[this.name].push(this.value || '');
+            } else {
+                o[this.name] = this.value || '';
+            }
+        });
+        return o;
+    };
+</script>
+<script type="text/javascript">
+    layui.laydate.render({
+        elem: '#date'
+    });
+    //layui.layedit.build('LAY_demo_editor');
+
+    function checkForm(arr) {
+        for (var i = 0; i < arr.length; i++) {
+            if ($("#" + arr[i][0]).val() == '') {
+                alert(arr[i][1]);
+                $("#" + arr[i][0]).focus();
+                return false;
+            }
+        }
+        return true;
+    }
+    ;
+    //调用方式
+    var arr = new Array(
+            new Array('title', '标题不可为空!'),
+            new Array('videoPath', '请上传视频!'),
+    );
+
+    function doSave(fn) {
+        $("#price").val($("#priceNum").val());
+        $("#hour").val($("#hourNum").val());
+        $("#minute").val($("#minuteNum").val());
+        $("#second").val($("#secondNum").val());
+
+        if (!checkForm(arr)) {
+            return false;
+        }
+        var isHotAndCharge = $("input[name='isHotAndCharge']:checked").val();
+        var price = $("#price").val();
+        if(isHotAndCharge >= 2 && price <=0) {
+        	alert("收费视频，价格不能为0");
+        	return;
+        }
+        var dataParam = $("#courseOnlineForm").serialize();
+
+        jQuery.ajax({
+            type: "post",
+            url: 'save.html',
+            data: dataParam,
+            success: function (data) {
+                if (data) {
+                	if (data == 'success') {
+                		parent.tips(1, "保存成功！");
+                        fn.call();
+                	} else {
+                		parent.tips(0, data);
+                	}                 
+                } else {
+                    parent.tips(0, "保存信息失败！");
+                }
+            }
+
+        })
+    }
+
+</script>
+<script type="text/javascript">
+    layui.laydate.render({
+        elem: '#date'
+    });
+
+</script>
+<script>
+    layui.use('upload', function () {
+        var $ = layui.jquery
+                , upload = layui.upload;
+
+        //普通图片上传
+        var uploadInst = upload.render({
+            elem: '#test1'
+            , url: '[[${baseUrl}]]upload/doUploadImg'
+            , before: function (obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function (index, file, result) {
+                    $('#demo1').attr('src', result); //图片链接（base64）
+                });
+            }
+            , done: function (res) {
+                //如果上传失败
+                if (res.code > 0) {
+                    return layer.msg('上传失败');
+                }
+                // success
+                $("#imagePath").val(res.path);
+            }
+            , error: function () {
+                //演示失败状态，并实现重传
+                var demoText = $('#demoText');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function () {
+                    uploadInst.upload();
+                });
+            }
+        });
+
+        upload.render({
+            elem: '#video_button'
+            , url: '[[${baseUrl}]]upload/doUploadVideo'
+            , accept: 'video' //视频
+            , done: function (res) {
+                //如果上传失败
+                if (res.code > 0) {
+                    return layer.msg('上传失败');
+                }
+                // success
+                $("#uploadifyVideoDir").html(res.path);
+                $("#videoPath").val(res.path);
+            }
+            , error: function () {
+                //演示失败状态，并实现重传
+                var demoText = $('#videoText');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function () {
+                    uploadInst.upload();
+                });
+            }
+        });
+
+        upload.render({
+            elem: '#preview_video_button'
+            , url: '[[${baseUrl}]]upload/doUploadVideo'
+            , accept: 'video' //视频
+            , done: function (res) {
+                //如果上传失败
+                if (res.code > 0) {
+                    return layer.msg('上传失败');
+                }
+                // success
+                $("#uploadifyPreviewVideoDir").html(res.path);
+                $("#smallVideoPath").val(res.path);
+            }
+            , error: function () {
+                //演示失败状态，并实现重传
+                var demoText = $('#videoText');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function () {
+                    uploadInst.upload();
+                });
+            }
+        });
+
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Detail</title>
+    <script
+            src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous"></script>
+    <base th:href="${#httpServletRequest.getContextPath()}"/>
+</head>
+<body>
+    <input type="hidden" id="id" th:value="${id}">
+    show detail。。
+    <p id="detail"></p>
+    <p th:text="${#httpServletRequest.getContextPath()}"></p>
+</body>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+    var basePath = /*[[${#httpServletRequest.getContextPath()}]]*/ "/my";
+
+    /*]]>*/
+    $(function(){
+        var id = $("#id").val();
+        $.get(basePath +"/test/"+id,function(data){
+            $("#detail").text(JSON.stringify(data));
+        })
+    })
+</script>
+</html>

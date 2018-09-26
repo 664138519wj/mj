@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+<head>
+    <title>平台服务网点信息</title>
+    <style type="text/css">
+        .tab-title{background:#fff;margin-bottom:30px;}
+        .tab-title ul{height:60px;line-height:60px;padding-bottom:5px;}
+        .tab-title ul li{float:left;width:160px;text-align: center;}
+        .tab-title ul li:hover{cursor: pointer;}
+        .tab-title ul li.tab-selected{border-bottom:4px solid #fd9938;}
+        .tab-title ul li.tab-selected span{color:#fd9938;}
+        #dt{width:210px;height:58px;margin:0;font-size: 20px;outline: none;position:relative;top:0;}
+    </style>
+</head>
+<body th:fragment="content" >
+        <!--content-->
+        <div class="content plat-info">
+	        <!-- <div class="tab-title com-width">
+				<ul class="clear">
+					<li title="驾校报名"><a th:href="${ctx} + school_sign_up"> <img
+						th:src="@{/img/icon_1.1.png}" alt=""> <span>驾校报名</span>
+					</a></li>
+					<li class="tab-selected" title="培训网点分布"><a href="javascript:void(0);"> <img
+							th:src="@{/img/icon_2.png}" alt=""> <span>培训网点分布</span>
+					</a></li>
+				</ul>
+			</div> -->
+	        
+            <div class="plat-title">
+                <h2>网点课程</h2>
+                <p>—</p>
+            </div>
+            <div class="xc-platform com-width" style="margin-top:20px;">
+               <form id="driving_school_form" th:action="@{${ctx} + 'platform_info'}" method="get">	  					
+            
+            	<ul class="choose-ul clear">
+                    <li class="xc-select320 fl">
+                        <span style="display:inline-block;">区域</span>
+                        <div class="xc-info-box xc-w210">
+                            <select name="areaId" id="areaId" >
+                                <option value="">全部</option>
+                                <option th:each="area:${areaList}" th:value="${area.id}" th:selected="${areaId == area.id}"><span th:text="${area.city}"></span></option>
+                            </select>
+                        </div>
+                    </li>
+                    <li class="xc-select430 fl">
+                        <span style="display:inline-block;">网点名称</span>
+                        <div class="xc-info-box xc-w300">
+                           <input type="text" name="platName" id="platName" placeholder="输入网点名称" th:value="${platName}">  
+                        </div>
+                    </li>
+                    <li class="xc-select400 fl">
+                        <span style="display:inline-block;">讲师</span>
+                        <div class="xc-info-box xc-w330">
+                            <select name="teacherId" id="teacherId" class="">
+                                <option value="">全部</option>
+                                <option th:each="tData:${teachers}" th:value="${tData.id}" th:selected="${teacherId==tData.id}" th:text="@{${tData.name} + '(id=' + ${tData.id} + ')'}"></option>
+                            </select>
+                        </div>
+                    </li>
+                    <li class="xc-select320 fl">
+                        <span style="display:inline-block;">科目</span>
+                        <div class="xc-info-box xc-w210">
+                            <select name="kemu" id="kemu" class="">
+                                <option value="">全部</option>                            
+                                <option value="1" th:selected="${kemu == 1}">科目一</option>
+                                <option value="2" th:selected="${kemu == 2}">科目二</option>
+                                <option value="3" th:selected="${kemu == 3}">科目三</option>
+                                <option value="4" th:selected="${kemu == 4}">科目四</option>
+                            </select>
+                        </div>
+                    </li>
+                    <li class="xc-select430 fl">
+                        <span style="display:inline-block;">网点地址</span>
+                        <div class="xc-info-box xc-w300">
+                            <input type="text" name="address" id="address" placeholder="输入地址" th:value="${address}"> 
+                        </div>
+                    </li>
+                    <li class="xc-select300 fl">
+                        <span style="display:inline-block;">时间</span>
+                        <div class="xc-info-box xc-w220">
+                            <input type="text" id="startTime" name="startTime"  th:value="${startTime}">
+                            <div id="dd"></div>  
+                        </div>
+                    </li>
+                    <li class="xc-found-btn fl">
+                        <button type="submit">查询</button>
+                    </li>
+                </ul>
+            
+	            <ul class="info-box com-width clear" th:if="${platList}">
+	                <li th:each="plat:${platList}">
+	                    <a th:href="@{${ctx} + 'platform_info_detail?id=' + ${plat.id}}">
+	                        <div class="info-img">
+	                            <img th:src="${imageUrl} + ${plat.imagePath}" alt="">
+	                        </div>
+	                        <div class="info-desc">
+	                            <b><span th:text="${plat.name}"></span></b>
+	                            <p>网点地址：<span th:text="${plat.address}"></span></p>
+	                            <p>联系电话：<span th:text="${plat.tel}"></span></p>
+	                        </div>
+	                    </a>
+	                </li>               
+	            </ul>
+	            <ul class="info-box clear" th:unless="${platList}">
+					 <li>抱歉，没有查询到相关信息</li>
+				</ul>
+	           </form>
+	        </div>
+            <div class="box clear">
+                  <div id="pagination_platforminfo" class="page"></div>
+            </div>
+        </div>
+	<script> 
+	$('#dd').calendar({
+        trigger: '#startTime',
+        zIndex: 999,
+        format: 'yyyy-mm-dd',
+        onSelected: function (view, date, data) {
+            console.log('event: onSelected')
+        },
+        onClose: function (view, date, data) {
+            console.log('event: onClose');
+            console.log('view:' + view);
+            console.log('date:' + date);
+            console.log('data:' + (data || 'None'));
+        }
+    });
+        
+        $("#pagination_platforminfo").pagination({
+        currentPage: [[${pageIndex}]],
+        totalPage: [[${totalPage}]],
+        isShow: false,
+        count: [[${total}]],
+        prevPageText: "<",
+        nextPageText: ">",
+        callback: function(current) {
+            this.location.href ="[[${ctx}]]platform_info?pageIndex=" + current;
+           }
+        });
+        </script>
+</body>
+</html>

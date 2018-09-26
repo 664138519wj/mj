@@ -1,0 +1,1315 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>个人中心</title>
+    <link rel="stylesheet" th:href="@{/css/calendar.css}">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="container">
+        <!--header-->
+        <div class="header clear">
+            <ul class="left-menu fl">
+                <li><a href="${ctx} + index"><img th:src="@{/img/index-logo.png}" alt=""></a></li>
+                <li><a href="${ctx} + index">首页</a></li>
+                <li><a th:href="${ctx} + traffic_regulations">交通法规</a></li>
+                <li><a th:href="${ctx} + policy_regulations">驾考资讯</a></li>
+                <li class="father-menu">
+                    <a href="javascript:void(0);">驾培服务</a>
+                    <ul class="child-menu">
+                        <li><a th:href="${ctx} + platform_info">网点分布</a></li>
+                        <li><a th:href="${ctx} + platform_course">培训计划</a></li>
+                        <li><a th:href="${ctx} + platform_teacher">师资配备</a></li>
+                    </ul>
+                </li>
+                <li class="father-menu">
+                    <a href="javascript:void(0);">驾考练习</a>
+                    <ul class="child-menu">
+                        <li><a th:href="${ctx} + simulation_test">科目一模拟考试</a></li>
+                        <li><a th:href="${ctx} + simulation_test.html">科目四模拟考试</a></li>
+                        <li><a th:href="${ctx} + free_practice.html">科目一自由练习</a></li>
+                        <li><a th:href="${ctx} + free_practice.html">科目四自由练习</a></li>
+                    </ul>
+                </li>
+                <li class="app-down"><a href="#fade">APP下载</a></li>
+            </ul>
+            <ul class="right-menu fr">
+                <li>
+                    <a th:href="${ctx} + platform_notice.html">
+                        <img th:src="@{/img/header-2.png}" alt="">
+                        <img class="img-2" th:src="@{/img/header-2.1.png}" alt="">
+                    </a>
+                </li>
+                <li class="header-person">         
+                    <img th:src="@{/img/header-4.png}"/>                                
+                </li>
+            </ul>
+        </div>
+        <!--content-->
+        <div class="content person-content">
+            <div class="com-width clear">
+                <div class="per-menu fl">
+                    <ul>
+                        <li class="active">
+                            <img th:src="@{/img/my-icon1.png}" alt="">
+                            <span>购买视频</span>
+                        </li>
+                        <li class="no-icon">
+                            <span>已购买视频</span>
+                        </li>
+                        <li>
+                            <img th:src="@{/img/my-icon2.png}" alt="">
+                            <span>个人练习记录</span>
+                        </li>
+                        <li class="no-icon">
+                            <span>模拟考试</span>
+                        </li>
+                        <li class="no-icon">
+                            <span>自由练习</span>
+                        </li>
+                        <li class="buy-card">
+                            <img th:src="@{/img/my-icon3.png}" alt="">
+                            <span>购买练习卡</span>
+                        </li>
+                        <li>
+                            <img th:src="@{/img/my-icon4.png}" alt="">
+                            <span>购买网点课程</span>
+                        </li>
+                        <li class="no-icon">
+                            <span>已购买网点课程</span>
+                        </li>
+                        <li>
+                            <img th:src="@{/img/my-icon5.png}" alt="">
+                            <span>自主预约考试</span>
+                        </li>
+                        <li class="no-icon">
+                            <span>查看预约记录</span>
+                        </li>
+                        <li>
+                            <img th:src="@{/img/my-icon6.png}" alt="">
+                            <span>查看各科目考试成绩</span>
+                        </li>
+                        <li>
+                            <img th:src="@{/img/my-icon7.png}" alt="">
+                            <span>驾校报名</span>
+                        </li>
+                        <li class="no-icon">
+                            <span>已报名驾校</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="per-main fr">
+                    <div class="per-header clear">
+                        <div class="per-pic fl">
+                            <img th:src="@{/img/header-pic.png}" alt="">
+                        </div>
+                        <span th:text="${user.mobile}"></span>
+                        <a th:href="@{${baseUrl} + 'home/auth/logout'}"><button class="fr">退出登录</button></a>
+                    </div>
+                    <!--购买视频-->
+                    <div class="tab clear">
+                        <div class="plat-title">
+                            <h2>购买视频</h2>
+                        </div>
+                        <div class="video-box clear">
+                            <div class="video fl">
+                                <a href="">
+                                    <div class="video-img">
+                                        <img src="img/index-pic6.png" alt="">
+                                    </div>
+                                    <div class="video-name">
+                                        <h3>视频名称视频名称视频名称视频名称视频名称</h3>
+                                        <p class="clear">
+                                            <span>上传时间：2018-01-30</span>
+                                            <img class="video-pic1" src="img/index-pic9.png" alt="">
+                                            <img class="video-pic2" src="img/index-pic9.1.png" alt="">
+                                        </p>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="video fl">
+                                <a href="">
+                                    <div class="video-img">
+                                        <img src="img/index-pic6.png" alt="">
+                                    </div>
+                                    <div class="video-name">
+                                        <h3>视频名称视频名称视频名称视频名称视频名称</h3>
+                                        <p class="clear">
+                                            <span>上传时间：2018-01-30</span>
+                                            <img class="video-pic1" src="img/index-pic9.png" alt="">
+                                            <img class="video-pic2" src="img/index-pic9.1.png" alt="">
+                                        </p>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="video fl">
+                                <a href="">
+                                    <div class="video-img">
+                                        <img src="img/index-pic6.png" alt="">
+                                    </div>
+                                    <div class="video-name">
+                                        <h3>视频名称视频名称视频名称视频名称视频名称</h3>
+                                        <p class="clear">
+                                            <span>上传时间：2018-01-30</span>
+                                            <img class="video-pic1" src="img/index-pic9.png" alt="">
+                                            <img class="video-pic2" src="img/index-pic9.1.png" alt="">
+                                        </p>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="video fl">
+                                <a href="">
+                                    <div class="video-img">
+                                        <img src="img/index-pic6.png" alt="">
+                                    </div>
+                                    <div class="video-name">
+                                        <h3>视频名称视频名称视频名称视频名称视频名称</h3>
+                                        <p class="clear">
+                                            <span>上传时间：2018-01-30</span>
+                                            <img class="video-pic1" src="img/index-pic9.png" alt="">
+                                            <img class="video-pic2" src="img/index-pic9.1.png" alt="">
+                                        </p>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="video fl">
+                                <a href="">
+                                    <div class="video-img">
+                                        <img src="img/index-pic6.png" alt="">
+                                    </div>
+                                    <div class="video-name">
+                                        <h3>视频名称视频名称视频名称视频名称视频名称</h3>
+                                        <p class="clear">
+                                            <span>上传时间：2018-01-30</span>
+                                            <img class="video-pic1" src="img/index-pic9.png" alt="">
+                                            <img class="video-pic2" src="img/index-pic9.1.png" alt="">
+                                        </p>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="video fl">
+                                <a href="">
+                                    <div class="video-img">
+                                        <img src="img/index-pic6.png" alt="">
+                                    </div>
+                                    <div class="video-name">
+                                        <h3>视频名称视频名称视频名称视频名称视频名称</h3>
+                                        <p class="clear">
+                                            <span>上传时间：2018-01-30</span>
+                                            <img class="video-pic1" src="img/index-pic9.png" alt="">
+                                            <img class="video-pic2" src="img/index-pic9.1.png" alt="">
+                                        </p>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <button class="see-more fr">查看更多</button>
+                    </div>
+                    <!--已购买视频-->
+                    <div class="tab" style="display: none;">
+                        <div class="plat-title">
+                            <h2>已购买视频</h2>
+                        </div>
+                        <div class="video-box clear">
+                            <div class="video fl">
+                                <a href="">
+                                    <div class="video-img">
+                                        <img src="img/index-pic6.png" alt="">
+                                        <div class="video-label">
+                                            <img src="img/index-pic8.png" alt="">
+                                        </div>
+                                    </div>
+                                    <div class="video-name">
+                                        <h3>视频名称视频名称视频名称视频名称视频名称</h3>
+                                        <p class="clear">
+                                            <span>上传时间：2018-01-30</span>
+                                            <img class="video-pic1" src="img/index-pic9.png" alt="">
+                                            <img class="video-pic2" src="img/index-pic9.1.png" alt="">
+                                        </p>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="video fl">
+                                <a href="">
+                                    <div class="video-img">
+                                        <img src="img/index-pic6.png" alt="">
+                                        <div class="video-label">
+                                            <img src="img/index-pic8.png" alt="">
+                                        </div>
+                                    </div>
+                                    <div class="video-name">
+                                        <h3>视频名称视频名称视频名称视频名称视频名称</h3>
+                                        <p class="clear">
+                                            <span>上传时间：2018-01-30</span>
+                                            <img class="video-pic1" src="img/index-pic9.png" alt="">
+                                            <img class="video-pic2" src="img/index-pic9.1.png" alt="">
+                                        </p>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="video fl">
+                                <a href="">
+                                    <div class="video-img">
+                                        <img src="img/index-pic6.png" alt="">
+                                        <div class="video-label">
+                                            <img src="img/index-pic8.png" alt="">
+                                        </div>
+                                    </div>
+                                    <div class="video-name">
+                                        <h3>视频名称视频名称视频名称视频名称视频名称</h3>
+                                        <p class="clear">
+                                            <span>上传时间：2018-01-30</span>
+                                            <img class="video-pic1" src="img/index-pic9.png" alt="">
+                                            <img class="video-pic2" src="img/index-pic9.1.png" alt="">
+                                        </p>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="video fl">
+                                <a href="">
+                                    <div class="video-img">
+                                        <img src="img/index-pic6.png" alt="">
+                                        <div class="video-label">
+                                            <img src="img/index-pic8.png" alt="">
+                                        </div>
+                                    </div>
+                                    <div class="video-name">
+                                        <h3>视频名称视频名称视频名称视频名称视频名称</h3>
+                                        <p class="clear">
+                                            <span>上传时间：2018-01-30</span>
+                                            <img class="video-pic1" src="img/index-pic9.png" alt="">
+                                            <img class="video-pic2" src="img/index-pic9.1.png" alt="">
+                                        </p>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="video fl">
+                                <a href="">
+                                    <div class="video-img">
+                                        <img src="img/index-pic6.png" alt="">
+                                        <div class="video-label">
+                                            <img src="img/index-pic8.png" alt="">
+                                        </div>
+                                    </div>
+                                    <div class="video-name">
+                                        <h3>视频名称视频名称视频名称视频名称视频名称</h3>
+                                        <p class="clear">
+                                            <span>上传时间：2018-01-30</span>
+                                            <img class="video-pic1" src="img/index-pic9.png" alt="">
+                                            <img class="video-pic2" src="img/index-pic9.1.png" alt="">
+                                        </p>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="video fl">
+                                <a href="">
+                                    <div class="video-img">
+                                        <img src="img/index-pic6.png" alt="">
+                                        <div class="video-label">
+                                            <img src="img/index-pic8.png" alt="">
+                                        </div>
+                                    </div>
+                                    <div class="video-name">
+                                        <h3>视频名称视频名称视频名称视频名称视频名称</h3>
+                                        <p class="clear">
+                                            <span>上传时间：2018-01-30</span>
+                                            <img class="video-pic1" src="img/index-pic9.png" alt="">
+                                            <img class="video-pic2" src="img/index-pic9.1.png" alt="">
+                                        </p>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <!--个人练习记录-->
+                    <div class="tab" style="display: none;">
+                        <div class="plat-title">
+                            <h2>个人练习记录</h2>
+                        </div>
+                        <div class="test-list">
+                            <ul>
+                                <li>
+                                    <div class="test-name fl">
+                                        <p><b>【科四】模拟考试</b></p>
+                                        <p>C1、C2、C3</p>
+                                        <p>考试时间：2018-02-12 20:12:26</p>
+                                    </div>
+                                    <div class="test-result fr">
+                                        <p>错题率：<b>12%</b></p>
+                                        <button class="check-error">查看错题</button>
+                                        <button class="review">复习</button>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="test-name fl">
+                                        <p><b>【科四】自由练习</b></p>
+                                        <p>C1、C2、C3</p>
+                                        <p>考试时间：2018-02-12 20:12:26</p>
+                                    </div>
+                                    <div class="test-result fr">
+                                        <p>错题率：<b>12%</b></p>
+                                        <button class="check-error">查看错题</button>
+                                        <button class="review">复习</button>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="test-name fl">
+                                        <p><b>【科四】模拟考试</b></p>
+                                        <p>C1、C2、C3</p>
+                                        <p>考试时间：2018-02-12 20:12:26</p>
+                                    </div>
+                                    <div class="test-result fr">
+                                        <p>错题率：<b>12%</b></p>
+                                        <button class="check-error">查看错题</button>
+                                        <button class="review">复习</button>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="test-name fl">
+                                        <p><b>【科四】自由练习</b></p>
+                                        <p>C1、C2、C3</p>
+                                        <p>考试时间：2018-02-12 20:12:26</p>
+                                    </div>
+                                    <div class="test-result fr">
+                                        <p>错题率：<b>12%</b></p>
+                                        <button class="check-error">查看错题</button>
+                                        <button class="review">复习</button>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!--模拟考试-->
+                    <div class="tab" style="display: none;">
+                        <div class="plat-title">
+                            <h2>模拟考试</h2>
+                        </div>
+                        <div class="test-list">
+                            <ul>
+                                <li>
+                                    <div class="test-name fl">
+                                        <p><b>【科四】模拟考试</b></p>
+                                        <p>C1、C2、C3</p>
+                                        <p>考试时间：2018-02-12 20:12:26</p>
+                                    </div>
+                                    <div class="test-result fr">
+                                        <p>错题率：<b>12%</b></p>
+                                        <button class="check-error">查看错题</button>
+                                        <button class="review">复习</button>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="test-name fl">
+                                        <p><b>【科四】模拟考试</b></p>
+                                        <p>C1、C2、C3</p>
+                                        <p>考试时间：2018-02-12 20:12:26</p>
+                                    </div>
+                                    <div class="test-result fr">
+                                        <p>错题率：<b>12%</b></p>
+                                        <button class="check-error">查看错题</button>
+                                        <button class="review">复习</button>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="test-name fl">
+                                        <p><b>【科四】模拟考试</b></p>
+                                        <p>C1、C2、C3</p>
+                                        <p>考试时间：2018-02-12 20:12:26</p>
+                                    </div>
+                                    <div class="test-result fr">
+                                        <p>错题率：<b>12%</b></p>
+                                        <button class="check-error">查看错题</button>
+                                        <button class="review">复习</button>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="test-name fl">
+                                        <p><b>【科四】模拟考试</b></p>
+                                        <p>C1、C2、C3</p>
+                                        <p>考试时间：2018-02-12 20:12:26</p>
+                                    </div>
+                                    <div class="test-result fr">
+                                        <p>错题率：<b>12%</b></p>
+                                        <button class="check-error">查看错题</button>
+                                        <button class="review">复习</button>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!--自由练习-->
+                    <div class="tab" style="display: none;">
+                        <div class="plat-title">
+                            <h2>自由练习</h2>
+                        </div>
+                        <div class="test-list">
+                            <ul>
+                                <li>
+                                    <div class="test-name fl">
+                                        <p><b>【科四】自由练习</b></p>
+                                        <p>C1、C2、C3</p>
+                                        <p>考试时间：2018-02-12 20:12:26</p>
+                                    </div>
+                                    <div class="test-result fr">
+                                        <p>错题率：<b>12%</b></p>
+                                        <button class="check-error">查看错题</button>
+                                        <button class="review">复习</button>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="test-name fl">
+                                        <p><b>【科四】自由练习</b></p>
+                                        <p>C1、C2、C3</p>
+                                        <p>考试时间：2018-02-12 20:12:26</p>
+                                    </div>
+                                    <div class="test-result fr">
+                                        <p>错题率：<b>12%</b></p>
+                                        <button class="check-error">查看错题</button>
+                                        <button class="review">复习</button>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="test-name fl">
+                                        <p><b>【科四】自由练习</b></p>
+                                        <p>C1、C2、C3</p>
+                                        <p>考试时间：2018-02-12 20:12:26</p>
+                                    </div>
+                                    <div class="test-result fr">
+                                        <p>错题率：<b>12%</b></p>
+                                        <button class="check-error">查看错题</button>
+                                        <button class="review">复习</button>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="test-name fl">
+                                        <p><b>【科四】自由练习</b></p>
+                                        <p>C1、C2、C3</p>
+                                        <p>考试时间：2018-02-12 20:12:26</p>
+                                    </div>
+                                    <div class="test-result fr">
+                                        <p>错题率：<b>12%</b></p>
+                                        <button class="check-error">查看错题</button>
+                                        <button class="review">复习</button>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!--购买练习卡-->
+                    <div class="tab buy-card-box" style="display: none;">
+                        <div class="pay-fade">
+                            <p>购买练习卡</p>
+                            <div class="pay-box">
+                                <p><b>￥60</b></p>
+                                <ul class="pay-head">
+                                    <li>
+                                        <img src="img/pay-apliy.png" alt="">
+                                        <span>支付宝支付</span>
+                                        <input type="radio" name="pay">
+                                    </li>
+                                    <li>
+                                        <img src="img/pay-weChat.png" alt="">
+                                        <span>微信支付</span>
+                                        <input type="radio" name="pay">
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="pay-btn clear">
+                                <button class="cancel">取消</button>
+                                <button class="sure">确认选择</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!--购买网点课程-->
+                    <div class="tab" style="display: none;">
+                        <div class="plat-title">
+                            <h2>购买网点课程</h2>
+                        </div>
+                        <div class="course-box">
+                            <ul>
+                                <li>
+                                    <a href="">
+                                        <div class="course-left fl">
+                                            <h2>课程标题课程标题课程标题课程标题课程标题课程标题课程标题课程标题课程标题课程标题课程标题</h2>
+                                            <div class="figcaption">
+                                                <p>课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述</p>
+                                            </div>
+                                            <p>授课地点：新疆维吾尔自治区克拉玛依市克拉玛依区天池路</p>
+                                            <div class="price">
+                                                <span>价格:</span>
+                                                <b>¥3860</b>
+                                            </div>
+                                        </div>
+                                        <div class="course-right fr">
+                                            <img src="img/index-pic5.png" alt="">
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="">
+                                        <div class="course-left fl">
+                                            <h2>课程标题</h2>
+                                            <div class="figcaption">
+                                                <p>课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述</p>
+                                            </div>
+                                            <p>授课地点：新疆维吾尔自治区克拉玛依市克拉玛依区天池路</p>
+                                            <div class="price">
+                                                <span>价格:</span>
+                                                <b>¥3860</b>
+                                            </div>
+                                        </div>
+                                        <div class="course-right fr">
+                                            <img src="img/index-pic5.png" alt="">
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!--已购买网点课程-->
+                    <div class="tab" style="display: none;">
+                        <div class="plat-title">
+                            <h2>已购买网点课程</h2>
+                        </div>
+                        <div class="course-box">
+                            <ul>
+                                <li>
+                                    <a href="">
+                                        <div class="course-left fl">
+                                            <h2>课程标题课程标题课程标题课程标题课程标题课程标题课程标题课程标题课程标题课程标题课程标题</h2>
+                                            <div class="figcaption">
+                                                <p>课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述</p>
+                                            </div>
+                                            <p>授课地点：新疆维吾尔自治区克拉玛依市克拉玛依区天池路</p>
+                                            <div class="price">
+                                                <span>价格:</span>
+                                                <b>¥3860</b>
+                                            </div>
+                                        </div>
+                                        <div class="course-right fr">
+                                            <img src="img/index-pic5.png" alt="">
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="">
+                                        <div class="course-left fl">
+                                            <h2>课程标题</h2>
+                                            <div class="figcaption">
+                                                <p>课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述课程内容概述</p>
+                                            </div>
+                                            <p>授课地点：新疆维吾尔自治区克拉玛依市克拉玛依区天池路</p>
+                                            <div class="price">
+                                                <span>价格:</span>
+                                                <b>¥3860</b>
+                                            </div>
+                                        </div>
+                                        <div class="course-right fr">
+                                            <img src="img/index-pic5.png" alt="">
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!--自主预约考试-->
+                    <div class="tab" style="display: none;">
+                        <div class="plat-title">
+                            <h2>自主预约考试</h2>
+                        </div>
+                        <div class="car-main clear">
+                            <p><b>选择车型</b></p>
+                            <ul class="clear">
+                                <li>
+                                    <div class="car-pic">
+                                        <img src="img/mn-pic2.png" alt="">
+                                    </div>
+                                    <p>C1、C2、C3</p>
+                                </li>
+                                <li>
+                                    <div class="car-pic">
+                                        <img src="img/mn-pic3.png" alt="">
+                                    </div>
+                                    <p>C1、C2、C3</p>
+                                </li>
+                                <li>
+                                    <div class="car-pic">
+                                        <img src="img/mn-pic4.png" alt="">
+                                    </div>
+                                    <p>C1、C2、C3</p>
+                                </li>
+                                <li>
+                                    <div class="car-pic">
+                                        <img src="img/mn-pic5.png" alt="">
+                                    </div>
+                                    <p>C1、C2、C3</p>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="test-subject subject">
+                            <p><b>考试科目</b></p>
+                            <ul class="clear">
+                                <li class="active">科目一</li>
+                                <li>科目二</li>
+                                <li>科目三</li>
+                                <li>科目四</li>
+                            </ul>
+                        </div>
+                        <div class="test-subject test-time">
+                            <p id="time"><b>考试时间</b><img src="img/my-arrow.png" alt=""></p>
+                            <input type="button" id="dt" value="2018-2-5">
+                            <div id="dd"></div>
+                        </div>
+                        <div class="test-subject choose-school">
+                            <p class="choose"><b>选择驾校</b><img src="img/my-arrow.png" alt=""></p>
+                            <p class="school"><span id="school">乌鲁木齐铁设驾校</span><span id="price">¥ 3860</span></p>
+                            <ul class="school-name">
+                                <li>选择驾校</li>
+                                <li>
+                                    <input type="radio" name="radio" checked>
+                                    <span class="sch">乌鲁木齐铁设驾校</span>
+                                    <span class="price">¥ 3860</span>
+                                </li>
+                                <li>
+                                    <input type="radio" name="radio">
+                                    <span class="sch">克拉玛依石油运输驾校</span>
+                                    <span class="price">¥ 260</span>
+                                </li>
+                                <li>
+                                    <input type="radio" name="radio">
+                                    <span class="sch">和田亚中驾校</span>
+                                    <span class="price">¥ 260</span>
+                                </li>
+                                <li>
+                                    <input type="radio" name="radio">
+                                    <span class="sch">石河子恒泰达驾校</span>
+                                    <span class="price">¥ 260</span>
+                                </li>
+                                <li>
+                                    <input type="radio" name="radio">
+                                    <span class="sch">托里凯兴驾校</span>
+                                    <span class="price">¥ 260</span>
+                                </li>
+                                <li>
+                                    <input type="radio" name="radio">
+                                    <span class="sch">阿拉尔美诚驾校</span>
+                                    <span class="price">¥ 260</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="test-subject">
+                            <p class="choose"><b>选择考场</b><img src="img/my-arrow.png" alt=""></p>
+                            <p class="school">乌鲁木齐铁设驾校</p>
+                            <ul class="school-name">
+                                <li>选择驾校</li>
+                                <li>
+                                    <input type="radio" name="radio_0">
+                                    <span>乌鲁木齐铁设驾校</span>
+                                </li>
+                                <li>
+                                    <input type="radio" name="radio_0">
+                                    <span>克拉玛依石油运输驾校</span>
+                                </li>
+                                <li>
+                                    <input type="radio" name="radio_0">
+                                    <span>和田亚中驾校</span>
+                                </li>
+                                <li>
+                                    <input type="radio" name="radio_0">
+                                    <span>石河子恒泰达驾校</span>
+                                </li>
+                                <li>
+                                    <input type="radio" name="radio_0">
+                                    <span>托里凯兴驾校</span>
+                                </li>
+                                <li>
+                                    <input type="radio" name="radio_0">
+                                    <span>阿拉尔美诚驾校</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="test-subject pay-method">
+                            <p><b>付费方式</b></p>
+                            <ul class="clear">
+                                <li class="active">在线支付</li>
+                                <li>线下支付</li>
+                            </ul>
+                        </div>
+                        <div class="submit-btn clear">
+                            <button>提交考试申请</button>
+                        </div>
+                    </div>
+                    <!--查看预约记录-->
+                    <div class="tab" style="display: none;">
+                        <div class="plat-title">
+                            <h2>已预约考试</h2>
+                        </div>
+                        <div class="order-test">
+                            <ul>
+                                <li>
+                                    <p><b>【科目一】C1</b><span>¥3860</span><span class="state">申请中</span></p>
+                                    <p><span>报考驾校：乌鲁木齐安平驾校-安平驾校</span><span>报考考场：新疆宏途远征驾校-远征驾校</span></p>
+                                    <p>考试时间：2018-02-18</p>
+                                </li>
+                                <li>
+                                    <p><b>【科目一】C1</b><span>¥3860</span><span class="state">预约成功</span></p>
+                                    <p><span>报考驾校：乌鲁木齐安平驾校-安平驾校</span><span>报考考场：新疆宏途远征驾校-远征驾校</span></p>
+                                    <p>考试时间：2018-02-18</p>
+                                </li>
+                                <li>
+                                    <p><b>【科目一】C1</b><span>¥3860</span><span class="state">预约成功</span></p>
+                                    <p><span>报考驾校：乌鲁木齐安平驾校-安平驾校</span><span>报考考场：新疆宏途远征驾校-远征驾校</span></p>
+                                    <p>考试时间：2018-02-18</p>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+                    <!--查看各科目考试成绩-->
+                    <div class="tab" style="display: none;">
+                        <div class="plat-title">
+                            <h2>查看各科目考试成绩</h2>
+                        </div>
+                        <div class="see-score">
+                            <table border="1" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>科目</th>
+                                        <th>成绩</th>
+                                        <th>考试地点</th>
+                                        <th>考试时间</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>科目一</td>
+                                        <td>98</td>
+                                        <td>新疆和田地区和田市艾依提卡路22号</td>
+                                        <td>2017-06-01</td>
+                                    </tr>
+                                    <tr>
+                                        <td>科目二</td>
+                                        <td>100</td>
+                                        <td>新疆和田地区和田市艾依提卡路22号</td>
+                                        <td>2017-11-12</td>
+                                    </tr>
+                                    <tr>
+                                        <td>科目三</td>
+                                        <td>100</td>
+                                        <td>新疆和田地区和田市艾依提卡路22号</td>
+                                        <td>2017-12-14</td>
+                                    </tr>
+                                    <tr>
+                                        <td>科目一</td>
+                                        <td>100</td>
+                                        <td>新疆和田地区和田市艾依提卡路22号</td>
+                                        <td>2017-12-30</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!--驾校报名-->
+                    <div class="tab" style="display: none;">
+                        <div class="plat-title">
+                            <h2>驾校报名</h2>
+                        </div>
+                        <div class="school-box">
+                            <ul class="choose-ul clear">
+                                <li class="fl">
+                                    <span>地区</span>
+                                    <div class="area-box box1">
+                                        <input class="word" type="text">
+                                        <img src="img/arrow-down.png" alt="">
+                                    </div>
+                                    <ul class="child-box choose-area clear">
+                                        <li>选择地区</li>
+                                        <li><a href="#">全部</a></li>
+                                        <li><a href="#">乌鲁木齐</a></li>
+                                        <li><a href="#">石河子</a></li>
+                                        <li><a href="#">昌吉</a></li>
+                                        <li><a href="#">伊犁</a></li>
+                                        <li><a href="#">吐鲁番</a></li>
+                                        <li><a href="#">巴州</a></li>
+                                        <li><a href="#">乌苏</a></li>
+                                        <li><a href="#">克拉玛依</a></li>
+                                        <li><a href="#">克州</a></li>
+                                        <li><a href="#">哈密</a></li>
+                                        <li><a href="#">和田</a></li>
+                                        <li><a href="#">阿苏克</a></li>
+                                        <li><a href="#">阿勒泰</a></li>
+                                    </ul>
+                                </li>
+                                <li class="fl">
+                                    <span>价格</span>
+                                    <div class="area-box box2">
+                                        <input class="word" type="text">
+                                        <img src="img/arrow-down.png" alt="">
+                                    </div>
+                                    <ul class="child-box choose-price clear">
+                                        <li>选择价格</li>
+                                        <li><a href="#">2000元以下</a></li>
+                                        <li><a href="#">2500-3400元</a></li>
+                                        <li><a href="#">2600-3200元</a></li>
+                                        <li><a href="#">2100-3200元</a></li>
+                                        <li><a href="#">2100-3200元</a></li>
+                                        <li><a href="#">2100-3200元</a></li>
+                                        <li><a href="#">2100-3200元</a></li>
+                                        <li><a href="#">2100-3200元</a></li>
+                                        <li><a href="#">2100-3200元</a></li>
+                                        <li><a href="#">2100-3200元</a></li>
+                                        <li><a href="#">2100-3200元</a></li>
+                                        <li><a href="#">5000元以上</a></li>
+                                        <li><a href="#">其他</a></li>
+                                    </ul>
+                                </li>
+                                <li class="fl">
+                                    <span>车型</span>
+                                    <div class="area-box box3">
+                                        <input class="word" type="text">
+                                        <img src="img/arrow-down.png" alt="">
+                                    </div>
+                                    <ul class="child-box choose-car clear">
+                                        <li>选择车型</li>
+                                        <li><a href="#">全部</a></li>
+                                        <li><a href="#">A1（大型客车）</a></li>
+                                        <li><a href="#">A2（牵引车）</a></li>
+                                        <li><a href="#">A3（城市公共汽车）</a></li>
+                                        <li><a href="#">B1（中型客车）</a></li>
+                                        <li><a href="#">B2（大型客车）</a></li>
+                                        <li><a href="#">C1（小型汽车）</a></li>
+                                        <li><a href="#">C2（小型自动挡汽车）</a></li>
+                                        <li><a href="#">C3（三轮汽车）</a></li>
+                                        <li><a href="#">C4（低速载货汽车）</a></li>
+                                        <li><a href="#">C5（残疾人专用小型自动挡载客汽车）</a></li>
+                                        <li><a href="#">D（三轮摩托车）</a></li>
+                                        <li><a href="#">E(轻便摩托车)</a></li>
+                                        <li><a href="#">M（轮式自行机械车）</a></li>
+                                        <li><a href="#">N（无轨电车）</a></li>
+                                        <li><a href="#">P（有轨电车）</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            <ul class="info-box clear">
+                                <li>
+                                    <div class="info-img">
+                                        <img src="img/fw-pic2.png" alt="">
+                                    </div>
+                                    <div class="info-desc">
+                                        <p><b>乌鲁木齐风驰驾校</b><span>￥3860</span></p>
+                                        <p>网点地址：乌鲁木齐市新市区汇展园小区北西八 家户路1139号</p>
+                                        <p>联系电话：18648521485</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="info-img">
+                                        <img src="img/fw-pic2.png" alt="">
+                                    </div>
+                                    <div class="info-desc">
+                                        <p><b>乌鲁木齐风驰驾校</b><span>￥3860</span></p>
+                                        <p>网点地址：乌鲁木齐市新市区汇展园小区北西八 家户路1139号</p>
+                                        <p>联系电话：18648521485</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="info-img">
+                                        <img src="img/fw-pic2.png" alt="">
+                                    </div>
+                                    <div class="info-desc">
+                                        <p><b>乌鲁木齐风驰驾校</b><span>￥3860</span></p>
+                                        <p>网点地址：乌鲁木齐市新市区汇展园小区北西八 家户路1139号</p>
+                                        <p>联系电话：18648521485</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="info-img">
+                                        <img src="img/fw-pic2.png" alt="">
+                                    </div>
+                                    <div class="info-desc">
+                                        <p><b>乌鲁木齐风驰驾校</b><span>￥3860</span></p>
+                                        <p>网点地址：乌鲁木齐市新市区汇展园小区北西八 家户路1139号</p>
+                                        <p>联系电话：18648521485</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="sign-box" style="display: none;">
+                            <div class="sign-up clear">
+                                <div class="order-pic fl">
+                                    <img src="img/my-pic8.png" alt="">
+                                </div>
+                                <div class="order-name fr">
+                                    <p><b>乌鲁木齐风驰驾校</b></p>
+                                    <p>驾校地址：乌鲁木齐市哈密东路88号中通客车厂院内</p>
+                                    <p>可培训驾照类型：A1（大型客车） A2（牵引车）A3（城市 公共汽车）B1（中型客车） B2（大型客车）</p>
+                                    <p class="fr">联系电话：<span>18648521485</span></p>
+                                </div>
+                            </div>
+                            <div class="sign-up">
+                                <div class="plat-title">
+                                    <h2>驾校培训课程</h2>
+                                </div>
+                                <ul class="course">
+                                    <li>
+                                        <div class="type fl">
+                                            <p><span>【A1】大型卡车</span><span>¥3860</span></p>
+                                            <p>开班时间：2018-02-16</p>
+                                        </div>
+                                        <button class="fr">我要报名</button>
+                                    </li>
+                                    <li>
+                                        <div class="type fl">
+                                            <p><span>【A2】牵引车</span><span>¥3860</span></p>
+                                            <p>开班时间：2018-02-16</p>
+                                        </div>
+                                        <button class="fr">我要报名</button>
+                                    </li>
+                                    <li>
+                                        <div class="type fl">
+                                            <p><span>【A3】城市公共汽车</span><span>¥3860</span></p>
+                                            <p>开班时间：2018-02-16</p>
+                                        </div>
+                                        <button class="fr">我要报名</button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="fill-info clear" style="display: none">
+                            <ul>
+                                <li class="clear">
+                                    <div class="fill-name fl">
+                                        <p><b>填写姓名</b></p>
+                                        <input type="text" placeholder="阿卜杜热西提">
+                                    </div>
+                                    <div class="fill-name fr">
+                                        <p><b>填写手机号码</b></p>
+                                        <input type="text" placeholder="18588658742">
+                                    </div>
+                                </li>
+                                <li class="clear">
+                                    <div class="fill-name fl">
+                                        <p><b>选择性别</b></p>
+                                        <button class="choose-btn" value="">男</button>
+                                        <button value="">女</button>
+                                    </div>
+                                    <div class="fill-name fr">
+                                        <p><b>是否是初次申领？</b></p>
+                                        <button class="choose-btn" value="">是</button>
+                                        <button value="">否</button>
+                                    </div>
+                                </li>
+                                <li class="clear">
+                                    <div class="fill-name fl">
+                                        <p><b>付费方式</b></p>
+                                        <button class="choose-btn" value="">在线支付</button>
+                                        <button value="">线下支付</button>
+                                    </div>
+                                </li>
+                                <li class="clear">
+                                    <p><b>上传身份证照片</b></p>
+                                    <div class="fill-pic fl">
+                                        <p>请上传身份证正面照片</p>
+                                        <img class="show tximg" id="Preview" src="" alt="" />
+                                        <img class="img1" src="img/my-pic3.png" alt="" />
+                                        <input id="Previewimg" type="file" name="file" accept="image/*" />
+                                    </div>
+                                    <div class="fill-pic fr">
+                                        <p>请上传身份证背面照片</p>
+                                        <img class="show tximg" id="Preview-1" src="" alt="" />
+                                        <img class="img2" src="img/my-pic3.png" alt="" />
+                                        <input id="Previewimg-1" type="file" name="file" accept="image/*" />
+                                    </div>
+                                </li>
+                            </ul>
+                            <input class="submit-btn" type="button" value="提交">
+                        </div>
+                    </div>
+                    <!--已报名驾校-->
+                    <div class="tab" style="display: none;">
+                        <div class="plat-title">
+                            <h2>已报名驾校</h2>
+                        </div>
+                        <div class="already-order clear">
+                            <div class="order-pic fl">
+                                <img src="img/my-pic7.png" alt="">
+                            </div>
+                            <div class="order-name fr">
+                                <p><b>乌鲁木齐风驰驾校</b><span>¥3860</span></p>
+                                <p>驾校地址：乌鲁木齐市阿勒泰路575号</p>
+                                <p>驾照类型：A1（大型客车）</p>
+                                <p>报名时间：2018-02-20 <button class="refund">申请退款</button></p>
+                            </div>
+                        </div>
+                    </div>
+                    <!--查看错题-->
+                    <div class="check-box" style="display: none;">
+                        <div class="plat-title">
+                            <h2>查看错题</h2>
+                        </div>
+                        <div class="subject-detail">
+                            <p>试题类型：选择题，请选择正确答案</p>
+                            <p class="subject-title">1.如图所示，如图所示车辆在拥挤路程行驶时，遇有其他车辆强行穿插行驶以下说法 正确的是什么？</p>
+                            <ul class="topic">
+                                <li>
+                                    <input class="optionA" type="radio" name="radio">
+                                    <span>A、迅速提高其车速，不让其穿插</span>
+                                </li>
+                                <li>
+                                    <input class="optionB" type="radio" name="radio">
+                                    <span>B、迅速提高其车速，不让其穿插</span>
+                                </li>
+                                <li>
+                                    <input class="optionC" type="radio" name="radio">
+                                    <span>C、迅速左转躲避</span>
+                                </li>
+                                <li>
+                                    <input class="optionD" type="radio" name="radio">
+                                    <span>D、减速或停车让行</span>
+                                </li>
+                            </ul>
+                            <div class="answer-box clear">
+                                <div class="answer clear fl">
+                                    <p class="fl">您的答案:<span>B</span></p>
+                                    <p class="right-answer fr">正确答案:<span>D</span></p>
+                                </div>
+                                <div class="btns clear fr">
+                                    <div class="car-btn fl">
+                                        <a href="">
+                                            <img src="img/my-pic4.png" alt="">
+                                        </a>
+                                    </div>
+                                    <div class="car-btn fl">
+                                        <a href="">
+                                            <img src="img/my-pic4.1.png" alt="">
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="see-answer">
+                                <p>本题分析：</p>
+                                <p>车辆在拥挤路段行驶时，如果遇有其他车辆强行穿插行驶，应该减速或者停车让行。以免发生意外，不应该选择提高车速抢道的情况。</p>
+                            </div>
+                            <div class="subject-pic">
+                                <img src="img/my-pic5.png" alt="">
+                            </div>
+                        </div>
+                    </div>
+                    <!--复习-->
+                    <div class="review-box" style="display: none;">
+                        <div class="plat-title">
+                            <h2>复习</h2>
+                        </div>
+                        <div class="subject-detail">
+                            <p>试题类型：选择题，请选择正确答案</p>
+                            <p class="subject-title">5.如图所示，如图所示车辆在拥挤路程行驶时，遇有其他车辆强行穿插行驶以下说法 正确的是什么？</p>
+                            <ul class="topic">
+                                <li>
+                                    <input class="optionA" type="radio" name="radio">
+                                    <span>A、迅速提高其车速，不让其穿插</span>
+                                </li>
+                                <li>
+                                    <input class="optionB" type="radio" name="radio">
+                                    <span>B、迅速提高其车速，不让其穿插</span>
+                                </li>
+                                <li>
+                                    <input class="optionC" type="radio" name="radio">
+                                    <span>C、迅速左转躲避</span>
+                                </li>
+                                <li>
+                                    <input class="optionD" type="radio" name="radio">
+                                    <span>D、减速或停车让行</span>
+                                </li>
+                            </ul>
+                            <div class="answer-box clear">
+                                <div class="answer fl">
+                                   <p>正确答案：<span>D</span></p>
+                                </div>
+                                <div class="btns clear fr">
+                                    <div class="car-btn fl">
+                                        <a href="">
+                                            <img src="img/my-pic4.png" alt="">
+                                        </a>
+                                    </div>
+                                    <div class="car-btn fl">
+                                        <a href="">
+                                            <img src="img/my-pic4.1.png" alt="">
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="see-answer">
+                                <p>本题分析：</p>
+                                <p>车辆在拥挤路段行驶时，如果遇有其他车辆强行穿插行驶，应该减速或者停车让行。以免发生意外，不应该选择提高车速抢道的情况。</p>
+                            </div>
+                            <div class="subject-pic">
+                                <img src="img/my-pic5.png" alt="">
+                            </div>
+                            <div class="test-object">
+                                <p>答题信息</p>
+                                <p><b class="right"></b><span>正确</span><b class="error"></b><span>错误</span><b class="now"></b><span>当前</span></p>
+                                <ul class="clear">
+                                    <li class="right"><a href="">1</a></li>
+                                    <li class="right"><a href="">2</a></li>
+                                    <li class="right"><a href="">3</a></li>
+                                    <li class="error"><a href="">4</a></li>
+                                    <li class="now"><a href="">5</a></li>
+                                    <li><a href="">6</a></li>
+                                    <li><a href="">7</a></li>
+                                    <li><a href="">8</a></li>
+                                    <li><a href="">9</a></li>
+                                    <li><a href="">10</a></li>
+                                    <li><a href="">11</a></li>
+                                    <li><a href="">12</a></li>
+                                    <li><a href="">13</a></li>
+                                    <li><a href="">14</a></li>
+                                    <li><a href="">15</a></li>
+                                    <li><a href="">16</a></li>
+                                    <li><a href="">17</a></li>
+                                    <li><a href="">18</a></li>
+                                    <li><a href="">19</a></li>
+                                    <li><a href="">20</a></li>
+                                    <li><a href="">21</a></li>
+                                    <li><a href="">22</a></li>
+                                    <li><a href="">23</a></li>
+                                    <li><a href="">24</a></li>
+                                    <li><a href="">25</a></li>
+                                    <li><a href="">26</a></li>
+                                    <li><a href="">27</a></li>
+                                    <li><a href="">28</a></li>
+                                    <li><a href="">29</a></li>
+                                    <li><a href="">30</a></li>
+                                    <li><a href="">31</a></li>
+                                    <li><a href="">32</a></li>
+                                    <li><a href="">33</a></li>
+                                    <li><a href="">34</a></li>
+                                    <li><a href="">35</a></li>
+                                    <li><a href="">36</a></li>
+                                    <li><a href="">37</a></li>
+                                    <li><a href="">38</a></li>
+                                    <li><a href="">39</a></li>
+                                    <li><a href="">40</a></li>
+                                    <li><a href="">41</a></li>
+                                    <li><a href="">42</a></li>
+                                    <li><a href="">43</a></li>
+                                    <li><a href="">44</a></li>
+                                    <li><a href="">45</a></li>
+                                    <li><a href="">46</a></li>
+                                    <li><a href="">47</a></li>
+                                    <li><a href="">48</a></li>
+                                    <li><a href="">49</a></li>
+                                    <li><a href="">50</a></li>
+                                    <li><a href="">51</a></li>
+                                    <li><a href="">52</a></li>
+                                    <li><a href="">53</a></li>
+                                    <li><a href="">54</a></li>
+                                    <li><a href="">55</a></li>
+                                    <li><a href="">56</a></li>
+                                    <li><a href="">57</a></li>
+                                    <li><a href="">58</a></li>
+                                    <li><a href="">59</a></li>
+                                    <li><a href="">60</a></li>
+                                    <li><a href="">61</a></li>
+                                    <li><a href="">62</a></li>
+                                    <li><a href="">63</a></li>
+                                    <li><a href="">64</a></li>
+                                    <li><a href="">65</a></li>
+                                    <li><a href="">66</a></li>
+                                    <li><a href="">67</a></li>
+                                    <li><a href="">68</a></li>
+                                    <li><a href="">69</a></li>
+                                    <li><a href="">70</a></li>
+                                    <li><a href="">71</a></li>
+                                    <li><a href="">72</a></li>
+                                    <li><a href="">73</a></li>
+                                    <li><a href="">74</a></li>
+                                    <li><a href="">75</a></li>
+                                    <li><a href="">76</a></li>
+                                    <li><a href="">77</a></li>
+                                    <li><a href="">78</a></li>
+                                    <li><a href="">79</a></li>
+                                    <li><a href="">80</a></li>
+                                    <li><a href="">81</a></li>
+                                    <li><a href="">82</a></li>
+                                    <li><a href="">83</a></li>
+                                    <li><a href="">84</a></li>
+                                    <li><a href="">85</a></li>
+                                    <li><a href="">86</a></li>
+                                    <li><a href="">87</a></li>
+                                    <li><a href="">88</a></li>
+                                    <li><a href="">89</a></li>
+                                    <li><a href="">90</a></li>
+                                    <li><a href="">91</a></li>
+                                    <li><a href="">92</a></li>
+                                    <li><a href="">93</a></li>
+                                    <li><a href="">94</a></li>
+                                    <li><a href="">95</a></li>
+                                    <li><a href="">96</a></li>
+                                    <li><a href="">97</a></li>
+                                    <li><a href="">98</a></li>
+                                    <li><a href="">99</a></li>
+                                    <li><a href="">100</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--申请退款-->
+    <div id="refund" class="fade" style="display: none;">
+        <div class="login">
+            <h3>申请退款</h3>
+            <div class="login-info">
+                <form action="">
+                    <div class="input-box">
+                        <label for="">请输入持卡人姓名</label><br>
+                        <input type="text" name="name" placeholder="请输入持卡人姓名">
+                    </div>
+                    <div class="input-box">
+                        <label for="">请输入银行卡号</label><br>
+                        <input type="text" name="card_num" placeholder="例如：工商银行、农业银行、建设银行">
+                    </div>
+                    <p class="refund-num clear"><span>退款金额:</span><b>￥3860</b></p>
+                    <input class="login-btn" type="button" value="确认退款">
+                </form>
+            </div>
+        </div>
+    </div>
+    <!--app-download-->
+    <div id="fade" style="display: none;">
+        <div class="app-download">
+            <p class="clear"><span>APP下载</span><img class="out" th:src="@{/img/app-pic1.png}" alt=""></p>
+            <div class="code-box">
+                <img th:src="@{/img/code.png}" alt="">
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" th:src="@{/js/jquery-1.11.2.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/calendar.js}"></script>
+<script type="text/javascript" th:src="@{/js/overflow.js}"></script>
+<script type="text/javascript" th:src="@{/js/person_center.js}"></script>
+<script type="text/javascript" th:src="@{/js/style.js}"></script>
+<script>
+    $('.subject-detail ul li').click(function(){
+        $(this).addClass("active").siblings().removeClass("active");
+        $(this).find("input[type=radio]").prop("checked",true);
+    });
+    $('.car-main ul li').click(function(){
+        $(this).addClass('car-active').siblings('li').removeClass('car-active');
+    })
+    $(".figcaption").each(function (i) {
+        var divH = $(this).height();
+        var $p = $("p", $(this)).eq(0);
+        while ($p.outerHeight() > divH) {
+            $p.text($p.text().replace(/(\s)*([a-zA-Z0-9]+|\W)(\.\.\.)?$/, "..."));
+        }
+    });
+</script>
+</html>

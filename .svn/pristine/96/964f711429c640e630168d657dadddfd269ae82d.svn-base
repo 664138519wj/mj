@@ -1,0 +1,814 @@
+package com.migu.online.controller;
+
+import java.util.Date;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.druid.util.StringUtils;
+import com.github.pagehelper.util.StringUtil;
+import com.migu.online.common.Constants;
+import com.migu.online.common.UserCourseTypeEnum;
+import com.migu.online.model.AppointmentManage;
+import com.migu.online.model.ExamPlace;
+import com.migu.online.model.PracticeCard;
+import com.migu.online.model.ResposeModel;
+import com.migu.online.model.Teacher;
+import com.migu.online.model.User;
+import com.migu.online.model.UserAppointment;
+import com.migu.online.model.UserCourse;
+import com.migu.online.model.UserCourseVip;
+import com.migu.online.model.system.SysUser;
+import com.migu.online.param.DrivingRegisterParam;
+import com.migu.online.service.AppointmentManageService;
+import com.migu.online.service.ExamPlaceService;
+import com.migu.online.service.PlatformNoticeService;
+import com.migu.online.service.PracticeCardService;
+import com.migu.online.service.SysUserManageService;
+import com.migu.online.service.TeacherService;
+import com.migu.online.service.UserAppointmentService;
+import com.migu.online.service.UserCourseInfoService;
+import com.migu.online.service.UserCourseService;
+import com.migu.online.service.UserCourseVipService;
+import com.migu.online.service.UserNoticeService;
+import com.migu.online.service.UserService;
+import com.migu.online.utils.DateUtil;
+import com.migu.online.utils.FileUtils;
+import com.migu.online.vo.UserVo;
+
+/*线下课程*/
+@Controller
+@RequestMapping("/user/")
+public class UserController extends BaseController{
+	
+	private static final long serialVersionUID = -8218831504167197421L;
+
+	private Logger log = LoggerFactory.getLogger(UserController.class);
+
+	@Autowired
+	private UserCourseService userCourseService;	
+	@Autowired
+	private UserCourseInfoService userCourseInfoService;
+	@Autowired
+	private UserAppointmentService userAppointmentService;
+	@Autowired
+	private ExamPlaceService examPlaceService;
+	@Autowired
+    private UserService userService;
+	@Autowired
+	private PlatformNoticeService platformNoticeService;
+	@Autowired
+	private PracticeCardService practiceCardService;
+	@Autowired
+	private AppointmentManageService appointmentManageService;
+	@Autowired
+	private UserNoticeService userNoticeService;
+	@Autowired
+	private SysUserManageService sysUserService;
+	@Autowired
+	private TeacherService teacherService;
+	@Autowired
+	private UserCourseVipService userCourseVipService;
+	
+	/* 获取我的线下课程 */
+	@RequestMapping("/getCourseOffline")
+	@ResponseBody
+	public ResposeModel getCourseOffline(@RequestParam("pageIndex") Integer pageIndex,
+			@RequestParam("pageSize") Integer pageSize) {
+		ResposeModel res = new ResposeModel();	
+		User user = super.getCurrentUser();
+		if (null == user) {
+			res.setStatus("0");
+			res.setMsg("用户未登录");
+			return res;
+		}
+		if (null == pageIndex) {
+			pageIndex = super.pageIndex;
+		}
+		if (null == pageSize) {
+			pageSize = super.pageSize;
+		}
+		try {
+			res.setData(userCourseService.selectOfflineByPage(pageIndex, pageSize, user.getId()));
+		} catch (Exception e) {
+			log.info("getCourseOfflines:"+e.toString());
+			res.setStatus("0");
+			res.setMsg("获取数据出错");
+		}
+
+		return res;
+	}
+	
+	/* 获取我的线上课程 */
+	@RequestMapping("/getCourseOnline")
+	@ResponseBody
+	public ResposeModel getCourseOnline(@RequestParam("pageIndex") Integer pageIndex,
+			@RequestParam("pageSize") Integer pageSize) {
+		ResposeModel res = new ResposeModel();	
+		User user = super.getCurrentUser();
+		if (null == user) {
+			res.setStatus("0");
+			res.setMsg("用户未登录");
+			return res;
+		}
+		if (null == pageIndex) {
+			pageIndex = super.pageIndex;
+		}
+		if (null == pageSize) {
+			pageSize = super.pageSize;
+		}
+		try {
+			res.setData(userCourseService.selectOnlineByPage(pageIndex, pageSize, user.getId()));
+		} catch (Exception e) {
+			log.info("getCourseOfflines:"+e.toString());
+			res.setStatus("0");
+			res.setMsg("获取数据出错");
+		}
+
+		return res;
+	}
+	
+	/* 获取我的未支付线下课程 */
+	@RequestMapping("/unpay/getCourseOffline")
+	@ResponseBody
+	public ResposeModel getUnpayCourseOffline(@RequestParam("pageIndex") Integer pageIndex,
+			@RequestParam("pageSize") Integer pageSize) {
+		ResposeModel res = new ResposeModel();	
+		User user = super.getCurrentUser();
+		if (null == user) {
+			res.setStatus("0");
+			res.setMsg("用户未登录");
+			return res;
+		}
+		if (null == pageIndex) {
+			pageIndex = super.pageIndex;
+		}
+		if (null == pageSize) {
+			pageSize = super.pageSize;
+		}
+		try {
+			res.setData(userCourseService.selectUnpayOfflineByPage(pageIndex, pageSize, user.getId()));
+		} catch (Exception e) {
+			log.info("getCourseOfflines:"+e.toString());
+			res.setStatus("0");
+			res.setMsg("获取数据出错");
+		}
+
+		return res;
+	}
+	
+	/* 获取我的线上课程 */
+	@RequestMapping("/unpay/getCourseOnline")
+	@ResponseBody
+	public ResposeModel getUnpayCourseOnline(@RequestParam("pageIndex") Integer pageIndex,
+			@RequestParam("pageSize") Integer pageSize) {
+		ResposeModel res = new ResposeModel();	
+		User user = super.getCurrentUser();
+		if (null == user) {
+			res.setStatus("0");
+			res.setMsg("用户未登录");
+			return res;
+		}
+		if (null == pageIndex) {
+			pageIndex = super.pageIndex;
+		}
+		if (null == pageSize) {
+			pageSize = super.pageSize;
+		}
+		try {
+			res.setData(userCourseService.selectUnpayOnlineByPage(pageIndex, pageSize, user.getId()));
+		} catch (Exception e) {
+			log.info("getCourseOfflines:"+e.toString());
+			res.setStatus("0");
+			res.setMsg("获取数据出错");
+		}
+
+		return res;
+	}
+	
+	/* 获取我的驾校课程 */
+	@RequestMapping("/getDrivingSchool")
+	@ResponseBody
+	public ResposeModel getDrivingSchool() {
+		ResposeModel res = new ResposeModel();	
+		User user = super.getCurrentUser();
+		if (null == user) {
+			res.setStatus("0");
+			res.setMsg("用户未登录");
+			return res;
+		}
+		try {
+			res.setData(userCourseService.selectUserDrivingCourse(user.getId()));
+		} catch (Exception e) {
+			log.info("getCourseOfflines:"+e.toString());
+			res.setStatus("0");
+			res.setMsg("获取数据出错");
+		}
+
+		return res;
+	}
+	
+	/* 报名驾校 */
+    @RequestMapping("/toSign/id/{id}")
+	@ResponseBody
+	public ResposeModel toSign(@PathVariable("id") Long id) {
+    	ResposeModel res = new ResposeModel();	
+		User user = super.getCurrentUser();
+		if (null == user) {
+			res.setStatus("0");
+			res.setMsg("用户未登录");
+			return res;
+		}
+		try {
+			res.setData(userCourseInfoService.toSign(id));
+		} catch (Exception e) {
+			log.info("getCourseOfflines:"+e.toString());
+			res.setStatus("0");
+			res.setMsg("获取数据出错");
+		}
+		return res;
+	}
+	
+	/* 报名驾校 */
+    @PostMapping("/signDriving")
+	@ResponseBody
+	public ResposeModel signDriving(@RequestParam("courseId") Long courseId,
+			@RequestParam("userName") String userName, @RequestParam("telNo") String telNo, @RequestParam("sex") Integer sex,
+			@RequestParam("firstApply") Integer firstApply, @RequestParam("payType") Integer payType,
+			@RequestParam("idUp") String idUp, @RequestParam("idDown") String idDown
+			) {
+		ResposeModel res = new ResposeModel();
+		User user = super.getCurrentUser();
+		if (null == user) {
+			res.setStatus("0");
+			res.setMsg("用户未登录");
+			return res;
+		}
+		
+	    // 获取课程
+		DrivingRegisterParam param = new DrivingRegisterParam(userName, telNo, courseId, sex, firstApply, payType, idUp, idDown);
+		try {
+			// 数据校验
+			if (StringUtils.isEmpty(param.getUserName())) {
+				res.setStatus("0");
+				res.setMsg("用户名不能为空");
+				return res;
+			} else if (StringUtils.isEmpty(param.getTelNo())) {
+				res.setStatus("0");
+				res.setMsg("电话号码不能为空");
+				return res;
+			} else if (param.getCourseId() <= 0) {
+				res.setStatus("0");
+				res.setMsg("请选择课程");
+				return res;
+			} else if (StringUtils.isEmpty(param.getIdUp())) {
+				res.setStatus("0");
+				res.setMsg("请上传身份证正面");
+				return res;
+			} else if (StringUtils.isEmpty(param.getIdDown())) {
+				res.setStatus("0");
+				res.setMsg("请上传身份证反面");
+				return res;
+			}
+			// 用户报名驾校 
+			List<UserCourse> list = userCourseService.selectSignSchoolCourse(user.getId());
+			if (null != list && list.size() > 0) {
+				res.setStatus("0");
+				res.setMsg("用户已存在报名驾校记录，无法重复报名");
+				return res;
+			}
+			// 文件生成			
+			String fileDir = FileUtils.generateFileDir(Constants.UPLOAD_FILE_DIR, user.getId());
+			String idUpDir = fileDir + "/ID_UP.png";
+			String idDownDir = fileDir + "/ID_DOWN.png";
+			FileUtils.decoderBase64File(idUp, idUpDir);
+			FileUtils.decoderBase64File(idDown, idDownDir);
+			param.setIdDownDir(FileUtils.getImageUrl(idDownDir));
+			param.setIdUpDir(FileUtils.getImageUrl(idUpDir));
+			// 插入数据
+			res.setData(userCourseInfoService.register(param, user.getId(), user.getMobile()));
+			res.setMsg("报名成功");;
+		} catch (Exception e) {
+			log.info("getDetail:" + e.toString());
+			res.setStatus("0");
+			res.setMsg("获取数据出错");
+		}
+
+		return res;
+	}
+       
+    /* 预约课程 */
+    @PostMapping("/appointment")
+	@ResponseBody
+	public ResposeModel appointment(@RequestParam("licenceType") String licenceType,
+			@RequestParam("kemu") Integer kemu, @RequestParam("startTime") String startTime, 
+			@RequestParam("examPlaceId") Integer examPlaceId, @RequestParam("examPlaceName") String examPlaceName, 
+			@RequestParam("payType") Integer payType, @RequestParam("appointmentId") Long appointmentId,
+			@RequestParam("realName") String realName, @RequestParam("idNo") String idNo) {
+		ResposeModel res = new ResposeModel();
+		User user = super.getCurrentUser();
+		if (null == user) {
+			res.setStatus("0");
+			res.setMsg("用户未登录");
+			return res;
+		}	
+	    // 获取课程
+		try {
+			// 数据校验
+			if (StringUtils.isEmpty(licenceType)) {
+				res.setStatus("0");
+				res.setMsg("驾照类型不能为空");
+				return res;
+			} else if (StringUtils.isEmpty(startTime)) {
+				res.setStatus("0");
+				res.setMsg("开始时间不能为空");
+				return res;
+			} else if (StringUtils.isEmpty(examPlaceName)) {
+				res.setStatus("0");
+				res.setMsg("请选择考场");
+				return res;
+			} else if (StringUtils.isEmpty(realName)) {
+				res.setStatus("0");
+				res.setMsg("请输入姓名");
+				return res;
+			} else if (StringUtils.isEmpty(idNo)) {
+				res.setStatus("0");
+				res.setMsg("请输入身份证号");
+				return res;
+			} else if (null == payType || null == kemu || null == examPlaceId) {
+				res.setStatus("0");
+				res.setMsg("传入参数有误");
+				return res;
+			}
+			// 校验当前条件是否存在预约考试
+			AppointmentManage data = appointmentManageService.selectById(appointmentId);
+			if (null == data) {
+				res.setStatus("0");
+				res.setMsg("不存在当前条件的考试信息，请确认");
+				return res;
+			}
+			// 报考次数限制校验
+			if (data.getLeftCount() == 0) {
+				res.setStatus("0");
+				res.setCode("3000002");
+				res.setMsg("当前考场已预约满额，请选择其他考场");
+				return res;
+			}
+			UserAppointment model = new UserAppointment();
+			model.setCreateTime(new Date());
+			model.setExamPlaceName(examPlaceName);
+			// 获取
+			ExamPlace place = examPlaceService.selectById(examPlaceId);
+			if (null != place) {
+				model.setExamPlaceAddress(place.getAddress());
+			}			
+			model.setKemu(kemu);
+			model.setIsDelete(0);
+			model.setExamPlaceId(examPlaceId);
+			model.setLicenceType(licenceType);
+			model.setPayType(payType);
+			model.setPrice(data.getPrice());
+			model.setStartTime(DateUtil.getDate(startTime, DateUtil.DATATIMEF_STR));
+			model.setUpdateTime(new Date());
+			model.setUserId(user.getId());
+			model.setUserName(user.getMobile());
+			model.setStatus(0);
+			model.setPayStatus(0);
+//			model.setScore(-1);
+			model.setRealName(realName);
+			model.setIdNo(idNo);
+			model.setAppointId(appointmentId);
+			// 插入数据
+			userAppointmentService.createOrUpdate(model);
+			// 扣减预约库存
+			appointmentManageService.decreaseExamPlaceCount(data);
+			res.setData(model);
+			res.setMsg("预约成功");;
+			// 通知
+			userNoticeService.dealAppointMessage(user.getId(), kemu, licenceType);
+		} catch (Exception e) {
+			log.info("getDetail:" + e.toString());
+			res.setStatus("0");
+			res.setMsg("获取数据出错");
+		}
+
+		return res;
+	}
+    
+    /* 获取我的已预约驾校 */
+	@RequestMapping("/myAppointment")
+	@ResponseBody
+	public ResposeModel myAppointment(@RequestParam(value = "pageIndex", required = false) Integer pageIndex,
+			@RequestParam(value = "pageSize", required = false) Integer pageSize, @RequestParam(value = "payType", required = false) Integer payType) {
+		ResposeModel res = new ResposeModel();	
+		User user = super.getCurrentUser();
+		if (null == user) {
+			res.setStatus("0");
+			res.setMsg("用户未登录");
+			return res;
+		}
+		if (null == pageIndex) {
+			pageIndex = super.pageIndex;
+		}
+		if (null == pageSize) {
+			pageSize = super.pageSize;
+		}
+		try {
+			res.setData(userAppointmentService.selectByPage(pageIndex, pageSize, user.getId()));
+		} catch (Exception e) {
+			log.info("getCourseOfflines:"+e.toString());
+			res.setStatus("0");
+			res.setMsg("获取数据出错");
+		}
+
+		return res;
+	}
+	
+	/* 获取我的已预约考试成绩 */
+	@RequestMapping("/myPoint/kemu/{kemu}")
+	@ResponseBody
+	public ResposeModel myPoint(@PathVariable("kemu") Integer kemu) {
+		ResposeModel res = new ResposeModel();	
+		User user = super.getCurrentUser();
+		if (null == user) {
+			res.setStatus("0");
+			res.setMsg("用户未登录");
+			return res;
+		}
+		try {
+			res.setData(userAppointmentService.selectScoreByKemu(user.getId(), kemu));
+		} catch (Exception e) {
+			log.info("getCourseOfflines:"+e.toString());
+			res.setStatus("0");
+			res.setMsg("获取数据出错");
+		}
+
+		return res;
+	}
+	
+	/* 驾校退款 */
+	@PostMapping("/applyRefund")
+	@ResponseBody
+	public ResposeModel applyRefund(ModelMap modelMap, @RequestParam("refundBankUserName") String name
+			, @RequestParam("refundBankNo") String bankNo, @RequestParam("courseId") Long courseId) {		
+		ResposeModel res = new ResposeModel();	
+		User user = super.getCurrentUser();
+		if (null == user) {
+			res.setStatus("0");
+			res.setMsg("用户未登录");
+			return res;
+		}
+		try {
+			UserCourse data = userCourseService.selectOneByUser(courseId, user.getId());
+			if (null == data || data.getPayStatus() != 2 || data.getRefundStatus() > 0) {
+				res.setStatus("0");
+				res.setMsg("数据不符合退款要求");
+				return res;
+			}
+		    data.setRefundStatus(1);
+		    data.setRefundBankNo(bankNo);
+		    data.setRefundBankUserName(name);
+		    if(userCourseService.createOrUpdate(data) >= 1) {
+		    	// 成功
+		    	res.setMsg("success");
+				return res;
+		    }
+		} catch (Exception e) {
+			log.info("applyRefund:"+e.toString());
+			res.setStatus("0");
+			res.setMsg("获取数据出错");
+		}
+		return res;
+	}
+	
+	/* 驾校退款 */
+	@PostMapping("/applyRefund2")
+	@ResponseBody
+	public ResposeModel applyRefund2(ModelMap modelMap, @RequestParam("courseId") Long courseId) {		
+		ResposeModel res = new ResposeModel();	
+		User user = super.getCurrentUser();
+		if (null == user) {
+			res.setStatus("0");
+			res.setMsg("用户未登录");
+			return res;
+		}
+		try {
+			UserCourse data = userCourseService.selectOneByUser(courseId, user.getId());
+			if (null == data || data.getPayStatus() != 2 || data.getRefundStatus() > 0) {
+				res.setStatus("0");
+				res.setMsg("数据不符合退款要求");
+				return res;
+			}
+		    data.setRefundStatus(1);
+		    if(userCourseService.createOrUpdate(data) >= 1) {
+		    	// 成功
+		    	res.setMsg("success");
+				return res;
+		    }
+		} catch (Exception e) {
+			log.info("applyRefund:"+e.toString());
+			res.setStatus("0");
+			res.setMsg("获取数据出错");
+		}
+		return res;
+	}
+	
+	/* 用户详情 */
+	@RequestMapping("/detail")
+	@ResponseBody
+	public ResposeModel detail() {
+		ResposeModel res = new ResposeModel();	
+		User user = super.getCurrentUser();
+		if (null == user) {
+			res.setStatus("0");
+			res.setMsg("用户未登录");
+			return res;
+		} else {
+            user = userService.selectOneByMobile(user.getMobile());
+            UserVo vo = new UserVo();
+			vo.setId(user.getId());
+            vo.setMobile(user.getMobile());
+            vo.setAvatar(user.getAvatar());
+            vo.setName(user.getName());
+            vo.setSessionId(user.getSessionId());
+            // 查询用户选项卡购买情况
+            //付费判断
+    		UserCourse pay = userCourseService.selectPayCourseByUser(1l, user.getId(), UserCourseTypeEnum.practice.code);
+    		if (null == pay) {
+    			vo.setIsBuyCard(0);
+    		} else {
+    			vo.setIsBuyCard(1);
+    		}
+    		// 是否vip用户
+    		UserCourseVip vip = userCourseVipService.isVipUser2(user.getId());
+    		if(null != vip) {
+    			vo.setIsVip(1);
+    			vo.setVipKemu(vip.getKemus());
+    		} else {
+    			vo.setIsVip(0);
+    		}
+    		PracticeCard card = practiceCardService.getOne(1L);
+    		vo.setCardPrice(card.getPrice());
+    		vo.setRealName(user.getRealName());
+    		vo.setIdNo(user.getIdNo());
+    		vo.setCardExpiredTime(user.getCardExpiredTime());
+			res.setData(vo);
+		}		
+		return res;
+	}
+	
+	/**
+	 * 平台通知列表
+	 * @return
+	 */
+	@RequestMapping("/notice")
+	@ResponseBody
+	public ResposeModel platformNotice(@RequestParam(value = "pageIndex", required = false) Integer pageIndex,
+			@RequestParam(value = "pageSize", required = false) Integer pageSize) {
+		ResposeModel res = new ResposeModel();	
+		User user = super.getCurrentUser();
+		if (null == user) {
+			res.setStatus("0");
+			res.setMsg("用户未登录");
+			return res;
+		}
+		if (null == pageIndex) {
+			pageIndex = super.pageIndex;
+		}
+		if (null == pageSize) {
+			pageSize = super.pageSize;
+		}
+		try {
+			res.setData(platformNoticeService.selectByPageApp(pageIndex, pageSize));
+		} catch (Exception e) {
+			log.info("platformNotice:"+e.toString());
+			res.setStatus("0");
+			res.setMsg("获取数据出错");
+		}
+		return res;
+	}
+	
+	/* 用户详情 */
+	@RequestMapping("/updateUser")
+	@ResponseBody
+	public ResposeModel updateUser(@RequestParam(value = "name", required = false) String name, @RequestParam(value = "realName", required = false) String realName
+			, @RequestParam(value = "idNo", required = false) String idNo, @RequestParam(value = "avatar", required = false) String avatar) {
+		ResposeModel res = new ResposeModel();	
+		User user = super.getCurrentUser();
+		if (null == user) {
+			res.setStatus("0");
+			res.setMsg("用户未登录");
+			return res;
+		} else {
+			user = userService.selectOneByMobile(user.getMobile());
+			// 更新用户
+			if (StringUtil.isNotEmpty(avatar)) {
+				// 头像更新
+				String fileDir = FileUtils.generateFileDir(Constants.UPLOAD_FILE_DIR, user.getId());
+				String avatarDir = fileDir + "/avatar.png";
+				try {
+					FileUtils.decoderBase64File(avatar, avatarDir);
+					user.setAvatar(avatarDir.substring(4));
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}	
+			}
+			if (StringUtil.isNotEmpty(name)) {
+				user.setName(name);
+			}
+			if (StringUtil.isNotEmpty(realName)) {
+				user.setRealName(realName);
+			}
+			if (StringUtil.isNotEmpty(idNo)) {
+				user.setIdNo(idNo);
+			}
+			user.setUpdateTime(new Date());
+			userService.update(user);	
+			res.setData(user);
+			// 更新
+			super.updateCacheUser(user.getId());		
+		}		
+		return res;
+	}
+	
+	
+	/* 老师注册第一步 */
+    @PostMapping("/teacherRegister")
+	@ResponseBody
+	public ResposeModel teacherRegister(@RequestParam("name") String name,
+			@RequestParam("mobile") String mobile, @RequestParam("idNo") String idNo, 
+			@RequestParam("teacherNo") String teacherNo, @RequestParam("drivingAge") Integer drivingAge, 
+			@RequestParam("teachingAge") Integer teachingAge,
+			@RequestParam("address") String address,
+			@RequestParam("photo") String photo, 
+			@RequestParam("coachPhoto") String coachPhoto,
+			@RequestParam("idUp") String idUp, 
+			@RequestParam("idDown") String idDown,
+			@RequestParam("loginName") String loginName,
+			@RequestParam("password") String password, 
+			@RequestParam("isSchoolTeacher") Integer isSchoolTeacher,
+			@RequestParam("schoolName") String schoolName
+			) {
+		ResposeModel res = new ResposeModel();		
+		try {
+			// 数据校验
+			if (StringUtils.isEmpty(name) || StringUtils.isEmpty(mobile) || StringUtils.isEmpty(idNo)
+					 || StringUtils.isEmpty(teacherNo) || null == drivingAge
+					 || teachingAge == null || StringUtils.isEmpty(address)
+					 || StringUtils.isEmpty(photo) || StringUtils.isEmpty(coachPhoto)
+					 || StringUtils.isEmpty(idUp) || StringUtils.isEmpty(idDown)
+					 || StringUtils.isEmpty(loginName) || StringUtils.isEmpty(password)
+					 ) {
+				res.setStatus("0");
+				res.setMsg("参数校验异常，请核对您的输入参数");
+				return res;
+			} 
+			// 登录名存在性校验
+			List<SysUser> dataList = sysUserService.checkExitUserName(loginName, null);			
+			if (null != dataList && dataList.size() > 0) {
+				res.setStatus("0");
+				res.setMsg("该用户名已存在");
+				return res;
+			} 			
+			// 文件生成		
+			String fileDir = FileUtils.generateFileDir(Constants.UPLOAD_FILE_DIR, 10000000L);
+			String photoDir = fileDir + "/PHOTO.png";
+			String coachPhotoDir = fileDir + "/COACH_PHOTO.png";
+			String idUpDir = fileDir + "/ID_UP.png";
+			String idDownDir = fileDir + "/ID_DOWN.png";
+			FileUtils.decoderBase64File(photo, photoDir);
+			FileUtils.decoderBase64File(coachPhoto, coachPhotoDir);
+			FileUtils.decoderBase64File(idUp, idUpDir);
+			FileUtils.decoderBase64File(idDown, idDownDir);
+			
+			Teacher data = new Teacher();
+			data.setCreateTime(new Date());
+			data.setUpdateTime(new Date());
+			data.setIdNo(idNo);
+			data.setIsDelete(2); // 待审核
+			data.setMobile(mobile);
+			data.setName(name);
+			if (isSchoolTeacher == 1) {
+				data.setSchoolName(schoolName);
+			}
+			data.setTeacherNo(teacherNo);
+			data.setAddress(address);
+			data.setDrivingAge(drivingAge);
+			data.setTeachingAge(teachingAge);
+			data.setIdDown(FileUtils.getImageUrl(idDownDir));
+			data.setIdUp(FileUtils.getImageUrl(idUpDir));
+			data.setPhoto(FileUtils.getImageUrl(photoDir));
+			data.setCoachPhoto(FileUtils.getImageUrl(coachPhotoDir));
+			data.setLoginName(loginName);
+			// 插入数据
+			res.setData(teacherService.registerTeacher(data, loginName, password));
+			res.setMsg("报名成功");;
+		} catch (Exception e) {
+			log.info("getDetail:" + e.toString());
+			res.setStatus("0");
+			res.setMsg("获取数据出错");
+		}
+
+		return res;
+	}
+    
+    /**
+	 * 已购买VIP
+	 * @return
+	 */
+	@RequestMapping("personVipList")
+	@ResponseBody
+	public ResposeModel personVipList() {
+		ResposeModel res = new ResposeModel();	
+		User user = super.getCurrentUser();
+		if (null == user) {
+			res.setStatus("0");
+			res.setMsg("用户未登录");
+			return res;
+		}				
+		try {
+			res.setData(userCourseVipService.selectCourseDetailByUserId(user.getId()));				
+		} catch (Exception e) {
+			log.info("getDetail:" + e.toString());
+			e.printStackTrace();
+			res.setStatus("0");
+			res.setMsg("获取数据出错");			
+		}
+		return res;
+	}
+	
+	/**
+	 * 已购买私教
+	 * @return
+	 */
+	@RequestMapping("personPrivateTutor")
+	@ResponseBody
+	public ResposeModel personPrivateTutor(@RequestParam(value="pageIndex", required=false) Integer pageIndex,
+			@RequestParam(value="pageSize", required=false) Integer pageSize) {
+		ResposeModel res = new ResposeModel();	
+		User user = super.getCurrentUser();
+		if (null == user) {
+			res.setStatus("0");
+			res.setMsg("用户未登录");
+			return res;
+		}		
+		if (null == pageIndex) {
+			pageIndex = super.pageIndex;
+		}
+		if (null == pageSize) {
+			pageSize = super.personPageSize;
+		}
+		try {
+			res.setData(userCourseService.selectPayTutorByPage(pageIndex, pageSize, user.getId()));			
+		} catch (Exception e) {
+			log.info("getDetail:" + e.toString());
+			e.printStackTrace();
+			res.setStatus("0");
+			res.setMsg("获取数据出错");	
+		}
+		return res;
+	}
+	
+	/**
+	 * 服务通知
+	 * @return
+	 */
+	@RequestMapping("personNoticeList")
+	@ResponseBody
+	public ResposeModel personNoticeList(@RequestParam(value="pageIndex", required=false) Integer pageIndex,
+			@RequestParam(value="pageSize", required=false) Integer pageSize) {
+		ResposeModel res = new ResposeModel();	
+		User user = super.getCurrentUser();
+		if (null == user) {
+			res.setStatus("0");
+			res.setMsg("用户未登录");
+			return res;
+		}		
+		if (null == pageIndex) {
+			pageIndex = super.pageIndex;
+		}
+		if (null == pageSize) {
+			pageSize = super.personPageSize;
+		}
+		try {
+			res.setData(userNoticeService.selectPageByUserId(user.getId(), pageIndex, pageSize));			
+		} catch (Exception e) {
+			log.info("getDetail:" + e.toString());
+			e.printStackTrace();
+			res.setStatus("0");
+			res.setMsg("获取数据出错");
+		}
+		return res;
+	}
+    
+}

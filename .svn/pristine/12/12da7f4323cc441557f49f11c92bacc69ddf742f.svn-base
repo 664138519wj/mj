@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+<head>
+    <title>平台服务网点信息</title>
+    <style type="text/css">
+        .tab-title{background:#fff;margin-bottom:30px;}
+        .tab-title ul{height:60px;line-height:60px;padding-bottom:5px;}
+        .tab-title ul li{float:left;width:160px;text-align: center;}
+        .tab-title ul li:hover{cursor: pointer;}
+        .tab-title ul li.tab-selected{border-bottom:4px solid #fd9938;}
+        .tab-title ul li.tab-selected span{color:#fd9938;}
+    </style>
+</head>
+<body th:fragment="content" >
+        <!--content-->
+        <div class="content plat-info">
+	        <div class="tab-title com-width">
+				<ul class="clear">
+					<li><a th:href="${ctx} + school_sign_up"> <img
+						th:src="@{/img/icon_1.1.png}" alt=""> <span>驾校报名</span>
+					</a></li>
+					<li class="tab-selected"><a href="javascript:void(0);"> <img
+							th:src="@{/img/icon_2.png}" alt=""> <span>网点分布</span>
+					</a></li>
+				</ul>
+			</div>
+	        
+            <div class="plat-title">
+                <h2>平台服务网点信息</h2>
+                <p>—</p>
+            </div>
+            <ul class="info-box com-width clear">
+                <li th:each="plat:${platList}">
+                    <a th:href="@{${ctx} + 'platform_info_detail?id=' + ${plat.id}}">
+                        <div class="info-img">
+                            <img th:src="${imageUrl} + ${plat.imagePath}" alt="">
+                        </div>
+                        <div class="info-desc">
+                            <b><span th:text="${plat.name}"></span></b>
+                            <p>网点地址：<span th:text="${plat.address}"></span></p>
+                            <p>联系电话：<span th:text="${plat.tel}"></span></p>
+                        </div>
+                    </a>
+                </li>               
+            </ul>
+            <div class="box clear">
+                  <div id="pagination_platforminfo" class="page"></div>
+            </div>
+        </div>
+	<script> 
+        
+        $("#pagination_platforminfo").pagination({
+        currentPage: [[${pageIndex}]],
+        totalPage: [[${totalPage}]],
+        isShow: false,
+        count: [[${total}]],
+        prevPageText: "<",
+        nextPageText: ">",
+        callback: function(current) {
+            this.location.href ="[[${ctx}]]platform_info?pageIndex=" + current;
+           }
+        });
+        </script>
+</body>
+</html>

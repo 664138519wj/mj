@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+<head>
+    <title>关于我们</title>
+    <style type="text/css">
+        .tab-title{background:#fff;}
+        .tab-title ul{height:60px;line-height:60px;padding-bottom:5px;}
+        .tab-title ul li{float:left;width:160px;text-align: center;}
+        .tab-title ul li:hover{cursor: pointer;}
+        .tab-title ul li.tab-selected{border-bottom:4px solid #fd9938;}
+        .tab-title ul li.tab-selected span{color:#fd9938;}
+        .tab-title ul li a img{width:24px;height:24px;vertical-align: sub}
+    	.per-main{width:1200px;padding:0 0 40px;background:none;}
+    </style>
+</head>
+<body th:fragment="content">
+        <div class="content person-content">
+            <div class="com-width">
+                <div class="tab-title">
+                    <ul class="clear">
+                        <li>
+                            <a th:href="${ctx} + about_us_1">
+                                <img th:src="@{/img/about_1.png}" alt="">
+                                <span>我要考驾照</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="${ctx} + about_us_2">
+                                <img th:src="@{/img/about_2.png}" alt="">
+                                <span>我是驾校</span>
+                            </a>
+                        </li>
+                        <li class="tab-selected">
+                            <a href="javascript:void(0);">
+                                <img th:src="@{/img/about_3.1.png}" alt="">
+                                <span>我是教练</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="xc-about-page">
+                    <div class="xc-top">
+                        <div class="xc-pic"><img th:src="@{/img/about_pic.png}" alt=""></div>
+                        <div class="xc-desc">
+                            <p>      自我介绍一下，“我的学车网”是上海安族电子科技有限公司与新疆复安信息技术有限公司合作研发的全新驾考服务平台。平台面
+                                向准驾驶人、驾校和公安交管部门提供全方位的信息资讯和业务服务。我们既引入了创新的服务理念和服务模式，又充分结合新疆本
+                                地实际情况，立志成为最接地气的、最懂您的驾考服务平台！</p>
+                        </div>
+                    </div>
+                    <div class="xc-line">
+                        <img th:src="@{/img/about_line.png}" alt="">
+                    </div>
+                    <div class="xc-bottom">
+                        <p>如果您是经验丰富的教练，我们欢迎您加入平台成为课程讲师或VIP学员陪练，我们的培训网点遍布全市，还支持在线发布教学课程，多元化的收入体系会带给您丰厚的回报和足足的成就感！</p>
+                        <div class="xc-title">
+                            <p>动心啦？赶快<a th:href="${ctx} + teacher_regist">&nbsp;“注册”&nbsp;</a>体验一下吧！</p>
+                        </div>
+                        <!-- <div class="xc-title">
+                            <p>已经加入啦？<a th:href="@{${ctx} + 'auth/toLogin'}">&nbsp;“登录”&nbsp;</a> 看看吧，也许又有人报名您的课程咯！</p>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+</body>
+</html>

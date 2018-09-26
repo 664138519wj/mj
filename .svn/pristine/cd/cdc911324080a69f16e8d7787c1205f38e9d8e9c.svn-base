@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+<head>
+    <title>考试计划</title>
+</head>
+<body th:fragment="content">
+        <form id="appoint_school_form" th:action="@{${ctx} + 'test_plan'}" method="get">
+	  					<input type="hidden" name="kemu" id="kemu" th:value="${param.kemu}">	
+	  					<input type="hidden" name="kemuStr" id="kemuStr" th:value="${param.kemuStr}">	  						  					  					
+	  					<input type="hidden" name="licence" id="licence" th:value="${param.licence}">	  
+	  					<input type="hidden" name="pageIndex" id="pageIndex" th:value="${param.pageIndex}">	  
+	  					<input type="hidden" name="pageSize" id="pageSize" th:value="${param.pageSize}">	
+	  					<input type="hidden" name="licenceName" id="licenceName" th:value="${param.licenceName}">	
+	  					
+		<div class="plat-title" style="padding:40px 0;">
+			<h2>自主预约考试</h2> 
+		</div>
+		<div class="com-width">
+			<div class="school-box com-width" style="background:#fff;padding:20px;min-height:500px;">
+				<ul class="choose-ul clear">
+						<li class="fl" style="margin:0 200px 0 20px;"><span>选择科目</span>
+							<div class="area-box box2">
+								<input class="word" type="text" id="kemu_str" th:value="${param.kemuStr}"> 
+								<input class="key" type="hidden" id="kemu_class" th:value="${param.kemu}"><img
+									th:src="@{/img/arrow-down.png}" alt="">
+							</div>
+							<ul class="child-box choose-sub clear">
+								<li>选择科目</li>
+								<li><input type="hidden" value="1" />科目一</li>
+								<li><input type="hidden" value="2" />科目二</li>
+								<li><input type="hidden" value="3" />科目三</li>
+								<li><input type="hidden" value="4" />科目四</li>
+							</ul></li>
+						<li class="fl"><span>驾照类型</span>
+							<div class="area-box box3">
+								<input class="word" type="text" id="licence_name" th:value="${param.licenceName}">
+								<input class="key" type="hidden" id="licence_class" th:value="${param.licence}"> <img
+									th:src="@{/img/arrow-down.png}" alt="">
+							</div>
+							<ul class="child-box choose-car clear" style="width:510px;">
+								<li>驾照类型</li>
+								<li th:each="licence:${licenceList}" ><input type="hidden" th:value="${licence.code}"/><span th:text="${licence.name}"></span></li>
+							</ul></li>
+						<li class="fr" style="width:180px;">
+							<div class="submit-btn clear" style="margin-top:0;">
+								<input type="hidden" id="relocationUrl"
+									th:value="@{${ctx} + 'person_center/person_order_test'}">
+								<button type="button" id="query_appoint_button" style="width:180px;">查询</button>
+							</div>
+						</li>
+					</ul>
+						
+				<div th:if="${appointList}">
+			         <div class="test-lists" th:each="data:${appointList.examPlaceList}">
+			               <ul class="result-list clear" >
+			                     <li>考场名称：<span th:text="${data.ExamPlace.name}"></span></li>
+			                     <li>剩余名额：<span th:text="${data.leftCount}"></span></li>
+			               </ul>
+			               <ul class="result-list clear">
+			                     <li>考试时间：<span th:text="${data.startTimeStr}"></span></li>
+			                     <li>考试地点：<span th:text="${data.ExamPlace.address}"></span></li>
+			               </ul>
+			               <div class="submit-btn clear" style="margin-top:10px;">
+			                     <a th:href="@{${ctx} + 'person_center/person_order_require?appointId=' + ${data.appointmentId}}" th:if="${data.userAppointStatus == 0}">
+			                     <button type="button"  style="width:120px;">立即预约</button></a>
+			                     <a th:if="${data.userAppointStatus == 1}">
+			                     <button type="button"  style="width:120px;">预约中</button></a>
+			                     <a th:if="${data.userAppointStatus == 2}">
+			                     <button type="button"  style="width:120px;">预约成功</button></a>	                                          
+			               </div>
+			         </div>
+		        </div>
+		        <div th:unless="${appointList}">
+			         没有相关数据
+		        </div>
+			</div>
+		</div>
+		</form>
+	<script type="text/javascript">
+		$(".choose-ul>li .area-box").click(function(){
+	        $(this).next(".child-box").show();
+	        $(this).parent('li').siblings().find('.child-box').hide();
+	    });
+	    $(".choose-ul>li .child-box li").click(function(){
+	        $(this).parents('.child-box').prev('.area-box').find('.word').val($(this).text());
+	        $(this).parents('.child-box').prev('.area-box').find('.key').val($(this).find('input').val());
+	        $(this).parents('.child-box').hide();
+	        console.log($(this).find('input').val());
+	    });
+	    $("#query_appoint_button").click(function() {
+			$('#kemu').val($('#kemu_class').val());
+			$('#kemuStr').val($('#kemu_str').val());
+			$('#licence').val($('#licence_class').val());
+			$('#licenceName').val($('#licence_name').val());
+	        if (kemu == '' || kemu == undefined) {
+	        	alert("请选择科目");
+	        	return;
+	        }
+	        if (licence == '' || licence == undefined) {
+	        	alert("请选择驾照类型");
+	        	return;
+	        }
+			var form = $("#appoint_school_form");
+			form.submit();
+		});
+	</script>
+</body>
+</html>

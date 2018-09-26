@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="head_center">
+<head>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+	content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>个人中心</title>
+<body>
+
+	<!--查看预约记录-->
+	<div class="tab" th:fragment="content">
+		<div class="plat-title">
+			<h2>已预约考试</h2>
+		</div>
+		<div class="order-test">
+			<ul>
+				<li th:each="appointment:${appointmentList}">
+					<p>
+						<b th:text="@{'【' + ${appointment.kemuStr} + '】 ' + ${appointment.licenceType}}"></b><span th:text="@{'￥'+${appointment.price}}"></span>
+						
+	                     <a th:href="@{${baseUrl} + 'api/pay/web/payChoose?courseId=' + ${appointment.id} + '&courseType=5&price=' + ${appointment.price}}" 
+	                     th:if="${appointment.payStatus==0 && appointment.payType==0}">
+	                     <span style="color:#fd9938;padding:0 50px;">去付款</span></a>
+	                     <span class="state" th:if="${appointment.status==0}">预约中</span>
+	                     <span class="state" th:if="${appointment.status==1}">预约成功</span>	                     
+	                     <span class="state" th:if="${appointment.status==2}">预约失败</span>
+	                     						
+					</p>
+					<p>
+						<span th:text="@{'考场名称：' + ${appointment.examPlaceName}}"></span>
+					</p>
+					<p>
+						<span th:text="@{'考场地址：' + ${appointment.examPlaceAddress}}"></span>
+					</p>
+					<p th:text="@{'考试时间：' + ${appointment.beginTime}}"></p>
+				</li>
+			</ul>
+		</div>
+	</div>
+</html>
