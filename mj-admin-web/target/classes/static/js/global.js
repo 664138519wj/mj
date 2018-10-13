@@ -59,8 +59,6 @@ function sayHello() {
         helloBox.hide();
         typed.stop();
     });
-//        sayHello=null;
-//        helloBox=null;
 }
 //點擊右側導航彈框
 sayHello();
@@ -76,8 +74,8 @@ var typed = new Typed('.js-typed', {
         "超多點子無法執行",
         "天天上班很無聊",
         "下班喜歡小酌",
-        "超愛台灣",
-        "覺得自己很時髦",
+        "超愛上海",
+        "覺得自己很時髦"
     ],
     typeSpeed: 50,
     backSpeed: 50,
@@ -93,7 +91,7 @@ var typed = new Typed('.js-typed', {
     onReset: function () {
     }, //還沒搞定
 });
-//    typed.stop();
+   typed.stop();
 
 function navClick(){
     var navUl=$('.js_nav');

@@ -107,31 +107,31 @@ public class ThymeleafConfig implements ApplicationContextAware {
      * 设置前台全局变量
      * @param viewResolver
      */
-//    @Resource
-//    private void configureThymeleafStaticVars(ThymeleafViewResolver viewResolver) {
-//        if(viewResolver != null) {
-//            Map<String, Object> vars = new HashMap<>();
-//            vars.put("baseUrl", "http://localhost:8080/mj/");  
-//            vars.put("imageUrl", "http://localhost:8080/mj");            
-//            vars.put("videoUrl", "http://localhost:8080/mj");   
-//            viewResolver.setStaticVariables(vars);
-//        }
-//    }
+    @Resource
+    private void configureThymeleafStaticVars(ThymeleafViewResolver viewResolver) {
+        if(viewResolver != null) {
+            Map<String, Object> vars = new HashMap<>();
+            vars.put("baseUrl", "http://localhost:8080/mj/");  
+            vars.put("imageUrl", "http://localhost:8080/mj");            
+            vars.put("videoUrl", "http://localhost:8080/mj");   
+            viewResolver.setStaticVariables(vars);
+        }
+    }
     
     /**
      * 设置前台全局变量
      * @param viewResolver
      */
-    @Resource
-    private void configureThymeleafStaticVars(ThymeleafViewResolver viewResolver) {
-        if(viewResolver != null) {
-            Map<String, Object> vars = new HashMap<>();
-            vars.put("baseUrl", "http://47.99.77.94:8080/");  
-            vars.put("imageUrl", "http://47.99.77.94:8080/");            
-            vars.put("videoUrl", "http://47.99.77.94:8080/");   
-            viewResolver.setStaticVariables(vars);
-        }
-    }
+//    @Resource
+//    private void configureThymeleafStaticVars(ThymeleafViewResolver viewResolver) {
+//        if(viewResolver != null) {
+//            Map<String, Object> vars = new HashMap<>();
+//            vars.put("baseUrl", "http://47.99.77.94:8080/");  
+//            vars.put("imageUrl", "http://47.99.77.94:8080/");            
+//            vars.put("videoUrl", "http://47.99.77.94:8080/");   
+//            viewResolver.setStaticVariables(vars);
+//        }
+//    }
     
 //    /**
 //     * 设置前台全局变量 生产
